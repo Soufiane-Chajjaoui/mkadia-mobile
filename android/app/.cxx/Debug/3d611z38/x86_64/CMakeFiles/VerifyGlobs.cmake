@@ -12,6 +12,31 @@ if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")
   file(TOUCH_NOCREATE "/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/x86_64/CMakeFiles/cmake.verify_globs")
 endif()
 
+# react_codegen_SRCS at /media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/node_modules/react-native-bootsplash/android/build/generated/source/codegen/jni/CMakeLists.txt:9 (file)
+file(GLOB NEW_GLOB LIST_DIRECTORIES true "/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/node_modules/react-native-bootsplash/android/build/generated/source/codegen/jni/*.cpp")
+set(OLD_GLOB
+  "/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/node_modules/react-native-bootsplash/android/build/generated/source/codegen/jni/RNBootSplashSpec-generated.cpp"
+  )
+if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")
+  message("-- GLOB mismatch!")
+  file(TOUCH_NOCREATE "/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/x86_64/CMakeFiles/cmake.verify_globs")
+endif()
+
+# react_codegen_SRCS at /media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/node_modules/react-native-bootsplash/android/build/generated/source/codegen/jni/CMakeLists.txt:9 (file)
+file(GLOB NEW_GLOB LIST_DIRECTORIES true "/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/node_modules/react-native-bootsplash/android/build/generated/source/codegen/jni/react/renderer/components/RNBootSplashSpec/*.cpp")
+set(OLD_GLOB
+  "/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/node_modules/react-native-bootsplash/android/build/generated/source/codegen/jni/react/renderer/components/RNBootSplashSpec/ComponentDescriptors.cpp"
+  "/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/node_modules/react-native-bootsplash/android/build/generated/source/codegen/jni/react/renderer/components/RNBootSplashSpec/EventEmitters.cpp"
+  "/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/node_modules/react-native-bootsplash/android/build/generated/source/codegen/jni/react/renderer/components/RNBootSplashSpec/Props.cpp"
+  "/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/node_modules/react-native-bootsplash/android/build/generated/source/codegen/jni/react/renderer/components/RNBootSplashSpec/RNBootSplashSpecJSI-generated.cpp"
+  "/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/node_modules/react-native-bootsplash/android/build/generated/source/codegen/jni/react/renderer/components/RNBootSplashSpec/ShadowNodes.cpp"
+  "/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/node_modules/react-native-bootsplash/android/build/generated/source/codegen/jni/react/renderer/components/RNBootSplashSpec/States.cpp"
+  )
+if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")
+  message("-- GLOB mismatch!")
+  file(TOUCH_NOCREATE "/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/x86_64/CMakeFiles/cmake.verify_globs")
+endif()
+
 # LIB_CUSTOM_SRCS at /media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/node_modules/react-native-safe-area-context/android/src/main/jni/CMakeLists.txt:12 (file)
 file(GLOB NEW_GLOB LIST_DIRECTORIES true "/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/node_modules/react-native-safe-area-context/android/src/main/jni/*.cpp")
 set(OLD_GLOB
