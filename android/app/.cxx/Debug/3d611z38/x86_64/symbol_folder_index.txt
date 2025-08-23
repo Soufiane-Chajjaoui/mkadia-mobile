@@ -1,0 +1,1 @@
+/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/build/intermediates/cxx/Debug/3d611z38/obj/x86_64

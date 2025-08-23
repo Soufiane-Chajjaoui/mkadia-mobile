@@ -1,0 +1,4 @@
+/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/x86/CMakeFiles/_CMakeLTOTest-CXX/bin/CMakeFiles/foo.dir
+/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/x86/CMakeFiles/_CMakeLTOTest-CXX/bin/CMakeFiles/boo.dir
+/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/x86/CMakeFiles/_CMakeLTOTest-CXX/bin/CMakeFiles/edit_cache.dir
+/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/x86/CMakeFiles/_CMakeLTOTest-CXX/bin/CMakeFiles/rebuild_cache.dir
