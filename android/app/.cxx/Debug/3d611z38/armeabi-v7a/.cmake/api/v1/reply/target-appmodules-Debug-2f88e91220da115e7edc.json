@@ -238,11 +238,11 @@
 	[
 		{
 			"backtrace" : 4,
-			"id" : "react_codegen_safeareacontext::@7984cd80db47aa7b952a"
+			"id" : "react_codegen_RNBootSplashSpec::@05d5bd8b08339ce1ebaa"
 		},
 		{
 			"backtrace" : 4,
-			"id" : "react_codegen_RNBootSplashSpec::@05d5bd8b08339ce1ebaa"
+			"id" : "react_codegen_safeareacontext::@7984cd80db47aa7b952a"
 		}
 	],
 	"id" : "appmodules::@6890427a1f51a3e7e1df",
