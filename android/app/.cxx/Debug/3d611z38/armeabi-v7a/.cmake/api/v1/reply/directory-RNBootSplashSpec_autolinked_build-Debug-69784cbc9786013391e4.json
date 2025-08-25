@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "RNBootSplashSpec_autolinked_build",
+		"source" : "/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/node_modules/react-native-bootsplash/android/build/generated/source/codegen/jni"
+	}
+}

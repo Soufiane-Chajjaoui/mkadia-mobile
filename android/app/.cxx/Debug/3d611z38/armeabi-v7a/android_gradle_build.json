@@ -1,5 +1,6 @@
 {
   "buildFiles": [
+    "/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/node_modules/react-native-bootsplash/android/build/generated/source/codegen/jni/CMakeLists.txt",
     "/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/node_modules/react-native-safe-area-context/android/src/main/jni/CMakeLists.txt",
     "/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/node_modules/react-native/ReactAndroid/cmake-utils/default-app-setup/CMakeLists.txt"
   ],
@@ -29,6 +30,11 @@
         "/home/soufian-ch/.gradle/caches/8.14.3/transforms/eb6d09c91acf843499bdca80e0a66fd6/transformed/react-android-0.81.0-debug/prefab/modules/jsi/libs/android.armeabi-v7a/libjsi.so",
         "/home/soufian-ch/.gradle/caches/8.14.3/transforms/eb6d09c91acf843499bdca80e0a66fd6/transformed/react-android-0.81.0-debug/prefab/modules/reactnative/libs/android.armeabi-v7a/libreactnative.so"
       ]
+    },
+    "react_codegen_RNBootSplashSpec::@05d5bd8b08339ce1ebaa": {
+      "toolchain": "toolchain",
+      "abi": "armeabi-v7a",
+      "artifactName": "react_codegen_RNBootSplashSpec"
     },
     "react_codegen_safeareacontext::@7984cd80db47aa7b952a": {
       "toolchain": "toolchain",

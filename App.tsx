@@ -15,9 +15,23 @@ import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
+import BootSplash from 'react-native-bootsplash';
+import { useEffect } from 'react';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
+
+  useEffect(() => {
+    const init = async () => {
+      // You can do some async operations here if needed
+      // For example: await loadUserData();
+
+      // Hide the bootsplash when the app is ready
+      await BootSplash.hide({ fade: true });
+    };
+
+    init();
+  }, []);
 
   return (
     <SafeAreaProvider>
