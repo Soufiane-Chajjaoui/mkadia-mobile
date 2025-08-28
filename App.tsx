@@ -10,13 +10,16 @@
  */
 
 import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View, Text } from 'react-native';
+import { StatusBar, StyleSheet, useColorScheme, View, Text, Image, Button } from 'react-native';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 import BootSplash from 'react-native-bootsplash';
 import { useEffect } from 'react';
+import TestLoggingComponent from './src/components/TestLoggingComponent';
+import Logger from './src/utils/Logger';
+import OnboardingScreen from './src/screens/Onboarding/OnboardingScreen';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -34,30 +37,9 @@ function App() {
   }, []);
 
   return (
-    <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
-    </SafeAreaProvider>
+    <OnboardingScreen></OnboardingScreen>
   );
 }
 
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-
-  return (
-    <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
 
 export default App;
