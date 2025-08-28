@@ -1,9 +1,15 @@
 /media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/x86/CMakeFiles/appmodules.dir
 /media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/x86/CMakeFiles/edit_cache.dir
 /media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/x86/CMakeFiles/rebuild_cache.dir
+/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/x86/rnasyncstorage_autolinked_build/CMakeFiles/react_codegen_rnasyncstorage.dir
+/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/x86/rnasyncstorage_autolinked_build/CMakeFiles/edit_cache.dir
+/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/x86/rnasyncstorage_autolinked_build/CMakeFiles/rebuild_cache.dir
 /media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/x86/RNBootSplashSpec_autolinked_build/CMakeFiles/react_codegen_RNBootSplashSpec.dir
 /media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/x86/RNBootSplashSpec_autolinked_build/CMakeFiles/edit_cache.dir
 /media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/x86/RNBootSplashSpec_autolinked_build/CMakeFiles/rebuild_cache.dir
 /media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/x86/safeareacontext_autolinked_build/CMakeFiles/react_codegen_safeareacontext.dir
 /media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/x86/safeareacontext_autolinked_build/CMakeFiles/edit_cache.dir
 /media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/x86/safeareacontext_autolinked_build/CMakeFiles/rebuild_cache.dir
+/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/x86/rnscreens_autolinked_build/CMakeFiles/react_codegen_rnscreens.dir
+/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/x86/rnscreens_autolinked_build/CMakeFiles/edit_cache.dir
+/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/x86/rnscreens_autolinked_build/CMakeFiles/rebuild_cache.dir

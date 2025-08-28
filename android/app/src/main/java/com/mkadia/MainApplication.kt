@@ -116,16 +116,7 @@ class MainApplication : Application(), ReactApplication {
                 builder.addNetworkInterceptor(FlipperOkhttpInterceptor(networkFlipperPlugin))
             }
             client.addPlugin(networkFlipperPlugin)
-            
-            // Fresco Plugin - Only if your app uses Fresco for image loading
-            // Since Fresco is not installed, we skip this plugin
-            // If you need Fresco debugging, install: implementation 'com.facebook.fresco:fresco:2.5.0'
-            // try {
-            //     client.addPlugin(FrescoFlipperPlugin())
-            // } catch (e: Exception) {
-            //     // Fresco is not available
-            // }
-            
+                        
             // Start the Flipper client
             client.start()
             
