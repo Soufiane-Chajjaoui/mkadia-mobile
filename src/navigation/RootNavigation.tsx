@@ -5,6 +5,7 @@ import { ActivityIndicator, View } from "react-native";
 import SafeAreaWrapper from "../components/SafeAreaWrapper";
 import HomeScreen from "../screens/Home/HomeScreen";
 import useFirstLaunch from "../hooks/useFirstLaunch";
+import OnboardingScreen from "../screens/Onboarding/OnboardingScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -28,20 +29,21 @@ export default function RootNavigator() {
     >
       <Stack.Screen
         name="Onboarding"
-        children={() => (
-          <SafeAreaWrapper>
-            {require("../screens/Onboarding/OnboardingScreen").default()}
-          </SafeAreaWrapper>
-        )}
+        component={withSafeArea(OnboardingScreen)}
       />
       <Stack.Screen
         name="Home"
-        children={() => (
-          <SafeAreaWrapper>
-            <HomeScreen/>
-          </SafeAreaWrapper>
-        )}
+        component={withSafeArea(HomeScreen)}
       />
     </Stack.Navigator>
   );
 }
+
+const withSafeArea = (ScreenComponent: React.ComponentType<any>) => {
+  return (props: any) => (
+    <SafeAreaWrapper>
+      <ScreenComponent {...props} />
+    </SafeAreaWrapper>
+  );
+};
+

@@ -1,19 +1,43 @@
-import React from 'react';
-import { ScrollView, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-
-
-interface Category {
-  id: string;
-  name: string;
-  icon: string;
-  color: string;
-}
+import React, { useState, useEffect } from "react";
+import { ScrollView, View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+import { CategoryCard as CategoryCardModel } from "../../../models/CategoryCard";
+import CategoryCard from "../../../components/CategoryCard";
 
 interface CategoriesSectionProps {
-  categories: Category[];
+  categories: CategoryCardModel[];
+  loading?: boolean; // nouveau prop pour indiquer le chargement
 }
 
-const CategoriesSection: React.FC<CategoriesSectionProps> = ({ categories }) => {
+const CategoriesSection: React.FC<CategoriesSectionProps> = ({ categories, loading = false }) => {
+  if (loading) {
+    // Skeleton Loader
+    return (
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Catégories</Text>
+        </View>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.categoriesContainer}
+        >
+          {Array.from({ length: 5 }).map((_, index) => (
+            <SkeletonPlaceholder key={index}>
+              <SkeletonPlaceholder.Item
+                width={120}
+                height={180}
+                borderRadius={16}
+                marginRight={12}
+              />
+            </SkeletonPlaceholder>
+          ))}
+        </ScrollView>
+      </View>
+    );
+  }
+
+  // Normal content
   return (
     <View style={styles.section}>
       <View style={styles.sectionHeader}>
@@ -22,21 +46,14 @@ const CategoriesSection: React.FC<CategoriesSectionProps> = ({ categories }) => 
           <Text style={styles.seeAllText}>Voir tout</Text>
         </TouchableOpacity>
       </View>
-      
+
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.categoriesContainer}
       >
         {categories.map((item) => (
-          <TouchableOpacity 
-            key={item.id} 
-            style={[styles.categoryCard, { backgroundColor: item.color }]}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.categoryIcon}>{item.icon}</Text>
-            <Text style={styles.categoryName}>{item.name}</Text>
-          </TouchableOpacity>
+          <CategoryCard key={item.id} category={item} />
         ))}
       </ScrollView>
     </View>
@@ -47,48 +64,26 @@ const styles = StyleSheet.create({
   section: { 
     marginTop: 24,
   },
-  
   sectionHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 16,
+    paddingHorizontal: 8,
   },
-  
   sectionTitle: { 
     fontSize: 20, 
     fontWeight: "700", 
     color: "#2C3E50" 
   },
-  
   seeAllText: {
     fontSize: 14,
     fontWeight: "600",
     color: "#4CAF50",
   },
-
   categoriesContainer: {
+    paddingLeft: 8,
     paddingRight: 16,
-    gap: 12,
-  },
-  
-  categoryCard: { 
-    alignItems: "center", 
-    padding: 16, 
-    borderRadius: 16,
-    minWidth: 80,
-  },
-  
-  categoryIcon: {
-    fontSize: 24,
-    marginBottom: 8,
-  },
-  
-  categoryName: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: "#2C3E50",
-    textAlign: "center",
   },
 });
 

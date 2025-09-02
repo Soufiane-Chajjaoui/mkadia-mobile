@@ -5,8 +5,9 @@ import Header from "./components/Header";
 import OffersSlider from "./components/OffersSlider";
 import ProductsSection from "./components/ProductsSection";
 import SearchBar from "./components/SearchBar";
-import { getProducts$ } from "../../apis/HomeScreenApi";
+import { getCategories$, getProducts$ } from "../../apis/HomeScreenApi";
 import { ProductCard } from "../../models/ProductCard";
+import { CategoryCard } from "../../models/CategoryCard";
 
 
 export default function HomeScreen() {
@@ -14,9 +15,19 @@ export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState("");
   const [cartCount, setCartCount] = useState(3);
   const [products, setProducts] = useState([] as ProductCard[]);
-
-  useEffect(() => {
-    const subscription = getProducts$().subscribe({
+  const [categories, setCategories] = useState([] as CategoryCard[]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => { 
+    const categoriesSubscription = getCategories$().subscribe({
+      next: (data : CategoryCard[]) => {
+        setLoading(false);
+        setCategories(data);
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
+    const productsSubscription = getProducts$().subscribe({
       next: (data : ProductCard[]) => {
         setProducts(data);
       },
@@ -24,7 +35,10 @@ export default function HomeScreen() {
         console.error(err);
       },
     });
-    return () => subscription.unsubscribe();
+    return () => {
+      productsSubscription.unsubscribe()
+      categoriesSubscription.unsubscribe()
+    };
   }, []);
 
 
@@ -50,15 +64,6 @@ export default function HomeScreen() {
     },
   ];
 
-  const categories = [
-    { id: "1", name: "Fruits", icon: "🍎", color: "#FFE0B2" },
-    { id: "2", name: "Légumes", icon: "🥦", color: "#C8E6C9" },
-    { id: "3", name: "Boissons", icon: "🥤", color: "#BBDEFB" },
-    { id: "4", name: "Snacks", icon: "🍪", color: "#F8BBD9" },
-    { id: "5", name: "Viande", icon: "🥩", color: "#FFCDD2" },
-    { id: "6", name: "Poisson", icon: "🐟", color: "#B3E5FC" },
-  ];
-
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <Header 
@@ -74,7 +79,7 @@ export default function HomeScreen() {
       
       <OffersSlider offers={offers} />
       
-      <CategoriesSection categories={categories} />
+      <CategoriesSection categories={categories} loading={loading} />
       
       <ProductsSection 
         products={products} 

@@ -1,32 +1,63 @@
 import React from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { View, Text, ImageBackground, StyleSheet, TouchableOpacity } from "react-native";
+import { CategoryCard as CategoryCardModel } from "../models/CategoryCard";
+import { replaceBaseUrl } from "../utils/urlHelper";
 
 interface Props {
-  name: string;
-  icon: string;
+  category: CategoryCardModel;
 }
 
-const screenWidth = Dimensions.get("window").width;
-
-export default function CategoryCard({ name, icon }: Props) {
-  // Largeur dynamique : prend ~1/4 de l’écran moins le margin
-  const cardWidth = (screenWidth - 60) / 3; // 15 px padding gauche + droite + 10 px margin entre cartes
-
+const CategoryCard: React.FC<Props> = ({ category }) => {
   return (
-    <View style={[styles.card, { width: cardWidth }]}>
-      <Text style={{ fontSize: 28 }}>{icon}</Text>
-      <Text style={{ marginTop: 5, textAlign: "center" }}>{name}</Text>
-    </View>
+    <TouchableOpacity style={styles.card} activeOpacity={0.8}>
+      <ImageBackground
+        source={{ uri: replaceBaseUrl(category.url) }}
+        style={styles.image}
+        imageStyle={styles.imageBorder}
+      >
+        {/* Overlay sombre */}
+        <View style={styles.overlay} />
+
+        {/* Texte par-dessus */}
+        <View style={styles.textContainer}>
+          <Text style={styles.title}>{category.name}</Text>
+        </View>
+      </ImageBackground>
+    </TouchableOpacity>
   );
-}
+};
 
 const styles = StyleSheet.create({
   card: {
-    alignItems: "center",
-    backgroundColor: "#F1F8E9",
-    padding: 15,
-    marginRight: 10,
-    borderRadius: 10,
-    justifyContent: "center",
+    width: 120,
+    height: 120,
+    borderRadius: 15,
+    overflow: "hidden",
+    marginRight: 12,
+  },
+  image: {
+    flex: 1,
+    justifyContent: "flex-end",
+  },
+  imageBorder: {
+    borderRadius: 15,
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.25)",
+  },
+  textContainer: {
+    padding: 6,
+  },
+  title: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#fff",
+    textAlign: "center",
+    textShadowColor: "rgba(0,0,0,0.7)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
   },
 });
+
+export default CategoryCard;
