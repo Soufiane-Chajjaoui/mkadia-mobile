@@ -1,27 +1,18 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from "react-native";
-import { Plus, Heart, Star, Check, ShoppingBasket } from "lucide-react-native";
+import { Heart, Star, Check, ShoppingBasket } from "lucide-react-native";
+import { ProductCard as ProductCardModel} from "../models/ProductCard";
+import { replaceBaseUrl } from "../utils/urlHelper";
 
 const screenWidth = Dimensions.get("window").width;
+let name : string = '';
 
-interface ProductCardProps {
-  name: string;
-  price: string;
-  unit?: string;
-  img: string;
-  discount?: string;
-}
 
-export default function ProductCard({ name, price, unit, img, discount }: ProductCardProps) {
+export default function ProductCard(product: ProductCardModel) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isAddedToCart, setIsAddedToCart] = useState(false);
-
   const handleAddToCart = () => {
     setIsAddedToCart(true);
-    // Ici tu peux ajouter la logique pour ajouter au panier
-    // Par exemple: addToCart({ name, price, unit, img })
-    
-    // Remettre à l'état initial après 1.5 secondes
     setTimeout(() => {
       setIsAddedToCart(false);
     }, 1500);
@@ -34,15 +25,15 @@ export default function ProductCard({ name, price, unit, img, discount }: Produc
   return (
     <View style={styles.card}>
       {/* Discount Badge */}
-      {discount && (
+      {product.discount && (
         <View style={styles.discountBadge}>
-          <Text style={styles.discountText}>-{discount}</Text>
+          <Text style={styles.discountText}>-{product.discount}</Text>
         </View>
       )}
 
       {/* Favorite Heart */}
       <TouchableOpacity 
-        style={styles.heartBtn} 
+        style={styles.heartBtn}
         onPress={toggleFavorite}
         activeOpacity={0.7}
       >
@@ -55,7 +46,7 @@ export default function ProductCard({ name, price, unit, img, discount }: Produc
 
       {/* Product Image */}
       <View style={styles.imageContainer}>
-        <Image source={{ uri: img }} style={styles.image} />
+        <Image source={{ uri: replaceBaseUrl("http://localhost:9000/mkadia-objects/885d07f7-19c2-45d7-9f07-0d983c131e59_carrot.jpg")}} onError={(e)=> console.log(e.nativeEvent.error)} style={styles.image} />
       </View>
 
       {/* Product Info */}
@@ -69,14 +60,14 @@ export default function ProductCard({ name, price, unit, img, discount }: Produc
 
         {/* Product Name */}
         <Text style={styles.productName} numberOfLines={2}>
-          {name}
+          {product.name} + {name}
         </Text>
 
         {/* Price and Add Button in the same row */}
         <View style={styles.bottomRow}>
           <View style={styles.priceContainer}>
-            <Text style={styles.price}>{price}</Text>
-            {unit && <Text style={styles.unit}>/{unit}</Text>}
+            <Text style={styles.price}>{product.price}</Text>
+            {product.unit && <Text style={styles.unit}>/{product.unit}</Text>}
           </View>
           
           <TouchableOpacity 

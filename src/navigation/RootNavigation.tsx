@@ -38,7 +38,7 @@ export default function RootNavigator() {
         name="Home"
         children={() => (
           <SafeAreaWrapper>
-            <HomeScreen />
+            <HomeScreen/>
           </SafeAreaWrapper>
         )}
       />

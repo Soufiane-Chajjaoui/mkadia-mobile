@@ -1,22 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
 import CategoriesSection from "./components/CategoriesSection";
 import Header from "./components/Header";
 import OffersSlider from "./components/OffersSlider";
 import ProductsSection from "./components/ProductsSection";
 import SearchBar from "./components/SearchBar";
+import { getProducts$ } from "../../apis/HomeScreenApi";
+import { ProductCard } from "../../models/ProductCard";
+
 
 export default function HomeScreen() {
   const [hasNotification, setHasNotification] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [cartCount, setCartCount] = useState(3);
+  const [products, setProducts] = useState([] as ProductCard[]);
+
+  useEffect(() => {
+    const subscription = getProducts$().subscribe({
+      next: (data : ProductCard[]) => {
+        setProducts(data);
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+
 
   const offers = [
     { 
       id: "1", 
       img: "https://picsum.photos/seed/apple/200",
       title: "Livraison Gratuite",
-      subtitle: "Commande min 150 MAD"
+      subtitle: `Commande min MAD`
     },
     { 
       id: "2", 
@@ -39,15 +57,6 @@ export default function HomeScreen() {
     { id: "4", name: "Snacks", icon: "🍪", color: "#F8BBD9" },
     { id: "5", name: "Viande", icon: "🥩", color: "#FFCDD2" },
     { id: "6", name: "Poisson", icon: "🐟", color: "#B3E5FC" },
-  ];
-
-  const products = [
-    { id: "1", name: "Pommes Rouges Bio", price: "20 MAD", unit: "kg", img: "https://picsum.photos/seed/apple/200", discount: "10%" },
-    { id: "2", name: "Carottes Fraîches", price: "15 MAD", unit: "kg", img: "https://picsum.photos/seed/carrot/200" },
-    { id: "3", name: "Jus d'Orange 100%", price: "12 MAD", unit: "btl", img: "https://picsum.photos/seed/juice/200", discount: "5%" },
-    { id: "5", name: "Bananes Premium", price: "18 MAD", unit: "kg", img: "https://picsum.photos/seed/banana/200", discount: "15%" },
-    { id: "4", name: "Chips Nature", price: "8 MAD", unit: "pkt", img: "https://picsum.photos/seed/chips/200" },
-    { id: "6", name: "Tomates Cerises", price: "25 MAD", unit: "kg", img: "https://picsum.photos/seed/tomato/200" },
   ];
 
   return (

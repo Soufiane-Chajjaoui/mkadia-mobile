@@ -1,24 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import ProductCard from '../../../components/ProductCard';
+import { ProductCard as ProductCardModel} from '../../../models/ProductCard';
 
-interface Product {
-  id: string;
-  name: string;
-  price: string;
-  unit?: string;
-  img: string;
-  discount?: string;
-}
+
 
 interface ProductsSectionProps {
-  products: Product[];
+  products: ProductCardModel[];
   title: string;
 }
 
 const ProductsSection: React.FC<ProductsSectionProps> = ({ products, title }) => {
   // Fonction pour organiser les produits en rangées de 2
-  const organizeProductsInRows = (products: Product[]) => {
+  const organizeProductsInRows = (products: ProductCardModel[]) => {
     const rows = [];
     for (let i = 0; i < products.length; i += 2) {
       rows.push(products.slice(i, i + 2));
@@ -45,7 +39,6 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({ products, title }) =>
                 <ProductCard {...product} />
               </View>
             ))}
-            {/* Si la rangée n'a qu'un produit, ajouter un espace vide */}
             {row.length === 1 && <View style={styles.productWrapper} />}
           </View>
         ))}
