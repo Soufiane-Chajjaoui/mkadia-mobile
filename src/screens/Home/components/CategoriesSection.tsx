@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { ScrollView, View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { CategoryCard as CategoryCardModel } from "../../../models/CategoryCard";
@@ -6,7 +6,7 @@ import CategoryCard from "../../../components/CategoryCard";
 
 interface CategoriesSectionProps {
   categories: CategoryCardModel[];
-  loading?: boolean; // nouveau prop pour indiquer le chargement
+  loading?: boolean; 
 }
 
 const CategoriesSection: React.FC<CategoriesSectionProps> = ({ categories, loading = false }) => {
@@ -23,12 +23,12 @@ const CategoriesSection: React.FC<CategoriesSectionProps> = ({ categories, loadi
           contentContainerStyle={styles.categoriesContainer}
         >
           {Array.from({ length: 5 }).map((_, index) => (
-            <SkeletonPlaceholder key={index}>
-              <SkeletonPlaceholder.Item
-                width={120}
-                height={180}
-                borderRadius={16}
-                marginRight={12}
+            <SkeletonPlaceholder key={index} borderRadius={16}>
+              <SkeletonPlaceholder.Item 
+                width={120} 
+                height={120} 
+                borderRadius={16} 
+                marginRight={12} 
               />
             </SkeletonPlaceholder>
           ))}

@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 12,
     position: "relative",
+    elevation: 1
   },
 
   discountBadge: {

@@ -6,7 +6,7 @@ import { environment } from "../config/environment";
 import { CategoryCard } from "../models/CategoryCard";
 
 export const getProducts$ = () : Observable<ProductCard[]> => {
-  return from(axios.get(`${environment.apiBaseUrl}/public/products/best-seller`)).pipe(
+  return from(axios.get(`${environment.apiBaseUrl}/public/products/top-products`)).pipe(
     map((response) => response.data), // extraire uniquement les données
     catchError((error) => {
       throw new Error(error);

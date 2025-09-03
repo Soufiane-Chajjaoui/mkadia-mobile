@@ -5,7 +5,7 @@ import Header from "./components/Header";
 import OffersSlider from "./components/OffersSlider";
 import ProductsSection from "./components/ProductsSection";
 import SearchBar from "./components/SearchBar";
-import { getCategories$, getProducts$ } from "../../apis/HomeScreenApi";
+import { getCategories$, getProducts$ } from "../../apis/PublicAPI";
 import { ProductCard } from "../../models/ProductCard";
 import { CategoryCard } from "../../models/CategoryCard";
 
@@ -16,11 +16,13 @@ export default function HomeScreen() {
   const [cartCount, setCartCount] = useState(3);
   const [products, setProducts] = useState([] as ProductCard[]);
   const [categories, setCategories] = useState([] as CategoryCard[]);
-  const [loading, setLoading] = useState(true);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+  const [productsLoading, setProductsLoading] = useState(true);
+
   useEffect(() => { 
     const categoriesSubscription = getCategories$().subscribe({
       next: (data : CategoryCard[]) => {
-        setLoading(false);
+        setCategoriesLoading(false);
         setCategories(data);
       },
       error: (err) => {
@@ -29,6 +31,7 @@ export default function HomeScreen() {
     });
     const productsSubscription = getProducts$().subscribe({
       next: (data : ProductCard[]) => {
+        setProductsLoading(false);
         setProducts(data);
       },
       error: (err) => {
@@ -79,11 +82,10 @@ export default function HomeScreen() {
       
       <OffersSlider offers={offers} />
       
-      <CategoriesSection categories={categories} loading={loading} />
+      <CategoriesSection categories={categories} loading={categoriesLoading} />
       
       <ProductsSection 
-        products={products} 
-        title="Meilleurs Produits" 
+        products={products} loading={productsLoading}
       />
       
       {/* Espace pour le bottom tab */}
