@@ -13,3 +13,6 @@
 /media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/arm64-v8a/rnscreens_autolinked_build/CMakeFiles/react_codegen_rnscreens.dir
 /media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/arm64-v8a/rnscreens_autolinked_build/CMakeFiles/edit_cache.dir
 /media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/arm64-v8a/rnscreens_autolinked_build/CMakeFiles/rebuild_cache.dir
+/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/arm64-v8a/rnsvg_autolinked_build/CMakeFiles/react_codegen_rnsvg.dir
+/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/arm64-v8a/rnsvg_autolinked_build/CMakeFiles/edit_cache.dir
+/media/soufian-ch/P1/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/3d611z38/arm64-v8a/rnsvg_autolinked_build/CMakeFiles/rebuild_cache.dir
