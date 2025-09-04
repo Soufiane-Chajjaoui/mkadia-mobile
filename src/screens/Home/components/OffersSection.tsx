@@ -18,7 +18,6 @@ const OffersSlider: React.FC<OffersSliderProps> = ({ offers }) => {
       horizontal
       showsHorizontalScrollIndicator={false}
       pagingEnabled
-      style={styles.offersContainer}
       contentContainerStyle={styles.offersContent}
     >
       {offers.map((item) => (
@@ -35,16 +34,12 @@ const OffersSlider: React.FC<OffersSliderProps> = ({ offers }) => {
 };
 
 const styles = StyleSheet.create({
-  offersContainer: {
-    marginBottom: 8,
-  },
-  
   offersContent: {
     paddingRight: 16,
   },
   
   offerCard: {
-    marginRight: 16,
+    marginRight: 8,
     borderRadius: 16,
     overflow: "hidden",
   },

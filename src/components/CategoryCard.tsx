@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 15,
     overflow: "hidden",
-    marginRight: 12,
+    marginRight: 8,
     elevation: 1
   },
   image: {

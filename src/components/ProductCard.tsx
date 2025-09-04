@@ -1,16 +1,20 @@
+
+// ProductCard.tsx - Version corrigée
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Heart, Star, Check, ShoppingBasket } from "lucide-react-native";
 import { ProductCard as ProductCardModel} from "../models/ProductCard";
 import { replaceBaseUrl } from "../utils/urlHelper";
 
-const screenWidth = Dimensions.get("window").width;
-let name : string = '';
+interface ProductCardProps extends ProductCardModel {
+  cardWidth?: number; // Largeur passée depuis le parent
+}
 
-
-export default function ProductCard(product: ProductCardModel) {
+export default function ProductCard(props: ProductCardProps) {
+  const { cardWidth, ...product } = props;
   const [isFavorite, setIsFavorite] = useState(false);
   const [isAddedToCart, setIsAddedToCart] = useState(false);
+  
   const handleAddToCart = () => {
     setIsAddedToCart(true);
     setTimeout(() => {
@@ -22,8 +26,20 @@ export default function ProductCard(product: ProductCardModel) {
     setIsFavorite(prev => !prev);
   };
 
+  const dynamicStyles = StyleSheet.create({
+    card: {
+      width: cardWidth || "100%", // Utilise la largeur passée en props
+      backgroundColor: "#FFFFFF",
+      borderRadius: 12,
+      padding: 12,
+      position: "relative",
+      elevation: 1,
+      // SUPPRESSION des marges - gérées par le parent
+    },
+  });
+
   return (
-    <View style={styles.card}>
+    <View style={dynamicStyles.card}>
       {/* Discount Badge */}
       {product.discount && (
         <View style={styles.discountBadge}>
@@ -46,7 +62,11 @@ export default function ProductCard(product: ProductCardModel) {
 
       {/* Product Image */}
       <View style={styles.imageContainer}>
-        <Image source={{ uri: replaceBaseUrl("http://localhost:9000/mkadia-objects/885d07f7-19c2-45d7-9f07-0d983c131e59_carrot.jpg")}} onError={(e)=> console.log(e.nativeEvent.error)} style={styles.image} />
+        <Image 
+          source={{ uri: replaceBaseUrl("http://localhost:9000/mkadia-objects/885d07f7-19c2-45d7-9f07-0d983c131e59_carrot.jpg")}} 
+          onError={(e)=> console.log(e.nativeEvent.error)} 
+          style={styles.image} 
+        />
       </View>
 
       {/* Product Info */}
@@ -60,7 +80,7 @@ export default function ProductCard(product: ProductCardModel) {
 
         {/* Product Name */}
         <Text style={styles.productName} numberOfLines={2}>
-          {product.name} + {name}
+          {product.name}
         </Text>
 
         {/* Price and Add Button in the same row */}
@@ -92,15 +112,6 @@ export default function ProductCard(product: ProductCardModel) {
 }
 
 const styles = StyleSheet.create({
-  card: {
-    width: '100%',
-    backgroundColor: "#FFFFFF",
-    borderRadius: 12,
-    padding: 12,
-    position: "relative",
-    elevation: 1
-  },
-
   discountBadge: {
     position: "absolute",
     top: 8,

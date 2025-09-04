@@ -1,104 +1,187 @@
-import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, useWindowDimensions } from "react-native";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+
 import ProductCard from "../../../components/ProductCard";
 import { ProductCard as ProductCardModel } from "../../../models/ProductCard";
+import { getProductsPaginated$ } from "../../../apis/PublicAPI";
+import { PaginatedProductResponse } from "../../../models/PaginatedProductResponse";
 
 interface ProductsSectionProps {
-  products: ProductCardModel[];
-  loading?: boolean;
+  title?: string;
 }
 
-const ProductsSection: React.FC<ProductsSectionProps> = ({ products, loading = false }) => {
-  const organizeProductsInRows = (items: ProductCardModel[]) => {
-    const rows = [];
-    for (let i = 0; i < items.length; i += 2) {
-      rows.push(items.slice(i, i + 2));
-    }
-    return rows;
+const ProductsSection: React.FC<ProductsSectionProps> = ({ title = "Meilleurs Produits" }) => {
+  const [products, setProducts] = useState<ProductCardModel[]>([]);
+  const [productsLoading, setProductsLoading] = useState(true);
+
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMoreProducts, setHasMoreProducts] = useState(true);
+  const [currentPage, setCurrentPage] = useState(0);
+
+  // --- Responsive config ---
+  const screenData = useWindowDimensions();
+  const responsiveConfig = {
+    numColumns: 2,
+    horizontalPadding: 8,
+    cardSpacing: 12,
   };
 
-  if (loading) {
-    // Skeleton loader (2 colonnes × 2 rangées simulées)
+  // --- Calcul largeur d'une carte produit ---
+  const cardWidth = useMemo(() => {
+    const { numColumns, horizontalPadding, cardSpacing } = responsiveConfig;
+    const availableWidth = screenData.width - horizontalPadding * 2;
+    return (availableWidth - cardSpacing * (numColumns - 1)) / numColumns;
+  }, [screenData.width]);
+
+  // --- Charger les produits initiaux ---
+  useEffect(() => {
+    setProductsLoading(true);
+    const sub = getProductsPaginated$(0, 10, 10).subscribe({
+      next: (data: PaginatedProductResponse) => {
+        setProductsLoading(false);
+        setProducts(data.elements ?? []);
+        setHasMoreProducts(data.hasMore ?? false);
+        setCurrentPage(data.currentPage);
+      },
+      error: (err) => {
+        console.error(err);
+        setProductsLoading(false);
+      },
+    });
+
+    return () => sub.unsubscribe();
+  }, []);
+
+  // --- Charger plus de produits ---
+  const loadMoreProducts = useCallback(() => {
+    if (loadingMore || !hasMoreProducts) return;
+
+    setLoadingMore(true);
+    const nextPage = currentPage + 1;
+
+    const sub = getProductsPaginated$(nextPage, 10, 10).subscribe({
+      next: (data: PaginatedProductResponse) => {
+        setLoadingMore(false);
+        setProducts((prev) => [...prev, ...data.elements]);
+        setHasMoreProducts(data.hasMore ?? false);
+        setCurrentPage(data.currentPage);
+      },
+      error: (err) => {
+        console.error(err);
+        setLoadingMore(false);
+      },
+    });
+
+    return () => sub.unsubscribe();
+  }, [loadingMore, hasMoreProducts, currentPage]);
+
+  // --- Footer avec Skeleton ---
+  const renderFooter = () => {
+    if (!loadingMore) return null;
+
+    return (
+      <View style={styles.footerLoader}>
+        <SkeletonPlaceholder borderRadius={12}>
+          <View style={styles.skeletonRow}>
+            <View style={styles.skeletonCard} />
+            <View style={styles.skeletonCard} />
+          </View>
+        </SkeletonPlaceholder>
+      </View>
+    );
+  };
+
+  // --- Affichage Skeleton au chargement ---
+  if (productsLoading) {
     return (
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Meilleurs Produits</Text>
+          <Text style={styles.sectionTitle}>{title}</Text>
+          <TouchableOpacity activeOpacity={0.7}>
+            <Text style={styles.seeAllText}>Voir tout</Text>
+          </TouchableOpacity>
         </View>
-        <View style={styles.productsContainer}>
-          {Array.from({ length: 2 }).map((_, rowIndex) => (
-            <View key={rowIndex} style={styles.productRow}>
-              {Array.from({ length: 2 }).map((__, colIndex) => (
-                <SkeletonPlaceholder key={colIndex} borderRadius={12}>
-                  <SkeletonPlaceholder.Item
-                    width={165}
-                    height={180}
-                    borderRadius={12}
-                    marginRight={colIndex === 0 ? 12 : 0}
-                  />
-                </SkeletonPlaceholder>
-              ))}
-            </View>
-          ))}
-        </View>
+        <SkeletonPlaceholder borderRadius={12}>
+          <View style={styles.skeletonRow}>
+            <View style={styles.skeletonCard} />
+            <View style={styles.skeletonCard} />
+          </View>
+          <View style={styles.skeletonRow}>
+            <View style={styles.skeletonCard} />
+            <View style={styles.skeletonCard} />
+          </View>
+        </SkeletonPlaceholder>
       </View>
     );
   }
 
-  const productRows = organizeProductsInRows(products);
-
+  // --- Render principal ---
   return (
     <View style={styles.section}>
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Meilleurs Produits</Text>
+        <Text style={styles.sectionTitle}>{title}</Text>
         <TouchableOpacity activeOpacity={0.7}>
           <Text style={styles.seeAllText}>Voir tout</Text>
         </TouchableOpacity>
       </View>
 
-      <View style={styles.productsContainer}>
-        {productRows.map((row, rowIndex) => (
-          <View key={rowIndex} style={styles.productRow}>
-            {row.map((product) => (
-              <View key={product.id} style={styles.productWrapper}>
-                <ProductCard {...product} />
-              </View>
-            ))}
-            {row.length === 1 && <View style={styles.productWrapper} />}
+      <FlatList
+        data={products}
+        keyExtractor={(item) => item.id.toString()}
+        numColumns={responsiveConfig.numColumns}
+        columnWrapperStyle={{ justifyContent: "space-between" }}
+        contentContainerStyle={{ paddingHorizontal: responsiveConfig.horizontalPadding }}
+        renderItem={({ item }) => (
+          <View style={{ width: cardWidth, marginBottom: responsiveConfig.cardSpacing }}>
+            <ProductCard {...item} cardWidth={cardWidth} />
           </View>
-        ))}
-      </View>
+        )}
+        onEndReached={loadMoreProducts}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={renderFooter}
+        showsVerticalScrollIndicator={false}
+      />
     </View>
   );
 };
 
+// --- Styles ---
 const styles = StyleSheet.create({
-  section: { marginTop: 24 },
+  section: {
+    marginTop: 0,
+  },
   sectionHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 16,
-    paddingHorizontal: 8,
+    marginBottom: 8,
   },
-  sectionTitle: { 
-    fontSize: 20, 
-    fontWeight: "700", 
-    color: "#2C3E50" 
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#2C3E50",
   },
   seeAllText: {
     fontSize: 14,
     fontWeight: "600",
     color: "#4CAF50",
   },
-  productsContainer: { paddingBottom: 20 },
-  productRow: {
+  footerLoader: {
+    paddingVertical: 16,
+  },
+  skeletonRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    gap: 5,
     marginBottom: 16,
+    paddingRight: 8,
   },
-  productWrapper: { flex: 1 },
+  skeletonCard: {
+    flex: 1,
+    height: 200,
+    borderRadius: 12,
+    marginHorizontal: 4,
+  },
 });
 
 export default ProductsSection;

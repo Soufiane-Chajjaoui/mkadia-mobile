@@ -62,16 +62,15 @@ const CategoriesSection: React.FC<CategoriesSectionProps> = ({ categories, loadi
 
 const styles = StyleSheet.create({
   section: { 
-    marginTop: 24,
+    marginTop: 0,
   },
   sectionHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 16,
-    paddingHorizontal: 8,
+    marginBottom: 8,
   },
-  sectionTitle: { 
+  sectionTitle: {
     fontSize: 20, 
     fontWeight: "700", 
     color: "#2C3E50" 
@@ -82,8 +81,8 @@ const styles = StyleSheet.create({
     color: "#4CAF50",
   },
   categoriesContainer: {
-    paddingLeft: 8,
-    paddingRight: 16,
+    paddingLeft: 0,
+    paddingRight: 0,
   },
 });
 
