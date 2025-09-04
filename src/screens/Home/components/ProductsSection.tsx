@@ -1,25 +1,32 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, useWindowDimensions } from "react-native";
+import React, { useMemo } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  useWindowDimensions,
+} from "react-native";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 import ProductCard from "../../../components/ProductCard";
 import { ProductCard as ProductCardModel } from "../../../models/ProductCard";
-import { getProductsPaginated$ } from "../../../apis/PublicAPI";
-import { PaginatedProductResponse } from "../../../models/PaginatedProductResponse";
 
 interface ProductsSectionProps {
   title?: string;
+  products: ProductCardModel[];
+  productsLoading: boolean;
+  loadingMore: boolean;
+  loadMoreProducts: () => void;
 }
 
-const ProductsSection: React.FC<ProductsSectionProps> = ({ title = "Meilleurs Produits" }) => {
-  const [products, setProducts] = useState<ProductCardModel[]>([]);
-  const [productsLoading, setProductsLoading] = useState(true);
-
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [hasMoreProducts, setHasMoreProducts] = useState(true);
-  const [currentPage, setCurrentPage] = useState(0);
-
-  // --- Responsive config ---
+const ProductsSection: React.FC<ProductsSectionProps> = ({
+  title,
+  products,
+  productsLoading,
+  loadingMore,
+  loadMoreProducts,
+}) => {
   const screenData = useWindowDimensions();
   const responsiveConfig = {
     numColumns: 2,
@@ -27,59 +34,14 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({ title = "Meilleurs Pr
     cardSpacing: 12,
   };
 
-  // --- Calcul largeur d'une carte produit ---
   const cardWidth = useMemo(() => {
     const { numColumns, horizontalPadding, cardSpacing } = responsiveConfig;
     const availableWidth = screenData.width - horizontalPadding * 2;
     return (availableWidth - cardSpacing * (numColumns - 1)) / numColumns;
   }, [screenData.width]);
 
-  // --- Charger les produits initiaux ---
-  useEffect(() => {
-    setProductsLoading(true);
-    const sub = getProductsPaginated$(0, 10, 10).subscribe({
-      next: (data: PaginatedProductResponse) => {
-        setProductsLoading(false);
-        setProducts(data.elements ?? []);
-        setHasMoreProducts(data.hasMore ?? false);
-        setCurrentPage(data.currentPage);
-      },
-      error: (err) => {
-        console.error(err);
-        setProductsLoading(false);
-      },
-    });
-
-    return () => sub.unsubscribe();
-  }, []);
-
-  // --- Charger plus de produits ---
-  const loadMoreProducts = useCallback(() => {
-    if (loadingMore || !hasMoreProducts) return;
-
-    setLoadingMore(true);
-    const nextPage = currentPage + 1;
-
-    const sub = getProductsPaginated$(nextPage, 10, 10).subscribe({
-      next: (data: PaginatedProductResponse) => {
-        setLoadingMore(false);
-        setProducts((prev) => [...prev, ...data.elements]);
-        setHasMoreProducts(data.hasMore ?? false);
-        setCurrentPage(data.currentPage);
-      },
-      error: (err) => {
-        console.error(err);
-        setLoadingMore(false);
-      },
-    });
-
-    return () => sub.unsubscribe();
-  }, [loadingMore, hasMoreProducts, currentPage]);
-
-  // --- Footer avec Skeleton ---
   const renderFooter = () => {
     if (!loadingMore) return null;
-
     return (
       <View style={styles.footerLoader}>
         <SkeletonPlaceholder borderRadius={12}>
@@ -92,7 +54,6 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({ title = "Meilleurs Pr
     );
   };
 
-  // --- Affichage Skeleton au chargement ---
   if (productsLoading) {
     return (
       <View style={styles.section}>
@@ -116,7 +77,6 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({ title = "Meilleurs Pr
     );
   }
 
-  // --- Render principal ---
   return (
     <View style={styles.section}>
       <View style={styles.sectionHeader}>
@@ -146,7 +106,6 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({ title = "Meilleurs Pr
   );
 };
 
-// --- Styles ---
 const styles = StyleSheet.create({
   section: {
     marginTop: 0,

@@ -34,7 +34,6 @@ export default function ProductCard(props: ProductCardProps) {
       padding: 12,
       position: "relative",
       elevation: 1,
-      // SUPPRESSION des marges - gérées par le parent
     },
   });
 

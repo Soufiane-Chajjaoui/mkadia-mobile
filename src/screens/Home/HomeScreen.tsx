@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View, StyleSheet, Text, FlatList } from "react-native";
 import Header from "./components/Header";
 import OffersSlider from "./components/OffersSection";
@@ -6,7 +6,10 @@ import SearchBar from "./components/SearchBar";
 import CategoriesSection from "./components/CategoriesSection";
 import { getCategories$ } from "../../apis/PublicAPI";
 import { CategoryCard } from "../../models/CategoryCard";
-import ProductsSection from "./components/ProductsSection"; // ← Import
+import ProductsSection from "./components/ProductsSection";
+import { ProductCard as ProductCardModel } from "../../models/ProductCard";
+import { getProductsPaginated$ } from "../../apis/PublicAPI";
+import { PaginatedProductResponse } from "../../models/PaginatedProductResponse";
 
 export default function HomeScreen() {
   const [hasNotification, setHasNotification] = useState(true);
@@ -15,6 +18,12 @@ export default function HomeScreen() {
 
   const [categories, setCategories] = useState<CategoryCard[]>([]);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
+  const [products, setProducts] = useState<ProductCardModel[]>([]);
+  const [productsLoading, setProductsLoading] = useState(true);
+
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMoreProducts, setHasMoreProducts] = useState(true);
+  const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
     const categoriesSubscription = getCategories$().subscribe({
@@ -28,8 +37,48 @@ export default function HomeScreen() {
       },
     });
 
-    return () => categoriesSubscription.unsubscribe();
+    setProductsLoading(true);
+    const sub = getProductsPaginated$(0, 10, 10).subscribe({
+      next: (data: PaginatedProductResponse) => {
+        setProductsLoading(false);
+        setProducts(data.elements ?? []);
+        setHasMoreProducts(data.hasMore ?? false);
+        setCurrentPage(data.currentPage);
+      },
+      error: (err) => {
+        console.error(err);
+        setProductsLoading(false);
+      },
+    });
+
+    return () => {
+      sub.unsubscribe();
+      categoriesSubscription.unsubscribe();
+    };
   }, []);
+   // --- Charger plus ---
+  const loadMoreProducts = useCallback(() => {
+    if (loadingMore || !hasMoreProducts) return;
+
+    setLoadingMore(true);
+    const nextPage = currentPage + 1;
+
+    const sub = getProductsPaginated$(nextPage, 10, 10).subscribe({
+      next: (data: PaginatedProductResponse) => {
+        setLoadingMore(false);
+        setProducts((prev) => [...prev, ...data.elements]);
+        setHasMoreProducts(data.hasMore ?? false);
+        setCurrentPage(data.currentPage);
+      },
+      error: (err) => {
+        console.error(err);
+        setLoadingMore(false);
+      },
+    });
+
+    return () => sub.unsubscribe();
+  }, [loadingMore, hasMoreProducts, currentPage]);
+
 
   const offers = [
     { id: "1", img: "https://picsum.photos/seed/apple/200", title: "Livraison Gratuite", subtitle: "Commande min MAD" },
@@ -38,34 +87,41 @@ export default function HomeScreen() {
   ];
 
   return (
-    <FlatList
-      ListHeaderComponent={
-        <View style={styles.headerContainer}>
-          <Header cartCount={cartCount} hasNotification={hasNotification} location="Safi, Maroc" />
-          <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-          <OffersSlider offers={offers} />
-          <CategoriesSection categories={categories} loading={categoriesLoading} />
-          <ProductsSection /> {/* Affichage des produits */}
-        </View>
-      }
-      data={[]}
-      renderItem={null}
-      keyExtractor={() => ""}
-      contentContainerStyle={styles.container} // ← padding global
+    <View style={styles.container}>
+      <FlatList
+        ListHeaderComponent={
+          <View style={styles.headerContainer}>
+            <Header cartCount={cartCount} hasNotification={hasNotification} location="Safi, Maroc" />
+            <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+            <OffersSlider offers={offers} />
+            <CategoriesSection categories={categories} loading={categoriesLoading} />
+            <ProductsSection
+                    title="Meilleurs Produits"
+                    products={products}
+                    productsLoading={productsLoading}
+                    loadingMore={loadingMore}
+                    loadMoreProducts={loadMoreProducts}
+                  />
+            </View>
+        }
+        data={[]}
+        renderItem={null}
+        keyExtractor={() => ""}
     />
+    </View>
+
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#FAFAFA",
-    paddingHorizontal: 8, // padding gauche/droite
-    paddingTop: 10,        // padding en haut
-    paddingBottom: 30,     // padding en bas
+    flex: 1,
+    paddingHorizontal: 8
   },
   headerContainer: {
     flexDirection: 'column',
-    gap: 10,
+    gap: 15,
     alignContent: "space-between"
   }
 });
