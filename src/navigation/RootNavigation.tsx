@@ -6,7 +6,6 @@ import SafeAreaWrapper from "../components/SafeAreaWrapper";
 import HomeScreen from "../screens/Home/HomeScreen";
 import useFirstLaunch from "../hooks/useFirstLaunch";
 import OnboardingScreen from "../screens/Onboarding/OnboardingScreen";
-import SearchScreen from "../screens/Search/SearchScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -35,10 +34,6 @@ export default function RootNavigator() {
       <Stack.Screen
         name="Home"
         component={withSafeArea(HomeScreen)}
-      />
-      <Stack.Screen 
-        name="Search" 
-        component={withSafeArea(SearchScreen)} 
       />
 
     </Stack.Navigator>
