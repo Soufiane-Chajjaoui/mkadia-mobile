@@ -6,6 +6,7 @@ import SafeAreaWrapper from "../components/SafeAreaWrapper";
 import HomeScreen from "../screens/Home/HomeScreen";
 import useFirstLaunch from "../hooks/useFirstLaunch";
 import OnboardingScreen from "../screens/Onboarding/OnboardingScreen";
+import CategoryProductsScreen from "../screens/CategoryProducts/CategoryProductsScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -36,6 +37,10 @@ export default function RootNavigator() {
         component={withSafeArea(HomeScreen)}
       />
 
+      <Stack.Screen
+        name="CategoryProducts"
+        component={withSafeArea(CategoryProductsScreen)}
+      />
     </Stack.Navigator>
   );
 }

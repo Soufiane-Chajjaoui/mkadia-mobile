@@ -4,7 +4,7 @@ import { map, catchError } from "rxjs/operators";
 import { ProductCard } from "../models/ProductCard";
 import { environment } from "../config/environment";
 import { CategoryCard } from "../models/CategoryCard";
-import { PaginatedProductResponse } from "../models/PaginatedProductResponse";
+import { PaginatedResponse } from "../types/PaginatedResponse";
 
 // Interface pour la réponse paginée
 
@@ -18,7 +18,7 @@ export const getProducts$ = (): Observable<ProductCard[]> => {
 };
 
 // Nouvelle fonction pour la pagination
-export const getProductsPaginated$ = (page: number = 0, size: number = 10, stock : number = 10): Observable<PaginatedProductResponse> => {
+export const getProductsPaginated$ = (page: number = 0, size: number = 10, stock : number = 10): Observable<PaginatedResponse<ProductCard>> => {
   return from(
     axios.get(`${environment.apiBaseUrl}/public/top-products`, {
       params: { page, size, stock}
@@ -28,14 +28,12 @@ export const getProductsPaginated$ = (page: number = 0, size: number = 10, stock
       const data = response.data;
       
       // Adapter la réponse de votre backend
-      const adaptedResponse: PaginatedProductResponse = {
+      const adaptedResponse: PaginatedResponse<ProductCard> = {
         currentPage: data.currentPage,
         totalPages: data.totalPages,
         pageSize: data.pageSize,
         totalRecords: data.totalRecords,
         elements: data.elements,
-        // Propriétés calculées pour la compatibilité
-        products: data.elements,
         hasMore: data.currentPage < (data.totalPages - 1)
       };
       console.log(adaptedResponse)
@@ -51,6 +49,32 @@ export const getProductsPaginated$ = (page: number = 0, size: number = 10, stock
 export const getCategories$ = (): Observable<CategoryCard[]> => {
   return from(axios.get(`${environment.apiBaseUrl}/public/categories`)).pipe(
     map((response) => response.data),
+    catchError((error) => {
+      throw new Error(error);
+    })
+  );
+};
+
+export const getProductsPaginatedByCategory$ = (page: number = 0, size: number = 10, stock : number = 10, category: number): Observable<PaginatedResponse<ProductCard>> => {
+  return from(
+    axios.get(`${environment.apiBaseUrl}/public/products`, {
+      params: { page, size, stock, category}
+    })
+  ).pipe(
+    map((response) => {
+      const data = response.data;
+      // Adapter la réponse de votre backend
+      const adaptedResponse: PaginatedResponse<ProductCard> = {
+        currentPage: data.currentPage,
+        totalPages: data.totalPages,
+        pageSize: data.pageSize,
+        totalRecords: data.totalRecords,
+        elements: data.elements,
+        hasMore: data.currentPage < (data.totalPages - 1)
+      };
+      console.log(adaptedResponse)
+      return adaptedResponse;
+    }),
     catchError((error) => {
       throw new Error(error);
     })

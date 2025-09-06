@@ -1,44 +1,102 @@
-// SearchBar.tsx
-import React from 'react';
-import { View, TextInput, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
-import { Search, Sliders } from 'lucide-react-native';
+import React, { useState } from 'react';
+import { View, TextInput, StyleSheet, TouchableOpacity, Pressable, Animated } from 'react-native';
+import { Search, Sliders, X } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
+import { BorderRadius, Colors, Elevation, IconSize, Spacing, Typography } from '../../../constants/DesignSystem';
+
 
 interface SearchBarProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+  onFilterPress?: () => void;
+  onSearchPress?: () => void;
+  showClearButton?: boolean;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ searchQuery, setSearchQuery }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ 
+  searchQuery, 
+  setSearchQuery, 
+  onFilterPress,
+  onSearchPress,
+  showClearButton = true
+}) => {
   const navigation = useNavigation();
+  const [isFocused, setIsFocused] = useState(false);
 
-  const goToSearchScreen = () => {
-    navigation.navigate("Search" as never);
+  const handleSearchPress = () => {
+    if (onSearchPress) {
+      onSearchPress();
+    } else {
+      navigation.navigate("Search" as never);
+    }
+  };
+
+  const handleFilterPress = () => {
+    if (onFilterPress) {
+      onFilterPress();
+    } else {
+      navigation.navigate("Search" as never);
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery('');
+  };
+
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
   };
 
   return (
     <View style={styles.searchRow}>
       {/* Barre de recherche */}
-      <Pressable style={styles.searchBar} onPress={goToSearchScreen}>
-        <Search size={20} color="#999" />
+      <View style={[
+        styles.searchContainer,
+        isFocused && styles.searchContainerFocused
+      ]}>
+        <Search 
+          size={IconSize.MD} 
+          color={isFocused ? Colors.GREEN_BG : Colors.GRAY_TEXT} 
+        />
         <TextInput 
           placeholder="Que cherchez-vous aujourd'hui ?" 
           style={styles.searchInput}
           value={searchQuery}
           onChangeText={setSearchQuery}
-          placeholderTextColor="#999"
-          editable={false} 
-          pointerEvents="none"
+          placeholderTextColor={Colors.GRAY_TEXT}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          accessibilityLabel="Champ de recherche"
+          accessibilityRole="search"
         />
-      </Pressable>
+        {showClearButton && searchQuery.length > 0 && (
+          <TouchableOpacity 
+            onPress={handleClearSearch}
+            style={styles.clearButton}
+            accessibilityLabel="Effacer la recherche"
+            accessibilityRole="button"
+          >
+            <X size={IconSize.SM} color={Colors.GRAY_TEXT} />
+          </TouchableOpacity>
+        )}
+      </View>
 
       {/* Bouton filtres */}
       <TouchableOpacity 
-        style={styles.filterBtn} 
+        style={[
+          styles.filterBtn,
+          isFocused && styles.filterBtnFocused
+        ]} 
         activeOpacity={0.8}
-        onPress={goToSearchScreen}
+        onPress={handleFilterPress}
+        accessibilityLabel="Filtres de recherche"
+        accessibilityRole="button"
       >
-        <Sliders size={20} color="#fff" />
+        <Sliders size={IconSize.MD} color={Colors.WHITE_TEXT} />
       </TouchableOpacity>
     </View>
   );
@@ -48,41 +106,50 @@ const styles = StyleSheet.create({
   searchRow: { 
     flexDirection: "row", 
     alignItems: "center", 
-    marginBottom: 8,
-    gap: 12,
+    marginBottom: Spacing.SM,
+    gap: Spacing.MD,
   },
 
-  searchBar: { 
+  searchContainer: { 
     flex: 1, 
     flexDirection: "row", 
     alignItems: "center", 
-    backgroundColor: "#F8F9FA", // fond doux comme les boutons du header
-    borderRadius: 16, 
-    paddingHorizontal: 16,
-    paddingVertical: 4.2,
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 2,
+    backgroundColor: Colors.LIGHT_GRAY_BG,
+    borderRadius: BorderRadius.LG, 
+    paddingHorizontal: Spacing.MD,
+    paddingVertical: Spacing.SM,
+    borderWidth: 1,
+    borderColor: Colors.LIGHT_GRAY_BG,
+    ...Elevation.LOW,
+  },
+
+  searchContainerFocused: {
+    borderColor: Colors.GREEN_BG,
+    backgroundColor: Colors.WHITE,
   },
 
   searchInput: { 
     flex: 1,
-    marginLeft: 8,
-    fontSize: 14,
-    color: "#2C3E50",
+    marginLeft: Spacing.SM,
+    marginRight: Spacing.SM,
+    ...Typography.BODY,
+    color: Colors.DARK_BLUE_TEXT,
+    padding: Spacing.XS, // Important pour iOS
+  },
+
+  clearButton: {
+    padding: Spacing.XS,
   },
 
   filterBtn: { 
-    backgroundColor: "#4CAF50", 
-    padding: 13, 
-    borderRadius: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 6,
-    elevation: 3,
+    backgroundColor: Colors.GREEN_BG, 
+    padding: Spacing.MD, 
+    borderRadius: BorderRadius.LG,
+    ...Elevation.MEDIUM,
+  },
+
+  filterBtnFocused: {
+    backgroundColor: Colors.DARK_GREEN_BG,
   },
 });
 
