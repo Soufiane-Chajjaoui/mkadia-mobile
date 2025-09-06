@@ -3,13 +3,15 @@ import { View, Text, ImageBackground, StyleSheet, TouchableOpacity } from "react
 import { CategoryCard as CategoryCardModel } from "../models/CategoryCard";
 import { replaceBaseUrl } from "../utils/urlHelper";
 
-interface Props {
+interface CategoryCardProps {
   category: CategoryCardModel;
+  onPress?: () => void;
 }
 
-const CategoryCard: React.FC<Props> = ({ category }) => {
+
+const CategoryCard: React.FC<CategoryCardProps> = ({ category , onPress}) => {
   return (
-    <TouchableOpacity style={styles.card} activeOpacity={0.8}>
+    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8}>
       <ImageBackground
         source={{ uri: replaceBaseUrl(category.url) }}
         style={styles.image}

@@ -6,10 +6,10 @@ import SearchBar from "./components/SearchBar";
 import CategoriesSection from "./components/CategoriesSection";
 import { getCategories$ } from "../../apis/PublicAPI";
 import { CategoryCard } from "../../models/CategoryCard";
-import ProductsSection from "./components/ProductsSection";
+import ProductsSection from "../../components/ProductsSection";
 import { ProductCard as ProductCardModel } from "../../models/ProductCard";
 import { getProductsPaginated$ } from "../../apis/PublicAPI";
-import { PaginatedProductResponse } from "../../models/PaginatedProductResponse";
+import { PaginatedResponse } from "../../types/PaginatedResponse";
 
 export default function HomeScreen() {
   const [hasNotification, setHasNotification] = useState(true);
@@ -39,7 +39,7 @@ export default function HomeScreen() {
 
     setProductsLoading(true);
     const sub = getProductsPaginated$(0, 10, 10).subscribe({
-      next: (data: PaginatedProductResponse) => {
+      next: (data: PaginatedResponse<ProductCardModel>) => {
         setProductsLoading(false);
         setProducts(data.elements ?? []);
         setHasMoreProducts(data.hasMore ?? false);
@@ -64,7 +64,7 @@ export default function HomeScreen() {
     const nextPage = currentPage + 1;
 
     const sub = getProductsPaginated$(nextPage, 10, 10).subscribe({
-      next: (data: PaginatedProductResponse) => {
+      next: (data: PaginatedResponse<ProductCardModel>) => {
         setLoadingMore(false);
         setProducts((prev) => [...prev, ...data.elements]);
         setHasMoreProducts(data.hasMore ?? false);
@@ -100,9 +100,10 @@ export default function HomeScreen() {
                     products={products}
                     productsLoading={productsLoading}
                     loadingMore={loadingMore}
+                    showSeeAll={true}
                     loadMoreProducts={loadMoreProducts}
-                  />
-            </View>
+            />
+          </View>
         }
         data={[]}
         renderItem={null}

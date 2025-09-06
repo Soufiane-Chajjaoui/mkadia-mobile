@@ -1,39 +1,51 @@
-
-// ProductCard.tsx - Version corrigée
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Heart, Star, Check, ShoppingBasket } from "lucide-react-native";
 import { ProductCard as ProductCardModel} from "../models/ProductCard";
 import { replaceBaseUrl } from "../utils/urlHelper";
+import { 
+  Colors, 
+  Spacing, 
+  BorderRadius, 
+  Typography, 
+  IconSize,
+  Elevation 
+} from "../constants/DesignSystem";
 
 interface ProductCardProps extends ProductCardModel {
-  cardWidth?: number; // Largeur passée depuis le parent
+  cardWidth?: number;
+  onAddToCart?: () => void;
+  onToggleFavorite?: (isFavorite: boolean) => void;
 }
 
 export default function ProductCard(props: ProductCardProps) {
-  const { cardWidth, ...product } = props;
+  const { cardWidth, onAddToCart, onToggleFavorite, ...product } = props;
   const [isFavorite, setIsFavorite] = useState(false);
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   
   const handleAddToCart = () => {
     setIsAddedToCart(true);
+    onAddToCart?.();
+    
     setTimeout(() => {
       setIsAddedToCart(false);
     }, 1500);
   };
 
   const toggleFavorite = () => {
-    setIsFavorite(prev => !prev);
+    const newFavoriteState = !isFavorite;
+    setIsFavorite(newFavoriteState);
+    onToggleFavorite?.(newFavoriteState);
   };
 
   const dynamicStyles = StyleSheet.create({
     card: {
-      width: cardWidth || "100%", // Utilise la largeur passée en props
-      backgroundColor: "#FFFFFF",
-      borderRadius: 12,
-      padding: 12,
+      width: cardWidth || "100%",
+      backgroundColor: Colors.WHITE,
+      borderRadius: BorderRadius.MD,
+      padding: Spacing.MD,
       position: "relative",
-      elevation: 1,
+      ...Elevation.LOW,
     },
   });
 
@@ -42,7 +54,7 @@ export default function ProductCard(props: ProductCardProps) {
       {/* Discount Badge */}
       {product.discount && (
         <View style={styles.discountBadge}>
-          <Text style={styles.discountText}>-{product.discount}</Text>
+          <Text style={styles.discountText}>-{product.discount}%</Text>
         </View>
       )}
 
@@ -51,11 +63,14 @@ export default function ProductCard(props: ProductCardProps) {
         style={styles.heartBtn}
         onPress={toggleFavorite}
         activeOpacity={0.7}
+        accessibilityLabel={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+        accessibilityRole="button"
       >
         <Heart 
-          size={20} 
-          color={isFavorite ? "#E53935" : "#BDBDBD"} 
-          fill={isFavorite ? "#E53935" : "transparent"}
+          size={IconSize.MD} 
+          color={isFavorite ? Colors.RED_ICON : Colors.GRAY_ICON} 
+          fill={isFavorite ? Colors.RED_ICON : "transparent"}
+          accessibilityLabel="Icône favori"
         />
       </TouchableOpacity>
 
@@ -63,8 +78,9 @@ export default function ProductCard(props: ProductCardProps) {
       <View style={styles.imageContainer}>
         <Image 
           source={{ uri: replaceBaseUrl("http://localhost:9000/mkadia-objects/885d07f7-19c2-45d7-9f07-0d983c131e59_carrot.jpg")}} 
-          onError={(e)=> console.log(e.nativeEvent.error)} 
-          style={styles.image} 
+          onError={(e) => console.log("Image loading error:", e.nativeEvent.error)} 
+          style={styles.image}
+          accessibilityLabel={`Image de ${product.name}`}
         />
       </View>
 
@@ -72,21 +88,27 @@ export default function ProductCard(props: ProductCardProps) {
       <View style={styles.infoSection}>
         {/* Rating */}
         <View style={styles.ratingRow}>
-          <Star size={12} color="#FFA726" fill="#FFA726" />
+          <Star size={IconSize.XS} color={Colors.ORANGE_ICON} fill={Colors.ORANGE_ICON} />
           <Text style={styles.ratingText}>4.5</Text>
           <Text style={styles.reviewsText}>(28)</Text>
         </View>
 
         {/* Product Name */}
-        <Text style={styles.productName} numberOfLines={2}>
+        <Text 
+          style={styles.productName} 
+          numberOfLines={2}
+          accessibilityLabel={`Produit: ${product.name}`}
+        >
           {product.name}
         </Text>
 
-        {/* Price and Add Button in the same row */}
+        {/* Price and Add Button */}
         <View style={styles.bottomRow}>
           <View style={styles.priceContainer}>
-            <Text style={styles.price}>{product.price}</Text>
-            {product.unit && <Text style={styles.unit}>/{product.unit}</Text>}
+            <Text style={styles.price}>{product.price} MAD</Text>
+            {product.unit && (
+              <Text style={styles.unit}>/{product.unit}</Text>
+            )}
           </View>
           
           <TouchableOpacity 
@@ -97,11 +119,14 @@ export default function ProductCard(props: ProductCardProps) {
             onPress={handleAddToCart}
             activeOpacity={0.8}
             disabled={isAddedToCart}
+            accessibilityLabel="Ajouter au panier"
+            accessibilityRole="button"
+            accessibilityState={{ disabled: isAddedToCart }}
           >
             {isAddedToCart ? (
-              <Check size={16} color="#fff" />
+              <Check size={IconSize.SM} color={Colors.WHITE_ICON} />
             ) : (
-              <ShoppingBasket size={16} color="#fff" />
+              <ShoppingBasket size={IconSize.SM} color={Colors.WHITE_ICON} />
             )}
           </TouchableOpacity>
         </View>
@@ -113,45 +138,44 @@ export default function ProductCard(props: ProductCardProps) {
 const styles = StyleSheet.create({
   discountBadge: {
     position: "absolute",
-    top: 8,
-    left: 8,
-    backgroundColor: "#E53935",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
+    top: Spacing.SM,
+    left: Spacing.SM,
+    backgroundColor: Colors.RED_BG,
+    paddingHorizontal: Spacing.SM,
+    paddingVertical: Spacing.XS,
+    borderRadius: BorderRadius.SM,
     zIndex: 3,
-    elevation: 2,
+    ...Elevation.MEDIUM,
   },
   
   discountText: { 
-    color: "#fff", 
-    fontSize: 10, 
-    fontWeight: "700",
+    color: Colors.WHITE_TEXT, 
+    ...Typography.BADGE,
     letterSpacing: 0.5,
   },
 
   heartBtn: { 
     position: "absolute", 
-    top: 8, 
-    right: 8, 
+    top: Spacing.SM, 
+    right: Spacing.SM, 
     zIndex: 3,
-    backgroundColor: "rgba(255,255,255,0.9)",
-    padding: 6,
-    borderRadius: 20,
-    elevation: 1,
+    backgroundColor: Colors.TRANSPARENT_WHITE,
+    padding: Spacing.SM,
+    borderRadius: BorderRadius.CIRCULAR,
+    ...Elevation.LOW,
   },
 
   imageContainer: {
-    backgroundColor: "#F8F9FA",
-    borderRadius: 12,
-    marginTop: 8,
-    marginBottom: 12,
+    backgroundColor: Colors.LIGHT_GRAY_BG,
+    borderRadius: BorderRadius.MD,
+    marginTop: Spacing.SM,
+    marginBottom: Spacing.MD,
+    overflow: "hidden",
   },
 
   image: { 
     width: "100%", 
     height: 100, 
-    borderRadius: 8,
     resizeMode: "cover",
   },
 
@@ -162,28 +186,29 @@ const styles = StyleSheet.create({
   ratingRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 6,
+    marginBottom: Spacing.SM,
   },
 
   ratingText: {
-    fontSize: 11,
+    ...Typography.CAPTION,
+    color: Colors.ORANGE_TEXT,
     fontWeight: "600",
-    color: "#FFA726",
-    marginLeft: 4,
+    marginLeft: Spacing.XS,
   },
 
   reviewsText: {
-    fontSize: 10,
-    color: "#9E9E9E",
-    marginLeft: 2,
+    ...Typography.CAPTION,
+    color: Colors.GRAY_TEXT,
+    marginLeft: Spacing.XXS,
   },
 
   productName: { 
-    fontSize: 14, 
+    ...Typography.BODY,
     fontWeight: "600", 
-    color: "#2C3E50", 
+    color: Colors.DARK_BLUE_TEXT, 
     lineHeight: 18,
-    marginBottom: 8,
+    marginBottom: Spacing.SM,
+    minHeight: 36, // Pour éviter les sauts de layout
   },
 
   bottomRow: {
@@ -196,35 +221,34 @@ const styles = StyleSheet.create({
   priceContainer: {
     flexDirection: "row",
     alignItems: "baseline",
+    flex: 1,
   },
 
   price: { 
-    fontSize: 16, 
+    ...Typography.SUBHEAD,
     fontWeight: "700", 
-    color: "#27AE60",
+    color: Colors.GREEN_TEXT,
   },
 
   unit: { 
-    fontSize: 12, 
-    color: "#7F8C8D",
-    marginLeft: 2,
+    ...Typography.CAPTION,
+    color: Colors.DARK_GRAY_TEXT,
+    marginLeft: Spacing.XXS,
   },
 
   addBtn: { 
-    backgroundColor: "#4CAF50", 
-    padding: 8, 
-    borderRadius: 12,
+    backgroundColor: Colors.GREEN_BG, 
+    padding: Spacing.SM, 
+    borderRadius: BorderRadius.MD,
     minWidth: 32,
     alignItems: "center",
     justifyContent: "center",
-    elevation: 2,
-    shadowColor: "#4CAF50",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
+    ...Elevation.MEDIUM,
+    shadowColor: Colors.GREEN_SHADOW,
   },
 
   addBtnSuccess: {
-    backgroundColor: "#27AE60",
+    backgroundColor: Colors.DARK_GREEN_BG,
   },
 });
+

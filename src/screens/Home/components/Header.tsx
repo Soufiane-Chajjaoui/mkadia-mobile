@@ -1,41 +1,96 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { MapPin, Bell, ShoppingBag } from 'lucide-react-native';
+import { 
+  Colors, 
+  Spacing, 
+  BorderRadius, 
+  Typography, 
+  IconSize,
+  Elevation 
+} from '../../../constants/DesignSystem';
 
 interface HeaderProps {
   cartCount: number;
   hasNotification: boolean;
   location: string;
+  onCartPress?: () => void;
+  onNotificationPress?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ cartCount, hasNotification, location }) => {
+const Header: React.FC<HeaderProps> = ({ 
+  cartCount, 
+  hasNotification, 
+  location,
+  onCartPress,
+  onNotificationPress
+}) => {
   return (
     <View style={styles.header}>
-      {/* Partie gauche */}
-      <View style={styles.headerLeft}>
+      {/* Section gauche - Texte de bienvenue et localisation */}
+      <View style={styles.leftSection}>
         <Text style={styles.welcomeText}>Bonjour 👋</Text>
-        <View style={styles.location}>
-          <MapPin size={16} color="#4CAF50" />
-          <Text style={styles.locationText}>{location}</Text>
+        <View style={styles.locationContainer}>
+          <MapPin 
+            size={IconSize.SM} 
+            color={Colors.GREEN_BG} 
+            accessibilityLabel="Localisation"
+          />
+          <Text 
+            style={styles.locationText} 
+            numberOfLines={1}
+            accessibilityLabel={`Localisation: ${location}`}
+          >
+            {location}
+          </Text>
         </View>
       </View>
       
-      {/* Partie droite */}
-      <View style={styles.headerRight}>
-        {/* Panier */}
-        <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7}>
-          <ShoppingBag size={22} color="#2C3E50" />
+      {/* Section droite - Icônes d'actions */}
+      <View style={styles.rightSection}>
+        {/* Bouton panier */}
+        <TouchableOpacity 
+          style={styles.iconButton}
+          onPress={onCartPress}
+          activeOpacity={0.7}
+          accessibilityLabel="Panier"
+          accessibilityHint={`${cartCount} article${cartCount !== 1 ? 's' : ''} dans le panier`}
+          accessibilityRole="button"
+        >
+          <ShoppingBag 
+            size={IconSize.LG} 
+            color={Colors.DARK_BLUE_TEXT} 
+            accessibilityLabel="Icône panier"
+          />
           {cartCount > 0 && (
-            <View style={styles.cartBadge}>
-              <Text style={styles.cartBadgeText}>{cartCount}</Text>
+            <View style={styles.cartBadge} accessibilityLabel={`${cartCount} articles`}>
+              <Text style={styles.cartBadgeText}>
+                {cartCount > 99 ? '99+' : cartCount}
+              </Text>
             </View>
           )}
         </TouchableOpacity>
         
-        {/* Notifications */}
-        <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7}>
-          <Bell size={22} color="#2C3E50" />
-          {hasNotification && <View style={styles.badge} />}
+        {/* Bouton notifications */}
+        <TouchableOpacity 
+          style={styles.iconButton}
+          onPress={onNotificationPress}
+          activeOpacity={0.7}
+          accessibilityLabel="Notifications"
+          accessibilityHint={hasNotification ? "Nouvelles notifications disponibles" : "Aucune nouvelle notification"}
+          accessibilityRole="button"
+        >
+          <Bell 
+            size={IconSize.LG} 
+            color={Colors.DARK_BLUE_TEXT} 
+            accessibilityLabel="Icône notifications"
+          />
+          {hasNotification && (
+            <View 
+              style={styles.notificationBadge} 
+              accessibilityLabel="Nouvelle notification"
+            />
+          )}
         </TouchableOpacity>
       </View>
     </View>
@@ -47,79 +102,69 @@ const styles = StyleSheet.create({
     flexDirection: "row", 
     justifyContent: "space-between", 
     alignItems: "center", 
-    marginBottom: 20,
-    paddingHorizontal: 4,
-    paddingTop: 10,
+    marginBottom: Spacing.XL,
+    paddingHorizontal: Spacing.XS,
+    marginTop: Spacing.SM
   },
-
-  headerLeft: {
+  leftSection: {
     flex: 1,
+    marginRight: Spacing.MD,
   },
-
   welcomeText: {
-    fontSize: 22,
-    fontWeight: "700",
-    color: "#2C3E50",
+    ...Typography.HEADLINE,
+    color: Colors.DARK_BLUE_TEXT,
   },
-
-  location: { 
+  locationContainer: { 
     flexDirection: "row", 
     alignItems: "center",
-    marginTop: 4,
+    marginTop: Spacing.XS,
   },
-
   locationText: { 
-    marginLeft: 4, 
-    fontSize: 14, 
-    fontWeight: "500", 
-    color: "#4CAF50",
+    marginLeft: Spacing.XS, 
+    ...Typography.BODY,
+    color: Colors.GREEN_BG,
+    flexShrink: 1,
   },
-
-  headerRight: {
+  rightSection: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: Spacing.MD,
   },
-
-  iconBtn: {
+  iconButton: {
     position: "relative",
-    padding: 10,
-    backgroundColor: "#F8F9FA", // fond clair moderne
-    borderRadius: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 2,
+    padding: Spacing.MD,
+    backgroundColor: Colors.LIGHT_GRAY_BG,
+    borderRadius: BorderRadius.LG,
+    ...Elevation.LOW,
   },
-
   cartBadge: {
     position: "absolute",
-    top: 4,
-    right: 4,
-    backgroundColor: "#E53935",
-    borderRadius: 10,
-    minWidth: 18,
-    height: 18,
+    top: Spacing.XS,
+    right: Spacing.XS,
+    backgroundColor: Colors.RED_BG,
+    borderRadius: BorderRadius.CIRCULAR,
+    minWidth: Spacing.LG,
+    height: Spacing.LG,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 3,
+    paddingHorizontal: Spacing.XXS,
+    ...Elevation.MEDIUM,
   },
-
   cartBadgeText: {
-    color: "#fff",
-    fontSize: 10,
-    fontWeight: "700",
+    ...Typography.BADGE,
+    color: Colors.WHITE_TEXT,
+    textAlign: 'center',
+    minWidth: Spacing.SM,
   },
-
-  badge: { 
+  notificationBadge: { 
     position: "absolute", 
-    top: 6, 
-    right: 6, 
-    width: 8, 
-    height: 8, 
-    borderRadius: 4, 
-    backgroundColor: "#E53935",
+    top: Spacing.SM,
+    right: Spacing.SM,
+    width: Spacing.MD,
+    height: Spacing.MD,
+    borderRadius: BorderRadius.CIRCULAR, 
+    backgroundColor: Colors.RED_BG,
+    ...Elevation.MEDIUM,
   },
 });
 
