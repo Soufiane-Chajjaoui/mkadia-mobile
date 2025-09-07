@@ -74,7 +74,7 @@ const CategoryProductsScreen: React.FC<Props> = ({ route, navigation }) => {
   }, [loadingMore, hasMoreProducts, currentPage, category.id]);
 
   const handleProductPress = (product: ProductCardModel) => {
-    // navigation.navigate("ProductDetail", product);
+    navigation.navigate("ProductDetails", product);
   };
 
   const handleBackPress = () => {
