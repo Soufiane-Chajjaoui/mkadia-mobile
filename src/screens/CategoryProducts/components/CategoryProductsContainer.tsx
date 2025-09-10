@@ -18,7 +18,9 @@ interface CategoryProductsContainerProps {
   onRefresh: () => void;
   onLoadMoreProducts: () => void;
   onProductPress: (product: ProductCard) => void;
+  onAddToCart: (product: ProductCard) => void
 }
+
 
 const CategoryProductsContainer: React.FC<CategoryProductsContainerProps> = ({ 
   products,
@@ -27,8 +29,13 @@ const CategoryProductsContainer: React.FC<CategoryProductsContainerProps> = ({
   refreshing,
   onRefresh,
   onLoadMoreProducts,
-  onProductPress
+  onProductPress,
+  onAddToCart
 }) => {
+
+  const handleAddToCart = (product : ProductCard) => {
+    onAddToCart?.(product)
+  }
   return (
     <ScrollView
       style={styles.container}
@@ -47,6 +54,7 @@ const CategoryProductsContainer: React.FC<CategoryProductsContainerProps> = ({
         productsLoading={loading}
         loadingMore={loadingMore}
         showSeeAll={false}
+        onAddToCart={handleAddToCart}
         loadMoreProducts={onLoadMoreProducts}
         onProductPress={onProductPress}
       />
@@ -60,7 +68,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.WHITE,
     borderTopLeftRadius: BorderRadius.XL,
     borderTopRightRadius: BorderRadius.XL,
-    marginTop: -Spacing.LG,
+    marginTop: -Spacing.XXS,
     paddingTop: Spacing.XXS,
     ...Elevation.LOW,
   },

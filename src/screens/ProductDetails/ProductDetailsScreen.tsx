@@ -18,6 +18,8 @@ import ProductInfoSection from "./components/ProductInfoSection";
 import { getProductById$ } from "../../apis/PublicAPI";
 import { ProductCard } from "../../models/ProductCard";
 import { ProductDetails } from "../../models/ProductDetails";
+import { useAppDispatch } from "../../hooks/hooks";
+import { addItem } from "../../features/cart/cartSlice";
 
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ProductDetails'>;
@@ -32,6 +34,8 @@ const ProductDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const scrollViewRef = useRef<ScrollView>(null);
+  const dispatch = useAppDispatch();
+  
 
   useEffect(() => {
     setLoading(true);
@@ -92,9 +96,11 @@ const ProductDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
 
   const handleAddToCart = () => {
     if (!product) return;
-    
-    console.log(`Ajout de ${cartQuantity} x ${product.name} au panier`);
-    // Logique d'ajout au panier
+    dispatch(
+      addItem(
+        {id : product.id, name : product.name, price: product.price, quantity: cartQuantity}
+      )
+    );
   };
 
   // État de chargement

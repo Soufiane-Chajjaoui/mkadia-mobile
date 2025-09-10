@@ -1,7 +1,7 @@
 import { Media } from "./Media";
 
 export interface ProductCard {
-    id: string;
+    id: number;
     name: string;
     price: number;
     unit: string;

@@ -32,7 +32,7 @@ const ProductDetailHeader: React.FC<ProductDetailHeaderProps> = ({
           style={styles.headerButton}
           onPress={onBackPress}
         >
-          <ArrowLeft size={IconSize.LG} color={Colors.WHITE} />
+          <ArrowLeft size={IconSize.LG} color={Colors.GREEN_BG} />
         </TouchableOpacity>
         
         <View style={styles.headerActions}>
@@ -40,7 +40,7 @@ const ProductDetailHeader: React.FC<ProductDetailHeaderProps> = ({
             style={[styles.headerButton, { marginRight: Spacing.SM }]}
             onPress={onShare}
           >
-            <Share2 size={IconSize.MD} color={Colors.WHITE} />
+            <Share2 size={IconSize.MD} color={Colors.GREEN_BG} />
           </TouchableOpacity>
           
           <TouchableOpacity 
@@ -49,7 +49,7 @@ const ProductDetailHeader: React.FC<ProductDetailHeaderProps> = ({
           >
             <Heart 
               size={IconSize.MD} 
-              color={isFavorite ? Colors.RED_ICON : Colors.WHITE}
+              color={isFavorite ? Colors.RED_ICON : Colors.GREEN_BG}
               fill={isFavorite ? Colors.RED_ICON : "transparent"}
             />
           </TouchableOpacity>
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: BorderRadius.CIRCULAR,
     opacity: 20,
-    backgroundColor: Colors.DARK_GREEN_BG,
+    // backgroundColor: Colors.LIGHT_GRAY_BG,
     justifyContent: 'center',
     alignItems: 'center',
   },

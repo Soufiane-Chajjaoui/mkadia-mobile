@@ -13,6 +13,8 @@ import { PaginatedResponse } from "../../types/PaginatedResponse";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types/navigation";
 import { Colors, Spacing } from "../../constants/DesignSystem";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import { addItem } from "../../features/cart/cartSlice";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -30,6 +32,10 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMoreProducts, setHasMoreProducts] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
+
+  const items = useAppSelector((state) => state.cart.items);
+  const dispatch = useAppDispatch();
+
 
   const loadInitialData = useCallback(() => {
     // Chargement des catégories
@@ -114,6 +120,10 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     navigation.navigate("ProductDetails", product); // Corrigé: ProductDetail au lieu de ProductDetails
   };
 
+  const handleAddToCart = (product: ProductCardModel) => {
+    dispatch(addItem({id : product.id, name : product.name, price: product.price, quantity: 1}));
+  }
+
   // Navigation vers catégorie
   const handleCategoryPress = (category: CategoryCard) => {
     navigation.navigate("CategoryProducts", category);
@@ -157,7 +167,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       >
         {/* Header */}
         <Header 
-          cartCount={cartCount} 
+          cartCount={items.length} 
           hasNotification={hasNotification} 
           location="Safi, Maroc" 
         />
@@ -185,6 +195,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
           productsLoading={productsLoading}
           loadingMore={loadingMore}
           showSeeAll={true}
+          onAddToCart={handleAddToCart}
           onProductPress={handleProductPress}
           loadMoreProducts={loadMoreProducts}
         />

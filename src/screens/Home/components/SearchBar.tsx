@@ -107,7 +107,8 @@ const styles = StyleSheet.create({
     flexDirection: "row", 
     alignItems: "center", 
     marginBottom: Spacing.SM,
-    gap: Spacing.MD,
+    paddingHorizontal: Spacing.XXS,
+    gap: Spacing.SM,
   },
 
   searchContainer: { 

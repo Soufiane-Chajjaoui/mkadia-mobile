@@ -14,9 +14,9 @@ import {
 
 interface ProductCardProps extends ProductCardModel {
   cardWidth?: number;
-  onAddToCart?: () => void;
+  onAddToCart: () => void;
   onToggleFavorite?: (isFavorite: boolean) => void;
-  onPress?: (product: ProductCardModel) => void; // Nouvelle prop pour la navigation
+  onPress?: () => void; // Nouvelle prop pour la navigation
 }
 
 export default function ProductCard(props: ProductCardProps) {
@@ -30,10 +30,6 @@ export default function ProductCard(props: ProductCardProps) {
     
     setIsAddedToCart(true);
     onAddToCart?.();
-    
-    setTimeout(() => {
-      setIsAddedToCart(false);
-    }, 1500);
   };
 
   const toggleFavorite = (event: any) => {
@@ -46,7 +42,7 @@ export default function ProductCard(props: ProductCardProps) {
   };
 
   const handleProductPress = () => {
-    onPress?.(product);
+    onPress?.();
   };
 
   const dynamicStyles = StyleSheet.create({

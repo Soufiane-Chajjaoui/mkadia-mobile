@@ -25,6 +25,7 @@ interface ProductsSectionProps {
   loadMoreProducts: () => void;
   showSeeAll?: boolean; 
   onSeeAllPress?: () => void;
+  onAddToCart?: (product: ProductCardModel) => void;
   onProductPress?: (product: ProductCardModel) => void;
 }
 
@@ -37,6 +38,8 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({
   showSeeAll = true,
   onSeeAllPress,
   onProductPress,
+  onAddToCart
+
 }) => {
   const screenData = useWindowDimensions();
   
@@ -52,6 +55,18 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({
     return (availableWidth - (cardSpacing * (numColumns - 1))) / numColumns;
   }, [screenData.width]);
 
+  const handleSeeAllPress = () => {
+    onSeeAllPress?.();
+  };
+
+  const handleProductPress = (product: ProductCardModel) => {
+    onProductPress?.(product);
+  };
+
+  const handleAddToCart = (product: ProductCardModel) => {
+    onAddToCart?.(product);
+  }
+  
   const renderSkeletonCard = (index: number) => (
     <SkeletonPlaceholder.Item
       key={index}
@@ -92,14 +107,6 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({
     );
   };
 
-  const handleSeeAllPress = () => {
-    onSeeAllPress?.();
-  };
-
-  const handleProductPress = (product: ProductCardModel) => {
-    onProductPress?.(product);
-  };
-
   const renderProductItem = ({ item }: { item: ProductCardModel }) => (
     <View style={{ 
       width: cardWidth, 
@@ -108,6 +115,7 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({
       <ProductCard 
         {...item} 
         cardWidth={cardWidth}
+        onAddToCart={() => handleAddToCart(item)}
         onPress={() => handleProductPress(item)}
       />
     </View>
