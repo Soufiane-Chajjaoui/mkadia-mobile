@@ -5,13 +5,16 @@ import { replaceBaseUrl } from "../utils/urlHelper";
 
 interface CategoryCardProps {
   category: CategoryCardModel;
-  onPress?: () => void;
+  onPress?: (category: CategoryCardModel) => void;
 }
 
-
-const CategoryCard: React.FC<CategoryCardProps> = ({ category , onPress}) => {
+const CategoryCard: React.FC<CategoryCardProps> = ({ category, onPress }) => {
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8}>
+    <TouchableOpacity
+      style={styles.card}
+      activeOpacity={0.8}
+      onPress={() => onPress?.(category)}
+    >
       <ImageBackground
         source={{ uri: replaceBaseUrl(category.url) }}
         style={styles.image}
@@ -20,7 +23,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category , onPress}) => {
         {/* Overlay sombre */}
         <View style={styles.overlay} />
 
-        {/* Texte par-dessus */}
+        {/* Texte */}
         <View style={styles.textContainer}>
           <Text style={styles.title}>{category.name}</Text>
         </View>
@@ -36,7 +39,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     overflow: "hidden",
     marginRight: 8,
-    elevation: 1
+    elevation: 1,
   },
   image: {
     flex: 1,

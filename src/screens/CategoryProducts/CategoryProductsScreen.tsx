@@ -9,6 +9,8 @@ import { CategoryCard } from "../../models/CategoryCard";
 import { Colors } from "../../constants/DesignSystem";
 import CategoryHeader from "./components/CategoryHeader";
 import CategoryProductsContainer from "./components/CategoryProductsContainer";
+import { useAppDispatch } from "../../hooks/hooks";
+import { addItem } from "../../features/cart/cartSlice";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CategoryProducts'>;
 
@@ -21,6 +23,7 @@ const CategoryProductsScreen: React.FC<Props> = ({ route, navigation }) => {
   const [hasMoreProducts, setHasMoreProducts] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     loadProducts();
@@ -45,6 +48,10 @@ const CategoryProductsScreen: React.FC<Props> = ({ route, navigation }) => {
 
     return () => sub.unsubscribe();
   };
+
+  const handleAddToCart = (product: ProductCardModel) => {
+    dispatch(addItem({id : product.id, name : product.name, price: product.price, quantity: 1}));
+  }
 
   const handleRefresh = useCallback(() => {
     setRefreshing(true);
@@ -74,7 +81,7 @@ const CategoryProductsScreen: React.FC<Props> = ({ route, navigation }) => {
   }, [loadingMore, hasMoreProducts, currentPage, category.id]);
 
   const handleProductPress = (product: ProductCardModel) => {
-    // navigation.navigate("ProductDetail", product);
+    navigation.navigate("ProductDetails", product);
   };
 
   const handleBackPress = () => {
@@ -95,6 +102,7 @@ const CategoryProductsScreen: React.FC<Props> = ({ route, navigation }) => {
         loading={loading}
         loadingMore={loadingMore}
         refreshing={refreshing}
+        onAddToCart={handleAddToCart}
         onRefresh={handleRefresh}
         onLoadMoreProducts={loadMoreProducts}
         onProductPress={handleProductPress}

@@ -6,57 +6,37 @@ import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { CategoryCard as CategoryCardModel } from "../../../models/CategoryCard";
 import CategoryCard from "../../../components/CategoryCard";
 import { RootStackParamList } from "../../../types/navigation";
-import { 
-  Colors, 
-  Spacing, 
-  Typography 
-} from "../../../constants/DesignSystem";
+import { Colors, Spacing, Typography } from "../../../constants/DesignSystem";
 
 interface CategoriesSectionProps {
   categories: CategoryCardModel[];
-  loading?: boolean; 
+  loading?: boolean;
+  onCategoryPress?: (category: CategoryCardModel) => void;
 }
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Home">;
 
-const CategoriesSection: React.FC<CategoriesSectionProps> = ({ 
-  categories, 
-  loading = false
+const CategoriesSection: React.FC<CategoriesSectionProps> = ({
+  categories,
+  loading = false,
+  onCategoryPress,
 }) => {
   const navigation = useNavigation<NavigationProp>();
 
   const handleCategoryPress = (category: CategoryCardModel) => {
-    try {
-      navigation.navigate("CategoryProducts", category);
-    } catch (error) {
-      console.error('Navigation error:', error);
-    }
-  };
-
-  const handleSeeAllPress = () => {
-    // Navigation vers l'écran de toutes les catégories
-    // navigation.navigate("AllCategories");
+      onCategoryPress?.(category);
   };
 
   if (loading) {
-    // Skeleton Loader - Version corrigée
     return (
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Catégories</Text>
         </View>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.categoriesContainer}
-        >
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesContainer}>
           {Array.from({ length: 5 }).map((_, index) => (
             <View key={index} style={styles.skeletonItem}>
-              <SkeletonPlaceholder
-                borderRadius={Spacing.MD}
-                backgroundColor={Colors.LIGHT_GRAY_BG}
-                highlightColor={Colors.WHITE}
-              >
+              <SkeletonPlaceholder>
                 <View style={styles.skeletonCard} />
               </SkeletonPlaceholder>
             </View>
@@ -66,31 +46,20 @@ const CategoriesSection: React.FC<CategoriesSectionProps> = ({
     );
   }
 
-  // Normal content
   return (
     <View style={styles.section}>
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>Catégories</Text>
-        <TouchableOpacity 
-          activeOpacity={0.7}
-          onPress={handleSeeAllPress}
-          accessibilityLabel="Voir toutes les catégories"
-          accessibilityRole="button"
-        >
+        <TouchableOpacity>
           <Text style={styles.seeAllText}>Voir tout</Text>
         </TouchableOpacity>
       </View>
 
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.categoriesContainer}
-        accessibilityLabel="Liste des catégories"
-      >
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesContainer}>
         {categories.map((item) => (
-          <CategoryCard 
+          <CategoryCard
             key={item.id}
-            category={item} 
+            category={item}
             onPress={() => handleCategoryPress(item)}
           />
         ))}
@@ -100,7 +69,7 @@ const CategoriesSection: React.FC<CategoriesSectionProps> = ({
 };
 
 const styles = StyleSheet.create({
-  section: { 
+  section: {
     marginTop: 0,
     marginBottom: Spacing.LG,
   },
@@ -114,7 +83,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     ...Typography.HEADLINE,
     color: Colors.DARK_BLUE_TEXT,
-    fontSize: 20, // Override spécifique
+    fontSize: 20,
   },
   seeAllText: {
     ...Typography.BODY,

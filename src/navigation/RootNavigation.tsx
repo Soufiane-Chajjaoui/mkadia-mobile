@@ -7,6 +7,7 @@ import HomeScreen from "../screens/Home/HomeScreen";
 import useFirstLaunch from "../hooks/useFirstLaunch";
 import OnboardingScreen from "../screens/Onboarding/OnboardingScreen";
 import CategoryProductsScreen from "../screens/CategoryProducts/CategoryProductsScreen";
+import ProductDetailsScreen from "../screens/ProductDetails/ProductDetailsScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -40,6 +41,10 @@ export default function RootNavigator() {
       <Stack.Screen
         name="CategoryProducts"
         component={withSafeArea(CategoryProductsScreen)}
+      />
+      <Stack.Screen
+        name="ProductDetails"
+        component={withSafeArea(ProductDetailsScreen)}
       />
     </Stack.Navigator>
   );

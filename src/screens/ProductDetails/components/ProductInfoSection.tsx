@@ -1,0 +1,135 @@
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+} from "react-native";
+import { Star } from "lucide-react-native";
+import { Colors, Spacing, Typography } from "../../../constants/DesignSystem";
+
+interface ProductInfoSectionProps {
+  name: string;
+  price: number;
+  discount?: number;
+  unit?: string;
+  description?: string;
+}
+
+const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({
+  name,
+  price,
+  discount,
+  unit,
+  description
+}) => {
+  const calculateDiscountedPrice = () => {
+    if (discount) {
+      const discountAmount = (price * discount) / 100;
+      return price - discountAmount;
+    }
+    return price;
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.productName}>{name}</Text>
+      
+      {/* Prix */}
+      <View style={styles.priceContainer}>
+        <Text style={styles.currentPrice}>
+          {calculateDiscountedPrice().toFixed(2)} DH
+        </Text>
+        {discount && (
+          <Text style={styles.originalPrice}>
+            {price.toFixed(2)} DH
+          </Text>
+        )}
+        {unit && <Text style={styles.priceUnit}>/{unit}</Text>}
+      </View>
+
+      {/* Rating */}
+      <View style={styles.ratingContainer}>
+        <View style={styles.starsContainer}>
+          {[1, 2, 3, 4, 5].map((star) => (
+            <Star 
+              key={star} 
+              size={16} 
+              color={Colors.ORANGE_ICON} 
+              fill={star <= 4 ? Colors.ORANGE_ICON : "transparent"} 
+            />
+          ))}
+        </View>
+        <Text style={styles.ratingText}>4.0 (28 avis)</Text>
+      </View>
+
+      {/* Description */}
+      {description && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Description</Text>
+          <Text style={styles.description}>{description}</Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    padding: Spacing.LG,
+  },
+  productName: {
+    ...Typography.HEADLINE,
+    fontSize: 24,
+    color: Colors.DARK_BLUE_TEXT,
+    marginBottom: Spacing.SM,
+  },
+  priceContainer: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    marginBottom: Spacing.MD,
+  },
+  currentPrice: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: Colors.GREEN_TEXT,
+  },
+  originalPrice: {
+    fontSize: 16,
+    textDecorationLine: 'line-through',
+    color: Colors.GRAY_TEXT,
+    marginLeft: Spacing.SM,
+  },
+  priceUnit: {
+    ...Typography.BODY,
+    color: Colors.DARK_GRAY_TEXT,
+    marginLeft: Spacing.XS,
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: Spacing.LG,
+  },
+  starsContainer: {
+    flexDirection: 'row',
+    marginRight: Spacing.SM,
+  },
+  ratingText: {
+    ...Typography.BODY,
+    color: Colors.GRAY_TEXT,
+  },
+  section: {
+    marginBottom: Spacing.LG,
+  },
+  sectionTitle: {
+    ...Typography.SUBHEAD,
+    color: Colors.DARK_BLUE_TEXT,
+    marginBottom: Spacing.MD,
+  },
+  description: {
+    ...Typography.BODY,
+    color: Colors.DARK_GRAY_TEXT,
+    lineHeight: 22,
+  },
+});
+
+export default ProductInfoSection;

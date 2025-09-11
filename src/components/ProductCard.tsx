@@ -14,28 +14,35 @@ import {
 
 interface ProductCardProps extends ProductCardModel {
   cardWidth?: number;
-  onAddToCart?: () => void;
+  onAddToCart: () => void;
   onToggleFavorite?: (isFavorite: boolean) => void;
+  onPress?: () => void; // Nouvelle prop pour la navigation
 }
 
 export default function ProductCard(props: ProductCardProps) {
-  const { cardWidth, onAddToCart, onToggleFavorite, ...product } = props;
+  const { cardWidth, onAddToCart, onToggleFavorite, onPress, ...product } = props;
   const [isFavorite, setIsFavorite] = useState(false);
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   
-  const handleAddToCart = () => {
+  const handleAddToCart = (event: any) => {
+    // Empêcher la propagation vers onPress du produit
+    event.stopPropagation();
+    
     setIsAddedToCart(true);
     onAddToCart?.();
-    
-    setTimeout(() => {
-      setIsAddedToCart(false);
-    }, 1500);
   };
 
-  const toggleFavorite = () => {
+  const toggleFavorite = (event: any) => {
+    // Empêcher la propagation vers onPress du produit
+    event.stopPropagation();
+    
     const newFavoriteState = !isFavorite;
     setIsFavorite(newFavoriteState);
     onToggleFavorite?.(newFavoriteState);
+  };
+
+  const handleProductPress = () => {
+    onPress?.();
   };
 
   const dynamicStyles = StyleSheet.create({
@@ -50,7 +57,13 @@ export default function ProductCard(props: ProductCardProps) {
   });
 
   return (
-    <View style={dynamicStyles.card}>
+    <TouchableOpacity 
+      style={dynamicStyles.card}
+      onPress={handleProductPress}
+      activeOpacity={0.8}
+      accessibilityLabel={`Voir les détails de ${product.name}`}
+      accessibilityRole="button"
+    >
       {/* Discount Badge */}
       {product.discount && (
         <View style={styles.discountBadge}>
@@ -70,7 +83,6 @@ export default function ProductCard(props: ProductCardProps) {
           size={IconSize.MD} 
           color={isFavorite ? Colors.RED_ICON : Colors.GRAY_ICON} 
           fill={isFavorite ? Colors.RED_ICON : "transparent"}
-          accessibilityLabel="Icône favori"
         />
       </TouchableOpacity>
 
@@ -105,7 +117,7 @@ export default function ProductCard(props: ProductCardProps) {
         {/* Price and Add Button */}
         <View style={styles.bottomRow}>
           <View style={styles.priceContainer}>
-            <Text style={styles.price}>{product.price} MAD</Text>
+            <Text style={styles.price}>{product.price} DH</Text>
             {product.unit && (
               <Text style={styles.unit}>/{product.unit}</Text>
             )}
@@ -131,7 +143,7 @@ export default function ProductCard(props: ProductCardProps) {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
@@ -145,7 +157,7 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.XS,
     borderRadius: BorderRadius.SM,
     zIndex: 3,
-    ...Elevation.MEDIUM,
+    ...Elevation.LOW,
   },
   
   discountText: { 
@@ -208,7 +220,7 @@ const styles = StyleSheet.create({
     color: Colors.DARK_BLUE_TEXT, 
     lineHeight: 18,
     marginBottom: Spacing.SM,
-    minHeight: 36, // Pour éviter les sauts de layout
+    minHeight: 36,
   },
 
   bottomRow: {
@@ -251,4 +263,3 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.DARK_GREEN_BG,
   },
 });
-

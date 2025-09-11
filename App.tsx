@@ -12,9 +12,11 @@
 import { useColorScheme} from 'react-native';
 import BootSplash from 'react-native-bootsplash';
 import React, { useEffect } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
 import RootNavigator from './src/navigation/RootNavigation';
 import useFirstLaunch from './src/hooks/useFirstLaunch';
+import { NavigationContainer } from '@react-navigation/native';
+import { Provider } from 'react-redux';
+import { store } from './src/features/store';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -34,9 +36,11 @@ function App() {
   }, []);
 
   return (
-    <NavigationContainer>
-      <RootNavigator />
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <RootNavigator />
+      </NavigationContainer>
+    </Provider>
   );
 }
 
