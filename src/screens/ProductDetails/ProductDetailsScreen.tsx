@@ -18,7 +18,7 @@ import ProductInfoSection from "./components/ProductInfoSection";
 import { getProductById$ } from "../../apis/PublicAPI";
 import { ProductCard } from "../../models/ProductCard";
 import { ProductDetails } from "../../models/ProductDetails";
-import { useAppDispatch } from "../../hooks/hooks";
+import { useAppDispatch } from "../../hooks/useStateApp";
 import { addItem } from "../../features/cart/cartSlice";
 
 

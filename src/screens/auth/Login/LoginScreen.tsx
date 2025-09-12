@@ -1,4 +1,3 @@
-// screens/LoginScreen.tsx
 import React, { useState } from "react";
 import {
     View,
@@ -7,100 +6,23 @@ import {
     TouchableOpacity,
     StyleSheet,
     Image,
-    Alert,
     ActivityIndicator,
     KeyboardAvoidingView,
     Platform,
     ScrollView,
-    Dimensions,
-    Animated,
+    Dimensions
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { Colors, Spacing, BorderRadius, Typography, Elevation } from "../../../constants/DesignSystem";
 import { Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle, X } from "lucide-react-native";
 import { login$ } from "../../../apis/AuthAPI";
 import { loginSuccess } from "../../../features/auth/authSlice";
+import { useToast } from "../../../hooks/useToast";
+import { Toast } from "../../../components/Toast";
 
 const { height, width } = Dimensions.get('window');
 
-// ✅ Types pour le Toast
-type ToastType = 'success' | 'error' | 'info';
 
-interface ToastProps {
-    message: string;
-    type: ToastType;
-    visible: boolean;
-    onHide: () => void;
-}
-
-// ✅ Composant Toast
-const Toast = ({ message, type, visible, onHide }: ToastProps) => {
-    const [slideAnim] = useState(new Animated.Value(-100));
-
-    React.useEffect(() => {
-        if (visible) {
-            // Slide down
-            Animated.sequence([
-                Animated.timing(slideAnim, {
-                    toValue: 0,
-                    duration: 300,
-                    useNativeDriver: true,
-                }),
-                // Stay visible
-                Animated.delay(3000),
-                // Slide up
-                Animated.timing(slideAnim, {
-                    toValue: -100,
-                    duration: 300,
-                    useNativeDriver: true,
-                }),
-            ]).start(() => {
-                onHide();
-            });
-        }
-    }, [visible, slideAnim, onHide]);
-
-    if (!visible) return null;
-
-    const getToastConfig = () => {
-        switch (type) {
-            case 'success':
-                return {
-                    backgroundColor: '#10B981',
-                    icon: <CheckCircle size={20} color="white" />,
-                };
-            case 'error':
-                return {
-                    backgroundColor: '#EF4444',
-                    icon: <AlertCircle size={20} color="white" />,
-                };
-            default:
-                return {
-                    backgroundColor: '#3B82F6',
-                    icon: <AlertCircle size={20} color="white" />,
-                };
-        }
-    };
-
-    const { backgroundColor, icon } = getToastConfig();
-
-    return (
-        <Animated.View
-            style={[
-                styles.toastContainer,
-                { backgroundColor, transform: [{ translateY: slideAnim }] },
-            ]}
-        >
-            {icon}
-            <Text style={styles.toastText} numberOfLines={2}>
-                {message}
-            </Text>
-            <TouchableOpacity onPress={onHide} style={styles.toastCloseButton}>
-                <X size={18} color="white" />
-            </TouchableOpacity>
-        </Animated.View>
-    );
-};
 
 export default function LoginScreen() {
     const [email, setEmail] = useState("");
@@ -110,7 +32,11 @@ export default function LoginScreen() {
     const [emailError, setEmailError] = useState("");
     const [passwordError, setPasswordError] = useState("");
 
+    const { toast, visible, showSuccess, showError, showInfo, hideToast } = useToast();
+
     const dispatch = useDispatch();
+
+   
 
     const validateEmail = (email: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -145,7 +71,178 @@ export default function LoginScreen() {
         if (!validateFields()) return;
 
         setIsLoading(true);
+
+        login$({ email, password }).subscribe({
+            next: (data) => {
+                dispatch(loginSuccess({ 
+                    accessToken: data.accessToken, 
+                    refreshToken: data.refreshToken 
+                }));
+                showSuccess("Connexion réussie ! Bienvenue");
+            },
+            error: (err: Error) => {
+                showError(err.message || "Identifiants incorrects");
+                setIsLoading(false);
+            },
+            complete: () => {
+                setIsLoading(false);
+            },
+        });
     };
+
+    const handleGoogleAuth = () => {
+        showInfo("Authentification Google en cours de développement");
+    };
+
+    const handleForgotPassword = () => {
+        showInfo("Un email de récupération va être envoyé");
+    };
+
+    return (
+        <>
+            {/* ✅ Toast Component */}
+            <Toast
+                visible={visible}
+                toast={toast}
+                onHide={hideToast} 
+            />
+
+            <KeyboardAvoidingView
+                style={styles.container}
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+            >
+                <ScrollView
+                    contentContainerStyle={styles.scrollContainer}
+                    showsVerticalScrollIndicator={false}
+                    keyboardShouldPersistTaps="handled"
+                >
+                    <View style={styles.header}>
+                        <Image
+                            source={require("../../../../assets/images/Logo-Mkadia-App.png")}
+                            style={styles.logo}
+                            resizeMode="contain"
+                        />
+                        <Text style={styles.welcomeText}>Bienvenue !</Text>
+                        <Text style={styles.subtitleText}>Connectez-vous à votre compte</Text>
+                    </View>
+
+                    <View style={styles.formContainer}>
+                        {/* Email */}
+                        <View style={styles.inputContainer}>
+                            <View style={[
+                                styles.inputWrapper,
+                                emailError ? styles.inputError : null,
+                                email ? styles.inputFilled : null
+                            ]}>
+                                <Mail
+                                    size={20}
+                                    color={emailError ? Colors.RED : Colors.GRAY_ICON}
+                                    style={styles.inputIcon}
+                                />
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Email ou Username"
+                                    placeholderTextColor={Colors.GRAY_TEXT}
+                                    value={email}
+                                    onChangeText={(text) => {
+                                        setEmail(text);
+                                        if (emailError) setEmailError("");
+                                    }}
+                                    autoCapitalize="none"
+                                    keyboardType="email-address"
+                                    autoCorrect={false}
+                                    returnKeyType="next"
+                                />
+                            </View>
+                            {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+                        </View>
+
+                        {/* Password */}
+                        <View style={styles.inputContainer}>
+                            <View style={[
+                                styles.inputWrapper,
+                                passwordError ? styles.inputError : null,
+                                password ? styles.inputFilled : null
+                            ]}>
+                                <Lock
+                                    size={20}
+                                    color={passwordError ? Colors.RED : Colors.GRAY_ICON}
+                                    style={styles.inputIcon}
+                                />
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Mot de passe"
+                                    placeholderTextColor={Colors.GRAY_TEXT}
+                                    secureTextEntry={!showPassword}
+                                    value={password}
+                                    onChangeText={(text) => {
+                                        setPassword(text);
+                                        if (passwordError) setPasswordError("");
+                                    }}
+                                    returnKeyType="done"
+                                    onSubmitEditing={handleLogin}
+                                />
+                                <TouchableOpacity
+                                    onPress={() => setShowPassword(!showPassword)}
+                                    style={styles.eyeIcon}
+                                >
+                                    {showPassword ? (
+                                        <EyeOff size={20} color={Colors.GRAY_ICON} />
+                                    ) : (
+                                        <Eye size={20} color={Colors.GRAY_ICON} />
+                                    )}
+                                </TouchableOpacity>
+                            </View>
+                            {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
+                        </View>
+
+                        <TouchableOpacity onPress={handleForgotPassword} style={styles.forgotPasswordContainer}>
+                            <Text style={styles.forgotPasswordText}>Mot de passe oublié ?</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={[styles.button, isLoading && styles.buttonDisabled]}
+                            onPress={handleLogin}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? (
+                                <ActivityIndicator color={Colors.WHITE_TEXT} size="small" />
+                            ) : (
+                                <Text style={styles.buttonText}>Se connecter</Text>
+                            )}
+                        </TouchableOpacity>
+
+                        {/* Divider */}
+                        <View style={styles.dividerContainer}>
+                            <View style={styles.divider} />
+                            <Text style={styles.dividerText}>ou</Text>
+                            <View style={styles.divider} />
+                        </View>
+
+                        {/* Google */}
+                        <TouchableOpacity
+                            style={styles.googleButton}
+                            onPress={handleGoogleAuth}
+                            disabled={isLoading}
+                        >
+                            <Image
+                                source={{ uri: 'https://developers.google.com/identity/images/g-logo.png' }}
+                                style={styles.googleIcon}
+                            />
+                            <Text style={styles.googleText}>Continuer avec Google</Text>
+                        </TouchableOpacity>
+
+                        <View style={styles.signupContainer}>
+                            <Text style={styles.signupText}>Pas encore de compte ? </Text>
+                            <TouchableOpacity onPress={() => console.log("Navigate to signup")}>
+                                <Text style={styles.signupLink}>S'inscrire</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </ScrollView>
+            </KeyboardAvoidingView>
+        </>
+    );
 }
 
 const styles = StyleSheet.create({

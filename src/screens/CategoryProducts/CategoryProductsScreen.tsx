@@ -9,7 +9,7 @@ import { CategoryCard } from "../../models/CategoryCard";
 import { Colors } from "../../constants/DesignSystem";
 import CategoryHeader from "./components/CategoryHeader";
 import CategoryProductsContainer from "./components/CategoryProductsContainer";
-import { useAppDispatch } from "../../hooks/hooks";
+import { useAppDispatch } from "../../hooks/useStateApp";
 import { addItem } from "../../features/cart/cartSlice";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CategoryProducts'>;

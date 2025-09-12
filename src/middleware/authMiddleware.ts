@@ -2,7 +2,7 @@ import { Middleware } from "@reduxjs/toolkit";
 import { refreshAccessToken, logout } from "../features/auth/authSlice";
 import { addItem } from "../features/cart/cartSlice";
 import { jwtDecode } from "jwt-decode";
-import { navigate, resetToLogin } from "../navigation/NavigationService";
+import { resetToLogin } from "../navigation/NavigationService";
 
 interface JwtPayload {
   exp: number;
