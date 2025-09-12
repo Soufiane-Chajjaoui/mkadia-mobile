@@ -1,4 +1,4 @@
-import { Media } from "./Media";
+import { Media } from "../types/Media";
 
 export interface ProductCard {
     id: number;
