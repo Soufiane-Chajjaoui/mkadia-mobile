@@ -17,6 +17,7 @@ import useFirstLaunch from './src/hooks/useFirstLaunch';
 import { NavigationContainer } from '@react-navigation/native';
 import { Provider } from 'react-redux';
 import { store } from './src/features/store';
+import { navigationRef } from './src/navigation/NavigationService';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -37,7 +38,7 @@ function App() {
 
   return (
     <Provider store={store}>
-      <NavigationContainer>
+      <NavigationContainer ref={navigationRef}>
         <RootNavigator />
       </NavigationContainer>
     </Provider>

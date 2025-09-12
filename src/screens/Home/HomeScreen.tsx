@@ -13,7 +13,7 @@ import { PaginatedResponse } from "../../types/PaginatedResponse";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types/navigation";
 import { Colors, Spacing } from "../../constants/DesignSystem";
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks/useStateApp";
 import { addItem } from "../../features/cart/cartSlice";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;

@@ -1,6 +1,7 @@
 // constants/DesignSystem.ts
 export const Colors = {
   // Couleurs de fond
+  RED: "#dd0000ff",
   WHITE: "#FFFFFF",
   LIGHT_GRAY_BG: "#f1f3f5ff",
   RED_BG: "#E53935",
