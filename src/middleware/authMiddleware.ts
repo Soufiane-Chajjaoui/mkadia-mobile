@@ -2,7 +2,7 @@ import { Middleware } from "@reduxjs/toolkit";
 import { refreshAccessToken, logout } from "../features/auth/authSlice";
 import { addItem } from "../features/cart/cartSlice";
 import { jwtDecode } from "jwt-decode";
-import { resetToLogin } from "../navigation/NavigationService";
+import { navigate, resetToLogin } from "../navigation/NavigationService";
 
 interface JwtPayload {
   exp: number;
@@ -14,11 +14,12 @@ const isTokenExpired = (token: string | null): boolean => {
   if (!token) return true;
   try {
     const decoded = jwtDecode<JwtPayload>(token);
-    return Date.now() >= decoded.exp * 1000;
+    return Date.now() >= decoded.exp * 1000; // exp en secondes → conversion ms
   } catch {
     return true;
   }
 };
+
 
 export const authMiddleware: Middleware = (store) => (next) => async (action) => {
   const state = store.getState() as any;
@@ -27,7 +28,7 @@ export const authMiddleware: Middleware = (store) => (next) => async (action) =>
   if (addItem.match(action)) {
     if (!isAuthenticated) {
       console.warn("⛔ Utilisateur non connecté");
-      resetToLogin();
+      navigate("Login");
       return;
     }
     

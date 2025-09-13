@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
     View,
     Text,
@@ -19,6 +19,8 @@ import { login$ } from "../../../apis/AuthAPI";
 import { loginSuccess } from "../../../features/auth/authSlice";
 import { useToast } from "../../../hooks/useToast";
 import { Toast } from "../../../components/Toast";
+import { navigate } from "../../../navigation/NavigationService";
+import { Subscription } from "rxjs";
 
 const { height, width } = Dimensions.get('window');
 
@@ -31,6 +33,7 @@ export default function LoginScreen() {
     const [isLoading, setIsLoading] = useState(false);
     const [emailError, setEmailError] = useState("");
     const [passwordError, setPasswordError] = useState("");
+    const subscriptionRef = useRef<Subscription | null>(null);
 
     const { toast, visible, showSuccess, showError, showInfo, hideToast } = useToast();
 
@@ -72,13 +75,15 @@ export default function LoginScreen() {
 
         setIsLoading(true);
 
-        login$({ email, password }).subscribe({
+        subscriptionRef.current = login$({ email, password }).subscribe({
             next: (data) => {
-                dispatch(loginSuccess({ 
-                    accessToken: data.accessToken, 
-                    refreshToken: data.refreshToken 
+                dispatch(loginSuccess({
+                    accessToken: data.object.accessToken,
+                    refreshToken: data.object.refreshToken
                 }));
+                console.log(data)
                 showSuccess("Connexion réussie ! Bienvenue");
+                navigate("Home")
             },
             error: (err: Error) => {
                 showError(err.message || "Identifiants incorrects");
@@ -89,6 +94,15 @@ export default function LoginScreen() {
             },
         });
     };
+    
+    useEffect(() => {
+        return () => {
+            if (subscriptionRef.current) {
+                subscriptionRef.current.unsubscribe();
+            }
+        };
+    }, []);
+    
 
     const handleGoogleAuth = () => {
         showInfo("Authentification Google en cours de développement");
@@ -234,7 +248,7 @@ export default function LoginScreen() {
 
                         <View style={styles.signupContainer}>
                             <Text style={styles.signupText}>Pas encore de compte ? </Text>
-                            <TouchableOpacity onPress={() => console.log("Navigate to signup")}>
+                            <TouchableOpacity onPress={() => navigate("SignUp")}>
                                 <Text style={styles.signupLink}>S'inscrire</Text>
                             </TouchableOpacity>
                         </View>
