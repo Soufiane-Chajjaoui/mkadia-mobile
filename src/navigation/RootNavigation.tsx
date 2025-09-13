@@ -9,6 +9,7 @@ import OnboardingScreen from "../screens/Onboarding/OnboardingScreen";
 import CategoryProductsScreen from "../screens/CategoryProducts/CategoryProductsScreen";
 import ProductDetailsScreen from "../screens/ProductDetails/ProductDetailsScreen";
 import LoginScreen from "../screens/auth/Login/LoginScreen";
+import SignupScreen from "../screens/auth/SignUp/SignUpScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -41,6 +42,10 @@ export default function RootNavigator() {
       <Stack.Screen
         name="Login"
         component={withSafeArea(LoginScreen)}
+      />
+      <Stack.Screen
+        name="SignUp"
+        component={withSafeArea(SignupScreen)}
       />
       <Stack.Screen
         name="CategoryProducts"
