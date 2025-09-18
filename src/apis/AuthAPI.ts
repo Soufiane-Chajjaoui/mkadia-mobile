@@ -39,12 +39,7 @@ export const signup$ = (payload: SignupRequest): Observable<any> => {
 
 export const forgotPassword$ = (payload: ResetPasswordRequest): Observable<ResponseOperation<any>> => {
 
-  const formData = new URLSearchParams()
-  formData.append('email', payload.email);
-  return from(axios.post(`${environment.apiBaseUrl}/auth/forgot-password`, formData.toString(),
-    {
-      headers: { "Content-Type": "application/x-www-form-urlencoded" }
-    }
+  return from(axios.post(`${environment.apiBaseUrl}/auth/forgot-password`,payload
   )).pipe(
     map((res) => res.data.message),
     catchError((error) => {
@@ -53,30 +48,13 @@ export const forgotPassword$ = (payload: ResetPasswordRequest): Observable<Respo
   )
 }
 
-function toFormUrlEncoded(obj: Record<string, any>): string {
-  return Object.keys(obj)
-    .map((key) => encodeURIComponent(key) + "=" + encodeURIComponent(obj[key]))
-    .join("&");
-}
 
 export const changePassword$ = (payload: ResetPasswordRequest) => {
-  const body = toFormUrlEncoded({
-    email: payload.email,
-    newPassword: payload.newPassword,
-    confirmPassword: payload.confirmPassword,
-    currentPassword: "",
-  });
 
   return from(
     axios.patch(
       `${environment.apiBaseUrl}/auth/change-reset-password`,
-      body,
-      {
-        headers: {
-          ...axios.defaults.headers.common,
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      }
+      payload
     )
   ).pipe(
     map((res) => {
