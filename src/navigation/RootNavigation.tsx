@@ -10,8 +10,40 @@ import CategoryProductsScreen from "../screens/CategoryProducts/CategoryProducts
 import ProductDetailsScreen from "../screens/ProductDetails/ProductDetailsScreen";
 import LoginScreen from "../screens/auth/Login/LoginScreen";
 import SignupScreen from "../screens/auth/SignUp/SignUpScreen";
+import ResetPasswordScreen from "../screens/auth/ForgetPassword/ResetPasswordScreen";
+import { LinkingOptions } from "@react-navigation/native";
+import { RootStackParamList } from "../types/navigation";
+import ChangePasswordScreen from "../screens/auth/ChangePaasword/ChangePasswordScreen";
 
 const Stack = createNativeStackNavigator();
+export const linking: LinkingOptions<RootStackParamList> = {
+  prefixes: ['mkadia://', 'https://mkadia.com'],
+  config: {
+    screens: {
+      Onboarding: 'onboarding',
+      Home: 'home',
+      Login: 'login',
+      SignUp: 'signup',
+      // ✅ CORRIGÉ : Configuration pour ResetPassword
+      ResetPassword:'reset-password',
+      ChangePassword: {
+        path: 'change-password',
+        parse: {
+          email: (email: string) => {
+            console.log("🔗 Email parsé par React Navigation:", email);
+            return email;
+          },
+          token: (token: string) => {
+            console.log("🔗 Token parsé par React Navigation:", token);
+            return token;
+          },
+        },
+      },
+      CategoryProducts: 'category/:id',
+      ProductDetails: 'product/:id',
+    },
+  },
+};
 
 const Loader = () => (
   <SafeAreaWrapper>
@@ -34,6 +66,16 @@ export default function RootNavigator() {
       <Stack.Screen
         name="Onboarding"
         component={withSafeArea(OnboardingScreen)}
+      />
+      
+      <Stack.Screen
+        name="ResetPassword"
+        component={withSafeArea(ResetPasswordScreen)}
+      />
+
+      <Stack.Screen
+        name="ChangePassword"
+        component={withSafeArea(ChangePasswordScreen)}
       />
       <Stack.Screen
         name="Home"

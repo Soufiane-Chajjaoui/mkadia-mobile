@@ -8,4 +8,6 @@ export type RootStackParamList = {
   ProductDetails: ProductCard;
   Login: undefined
   SignUp: undefined
+  ResetPassword: undefined,
+  ChangePassword: {token? : string, email? : string}
 };

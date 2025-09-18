@@ -47,5 +47,16 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>mkadia</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>mkadia</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

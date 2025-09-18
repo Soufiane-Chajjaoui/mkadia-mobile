@@ -155,9 +155,8 @@ export default function SignupScreen() {
                 >
                     <View style={styles.header}>
                         <Image
-                            source={require("../../../../assets/images/Logo-Mkadia-App.png")}
+                            source={require("../../../../assets/images/logo-with-border.png")}
                             style={styles.logo}
-                            resizeMode="contain"
                         />
                         <Text style={styles.welcomeText}>Créer un compte</Text>
                         <Text style={styles.subtitleText}>Rejoignez-nous dès maintenant</Text>
@@ -421,9 +420,9 @@ const styles = StyleSheet.create({
         marginBottom: Spacing.XL
     },
     logo: {
-        width: 100,
-        height: 100,
-        marginBottom: Spacing.LG
+        width: 300,
+        height: 120,
+        marginBottom: Spacing.XXS
     },
     welcomeText: {
         fontSize: Typography.HEADLINE.fontSize,
