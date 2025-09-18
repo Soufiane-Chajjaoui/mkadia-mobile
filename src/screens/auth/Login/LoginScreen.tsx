@@ -21,7 +21,6 @@ import { useToast } from "../../../hooks/useToast";
 import { Toast } from "../../../components/Toast";
 import { navigate } from "../../../navigation/NavigationService";
 import { Subscription } from "rxjs";
-
 const { height, width } = Dimensions.get('window');
 
 
@@ -39,7 +38,7 @@ export default function LoginScreen() {
 
     const dispatch = useDispatch();
 
-   
+
 
     const validateEmail = (email: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -94,7 +93,7 @@ export default function LoginScreen() {
             },
         });
     };
-    
+
     useEffect(() => {
         return () => {
             if (subscriptionRef.current) {
@@ -102,14 +101,14 @@ export default function LoginScreen() {
             }
         };
     }, []);
-    
+
 
     const handleGoogleAuth = () => {
         showInfo("Authentification Google en cours de développement");
     };
 
     const handleForgotPassword = () => {
-        showInfo("Un email de récupération va être envoyé");
+        navigate("ResetPassword");
     };
 
     return (
@@ -118,7 +117,7 @@ export default function LoginScreen() {
             <Toast
                 visible={visible}
                 toast={toast}
-                onHide={hideToast} 
+                onHide={hideToast}
             />
 
             <KeyboardAvoidingView
@@ -132,9 +131,8 @@ export default function LoginScreen() {
                 >
                     <View style={styles.header}>
                         <Image
-                            source={require("../../../../assets/images/Logo-Mkadia-App.png")}
+                            source={require("../../../../assets/images/logo-with-border.png")}
                             style={styles.logo}
-                            resizeMode="contain"
                         />
                         <Text style={styles.welcomeText}>Bienvenue !</Text>
                         <Text style={styles.subtitleText}>Connectez-vous à votre compte</Text>
@@ -275,9 +273,9 @@ const styles = StyleSheet.create({
         marginBottom: Spacing.XXXL
     },
     logo: {
-        width: 120,
+        width: 300,
         height: 120,
-        marginBottom: Spacing.LG
+        marginBottom: Spacing.XXS
     },
     welcomeText: {
         fontSize: Typography.HEADLINE.fontSize,
