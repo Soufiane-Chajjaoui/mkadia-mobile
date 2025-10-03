@@ -5,7 +5,7 @@ import { LoginResponse } from "../types/LoginResponse";
 import { SignupRequest } from "../types/SignUpRequest";
 import { ResponseOperation } from "../types/ResponseOperation";
 import { ResetPasswordRequest } from "../types/ResetPasswordRequest";
-import axios from "../intercepteurs/auth-interceptor";
+import { configuredAxios as axios } from '../intercepteurs/main-interceptor';
 
 
 export const login$ = (payload: LoginRequest): Observable<ResponseOperation<LoginResponse>> => {
@@ -47,7 +47,6 @@ export const forgotPassword$ = (payload: ResetPasswordRequest): Observable<Respo
     })
   )
 }
-
 
 export const changePassword$ = (payload: ResetPasswordRequest) => {
 

@@ -14,13 +14,14 @@ import {
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { Colors, Spacing, BorderRadius, Typography, Elevation } from "../../../constants/DesignSystem";
-import { Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle, X } from "lucide-react-native";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react-native";
 import { login$ } from "../../../apis/AuthAPI";
-import { loginSuccess } from "../../../features/auth/authSlice";
 import { useToast } from "../../../hooks/useToast";
 import { Toast } from "../../../components/Toast";
 import { navigate } from "../../../navigation/NavigationService";
 import { Subscription } from "rxjs";
+import { loginAsync } from "../../../features/auth/authSlice";
+import { AppDispatch } from "../../../features/store";
 const { height, width } = Dimensions.get('window');
 
 
@@ -35,8 +36,7 @@ export default function LoginScreen() {
     const subscriptionRef = useRef<Subscription | null>(null);
 
     const { toast, visible, showSuccess, showError, showInfo, hideToast } = useToast();
-
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
 
 
 
@@ -75,11 +75,9 @@ export default function LoginScreen() {
         setIsLoading(true);
 
         subscriptionRef.current = login$({ email, password }).subscribe({
-            next: (data) => {
-                dispatch(loginSuccess({
-                    accessToken: data.object.accessToken,
-                    refreshToken: data.object.refreshToken
-                }));
+            next: async (data) => {
+                const { accessToken, refreshToken } = data.object;
+                await dispatch(loginAsync({ accessToken, refreshToken }));
                 console.log(data)
                 showSuccess("Connexion réussie ! Bienvenue");
                 navigate("Home")

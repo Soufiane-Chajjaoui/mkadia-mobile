@@ -58,7 +58,7 @@ const CategoriesSection: React.FC<CategoriesSectionProps> = ({
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesContainer}>
         {categories.map((item) => (
           <CategoryCard
-            key={item.id}
+            key={`category-${item.id}`}
             category={item}
             onPress={() => handleCategoryPress(item)}
           />

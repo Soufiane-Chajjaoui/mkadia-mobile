@@ -9,18 +9,23 @@ export default function useFirstLaunch() {
     async function checkFirstLaunch() {
       try {
         const value = await AsyncStorage.getItem("alreadyLaunched");
+        
         if (value === null) {
-          await AsyncStorage.setItem("alreadyLaunched", "true");
+          // Premier lancement - l'app n'a jamais été ouverte
           setIsFirstLaunch(true);
         } else {
+          // Pas le premier lancement - l'app a déjà été ouverte
           setIsFirstLaunch(false);
         }
       } catch (e) {
         console.error("Error checking first launch:", e);
+        // En cas d'erreur, on considère que c'est le premier lancement
+        setIsFirstLaunch(true);
       } finally {
         setLoading(false);
       }
     }
+    
     checkFirstLaunch();
   }, []);
 

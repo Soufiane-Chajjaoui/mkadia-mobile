@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.WHITE,
     borderTopLeftRadius: BorderRadius.XL,
     borderTopRightRadius: BorderRadius.XL,
-    marginTop: -Spacing.XXS,
+    marginTop: -Spacing.LG,
     paddingTop: Spacing.XXS,
     ...Elevation.LOW,
   },

@@ -69,7 +69,7 @@ const OffersSlider: React.FC<OffersSliderProps> = ({ offers, onOfferPress }) => 
       >
         {offers.map((item) => (
           <TouchableOpacity 
-            key={item.id} 
+            key={`offre-${item.id}`} 
             style={styles.offerCard} 
             activeOpacity={0.9}
             onPress={() => handleOfferPress(item)}

@@ -1,4 +1,3 @@
-// src/screens/Onboarding/OnboardingScreen.tsx
 import React, { useRef, useState } from "react";
 import {
   View,
@@ -10,6 +9,9 @@ import {
 } from "react-native";
 import PaginationDots from "./components/OnboardingDots";
 import OnboardingSlide from "./components/OnboardingSlide";
+import { Colors, Elevation, Typography } from "../../constants/DesignSystem";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CommonActions } from '@react-navigation/native';
 
 const { width } = Dimensions.get("window");
 
@@ -38,16 +40,35 @@ const OnboardingScreen = ({ navigation }: any) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
 
+  const completeOnboarding = async () => {
+    try {
+      // Marquer l'onboarding comme terminé
+      await AsyncStorage.setItem("alreadyLaunched", "true");
+      
+      // Reset la stack de navigation et naviguer vers Home
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'Home' }],
+        })
+      );
+    } catch (error) {
+      console.error("Erreur lors de la finalisation de l'onboarding:", error);
+      // Fallback en cas d'erreur
+      navigation.replace('Home');
+    }
+  };
+
   const handleNext = () => {
     if (currentIndex < slides.length - 1) {
       flatListRef.current?.scrollToIndex({ index: currentIndex + 1 });
     } else {
-      navigation.replace("Home");
+      completeOnboarding();
     }
   };
 
   const handleSkip = () => {
-    navigation.replace("Home");
+    completeOnboarding();
   };
 
   const handleScroll = (event: any) => {
@@ -71,6 +92,7 @@ const OnboardingScreen = ({ navigation }: any) => {
         showsHorizontalScrollIndicator={false}
         ref={flatListRef}
         onScroll={handleScroll}
+        keyExtractor={(item) => item.id}
       />
 
       <PaginationDots total={slides.length} currentIndex={currentIndex} />
@@ -87,37 +109,33 @@ const OnboardingScreen = ({ navigation }: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f0ff",
   },
   skipButton: {
     position: "absolute",
-    top: 50,
+    top: 20,
     right: 20,
     zIndex: 1,
     padding: 10,
   },
   skipText: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "600",
-    color: "#6C5CE7",
+    textDecorationLine: 'underline',
+    color: Colors.GREEN_TEXT
   },
   button: {
-    backgroundColor: "#6C5CE7",
+    backgroundColor: Colors.GREEN_BG,
     padding: 15,
     borderRadius: 12,
     marginHorizontal: 40,
     marginBottom: 40,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 5,
+    ...Elevation.LOW,
   },
   buttonText: {
-    color: "#fff",
-    textAlign: "center",
-    fontSize: 18,
-    fontFamily: "Raleway-Bold",
+    ...Typography.SUBHEAD,
+    color: Colors.WHITE_TEXT,
+    fontWeight: '600',
+    textAlign: 'center',
   },
 });
 

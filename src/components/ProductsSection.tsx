@@ -39,7 +39,6 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({
   onSeeAllPress,
   onProductPress,
   onAddToCart
-
 }) => {
   const screenData = useWindowDimensions();
   
@@ -67,21 +66,11 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({
     onAddToCart?.(product);
   }
   
-  const renderSkeletonCard = (index: number) => (
-    <SkeletonPlaceholder.Item
-      key={index}
-      width={cardWidth}
-      height={200}
-      borderRadius={BorderRadius.MD}
-      marginBottom={Spacing.MD}
-    />
-  );
-
   const renderSkeletonRow = () => (
     <View style={styles.skeletonRow}>
       {Array.from({ length: responsiveConfig.numColumns }, (_, index) => (
         <SkeletonPlaceholder.Item
-          key={index}
+          key={`skeleton-${index}`}
           width={cardWidth}
           height={200}
           borderRadius={BorderRadius.MD}
@@ -146,7 +135,7 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({
             <View style={[styles.skeletonRow, { marginTop: Spacing.MD }]}>
               {Array.from({ length: responsiveConfig.numColumns }, (_, index) => (
                 <SkeletonPlaceholder.Item
-                  key={index + 2}
+                  key={`skeleton-row2-${index}`}
                   width={cardWidth}
                   height={200}
                   borderRadius={BorderRadius.MD}
@@ -191,7 +180,7 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({
       <FlatList 
         style={{ paddingHorizontal: 0 }}
         data={products}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item, index) => `product-${item.id}-${index}`}
         numColumns={responsiveConfig.numColumns}
         columnWrapperStyle={styles.columnWrapper}
         contentContainerStyle={[

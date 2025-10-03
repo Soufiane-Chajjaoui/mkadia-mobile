@@ -17,13 +17,14 @@ import { useDispatch } from "react-redux";
 import { Colors, Spacing, BorderRadius, Typography, Elevation } from "../../../constants/DesignSystem";
 import { Mail, Lock, Eye, EyeOff, User, Phone } from "lucide-react-native";
 import { signup$ } from "../../../apis/AuthAPI";
-import { loginSuccess } from "../../../features/auth/authSlice";
 import { useToast } from "../../../hooks/useToast";
 import { Toast } from "../../../components/Toast";
 import { navigate } from "../../../navigation/NavigationService";
 import { SignupRequest } from "../../../types/SignUpRequest";
 import { validateSignupFields } from "../../../utils/validators/signupValidator";
 import { Subscription } from "rxjs";
+import { loginAsync } from "../../../features/auth/authSlice";
+import { AppDispatch } from "../../../features/store";
 
 const { height } = Dimensions.get('window');
 export interface SignupFormData extends SignupRequest {
@@ -57,7 +58,7 @@ export default function SignupScreen() {
         terms: "",
     });
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
     const { toast, visible, showSuccess, showError, showInfo, showWarning, hideToast } = useToast();
 
     const handleInputChange = (field: keyof typeof formData, value: string) => {
@@ -92,11 +93,12 @@ export default function SignupScreen() {
 
             // Appel API d'inscription
             subscriptionRef.current = signup$(signupData).subscribe({
-                next: (data) => {
-                    dispatch(
-                        loginSuccess({
-                            accessToken: data.accessToken,
-                            refreshToken: data.refreshToken,
+                next: async (data) => {
+                    const {access_token , refresh_token} = data
+                    await dispatch(
+                        loginAsync({
+                            accessToken: access_token,
+                            refreshToken: refresh_token,
                         })
                     );
                     showSuccess(`Bienvenue ${formData.lastName} ! Compte créé avec succès`);

@@ -14,8 +14,12 @@ import ResetPasswordScreen from "../screens/auth/ForgetPassword/ResetPasswordScr
 import { LinkingOptions } from "@react-navigation/native";
 import { RootStackParamList } from "../types/navigation";
 import ChangePasswordScreen from "../screens/auth/ChangePaasword/ChangePasswordScreen";
+import CartScreen from "../screens/Cart/CartScreen";
+import LoginRequiredScreen from "../screens/auth/LoginRequired/LoginRequiredScreen";
+import { withRoleGate } from "./withRoleGate";
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
+
 export const linking: LinkingOptions<RootStackParamList> = {
   prefixes: ['mkadia://', 'https://mkadia.com'],
   config: {
@@ -24,8 +28,7 @@ export const linking: LinkingOptions<RootStackParamList> = {
       Home: 'home',
       Login: 'login',
       SignUp: 'signup',
-      // ✅ CORRIGÉ : Configuration pour ResetPassword
-      ResetPassword:'reset-password',
+      ResetPassword: 'reset-password',
       ChangePassword: {
         path: 'change-password',
         parse: {
@@ -41,6 +44,8 @@ export const linking: LinkingOptions<RootStackParamList> = {
       },
       CategoryProducts: 'category/:id',
       ProductDetails: 'product/:id',
+      Cart: 'cart',
+      LoginRequired: 'login-required'
     },
   },
 };
@@ -53,6 +58,14 @@ const Loader = () => (
   </SafeAreaWrapper>
 );
 
+const withSafeArea = (ScreenComponent: React.ComponentType<any>) => {
+  return (props: any) => (
+    <SafeAreaWrapper>
+      <ScreenComponent {...props} />
+    </SafeAreaWrapper>
+  );
+};
+
 export default function RootNavigator() {
   const { isFirstLaunch, loading } = useFirstLaunch();
 
@@ -60,22 +73,12 @@ export default function RootNavigator() {
 
   return (
     <Stack.Navigator
-      initialRouteName={isFirstLaunch ? "Onboarding" : "Home"}
       screenOptions={{ headerShown: false }}
+      initialRouteName={isFirstLaunch ? "Onboarding" : "Home"}
     >
       <Stack.Screen
         name="Onboarding"
         component={withSafeArea(OnboardingScreen)}
-      />
-      
-      <Stack.Screen
-        name="ResetPassword"
-        component={withSafeArea(ResetPasswordScreen)}
-      />
-
-      <Stack.Screen
-        name="ChangePassword"
-        component={withSafeArea(ChangePasswordScreen)}
       />
       <Stack.Screen
         name="Home"
@@ -90,6 +93,14 @@ export default function RootNavigator() {
         component={withSafeArea(SignupScreen)}
       />
       <Stack.Screen
+        name="ResetPassword"
+        component={withSafeArea(ResetPasswordScreen)}
+      />
+      <Stack.Screen
+        name="ChangePassword"
+        component={withSafeArea(ChangePasswordScreen)}
+      />
+      <Stack.Screen
         name="CategoryProducts"
         component={withSafeArea(CategoryProductsScreen)}
       />
@@ -97,15 +108,17 @@ export default function RootNavigator() {
         name="ProductDetails"
         component={withSafeArea(ProductDetailsScreen)}
       />
+      <Stack.Screen
+        name="Cart"
+        component={withRoleGate(
+          withSafeArea(CartScreen),
+          ["USER"],
+        )}
+      />
+      <Stack.Screen
+        name="LoginRequired"
+        component={withSafeArea(LoginRequiredScreen)}
+      />
     </Stack.Navigator>
   );
 }
-
-const withSafeArea = (ScreenComponent: React.ComponentType<any>) => {
-  return (props: any) => (
-    <SafeAreaWrapper>
-      <ScreenComponent {...props} />
-    </SafeAreaWrapper>
-  );
-};
-

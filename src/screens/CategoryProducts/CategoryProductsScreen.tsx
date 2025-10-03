@@ -1,22 +1,22 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, FlatList, ActivityIndicator, RefreshControl } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { getProductsPaginatedByCategory$ } from "../../apis/PublicAPI";
-import { ProductCard, ProductCard as ProductCardModel } from "../../models/ProductCard";
+import { ProductCard as ProductCardModel } from "../../models/ProductCard";
 import { PaginatedResponse } from "../../types/PaginatedResponse";
 import { RootStackParamList } from "../../types/navigation";
 import { CategoryCard } from "../../models/CategoryCard";
-import { Colors } from "../../constants/DesignSystem";
+import { Colors, Spacing } from "../../constants/DesignSystem";
 import CategoryHeader from "./components/CategoryHeader";
-import CategoryProductsContainer from "./components/CategoryProductsContainer";
-import { useAppDispatch } from "../../hooks/useStateApp";
+import { useAppDispatch } from "../../hooks/useRedux";
 import { addItem } from "../../features/cart/cartSlice";
+import ProductCard from "../../components/ProductCard";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CategoryProducts'>;
 
 const CategoryProductsScreen: React.FC<Props> = ({ route, navigation }) => {
   const category: CategoryCard = route.params;
-  
+
   const [products, setProducts] = useState<ProductCardModel[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -32,7 +32,7 @@ const CategoryProductsScreen: React.FC<Props> = ({ route, navigation }) => {
   const loadProducts = () => {
     setLoading(true);
     const sub = getProductsPaginatedByCategory$(0, 10, 10, category.id).subscribe({
-      next: (data: PaginatedResponse<ProductCard>) => {
+      next: (data: PaginatedResponse<ProductCardModel>) => {
         setLoading(false);
         setRefreshing(false);
         setProducts(data.elements ?? []);
@@ -50,7 +50,7 @@ const CategoryProductsScreen: React.FC<Props> = ({ route, navigation }) => {
   };
 
   const handleAddToCart = (product: ProductCardModel) => {
-    dispatch(addItem({id : product.id, name : product.name, price: product.price, quantity: 1}));
+    dispatch(addItem({ id: product.id, name: product.name, price: product.price, quantity: 1 }));
   }
 
   const handleRefresh = useCallback(() => {
@@ -65,7 +65,7 @@ const CategoryProductsScreen: React.FC<Props> = ({ route, navigation }) => {
     const nextPage = currentPage + 1;
 
     const sub = getProductsPaginatedByCategory$(nextPage, 10, 10, category.id).subscribe({
-      next: (data: PaginatedResponse<ProductCard>) => {
+      next: (data: PaginatedResponse<ProductCardModel>) => {
         setLoadingMore(false);
         setProducts((prev) => [...prev, ...data.elements]);
         setHasMoreProducts(data.hasMore ?? false);
@@ -88,24 +88,54 @@ const CategoryProductsScreen: React.FC<Props> = ({ route, navigation }) => {
     navigation.goBack();
   };
 
-  return (
-    <View style={styles.container}>
-      <CategoryHeader 
+  const renderProductItem = ({ item, index }: { item: ProductCardModel; index: number }) => (
+    <View style={{
+      width: '46%',
+      marginRight: index % 2 === 0 ? '3.5%' : 0,
+      marginLeft: index % 2 === 0 ? '2%' : 0,
+      marginBottom: Spacing.MD
+    }}>
+      <ProductCard
+        {...item}
+        onAddToCart={() => handleAddToCart(item)}
+        onPress={() => handleProductPress(item)}
+      />
+    </View>
+  );
+
+  const renderHeader = () => {
+    return <View style={{marginBottom: -10}}>
+      <CategoryHeader
         category={category}
         productsCount={products.length}
         loading={loading}
         onBackPress={handleBackPress}
       />
-      
-      <CategoryProductsContainer 
-        products={products}
-        loading={loading}
-        loadingMore={loadingMore}
-        refreshing={refreshing}
-        onAddToCart={handleAddToCart}
-        onRefresh={handleRefresh}
-        onLoadMoreProducts={loadMoreProducts}
-        onProductPress={handleProductPress}
+    </View>
+  }
+
+
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={products}
+        renderItem={renderProductItem}
+        ListHeaderComponent={renderHeader}
+        keyExtractor={(item, index) => `product-${item.id}-${index}`}
+        numColumns={2}
+        ListFooterComponent={() => loadingMore ? <ActivityIndicator /> : null}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            colors={[Colors.GREEN_BG]}
+            tintColor={Colors.GREEN_BG}
+          />
+        }
+        onEndReached={loadMoreProducts}
+        onEndReachedThreshold={0.3}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.listContent}
       />
     </View>
   );
@@ -115,6 +145,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.WHITE,
+  },
+  listContent: {
+    paddingHorizontal: 0,
+    paddingBottom: 50,
   },
 });
 

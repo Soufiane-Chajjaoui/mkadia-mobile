@@ -31,9 +31,7 @@ const CategoryHeader: React.FC<CategoryHeaderProps> = ({
   onBackPress 
 }) => {
   return (
-    <>
-      <StatusBar barStyle="light-content" backgroundColor={Colors.GREEN_BG} />
-      
+    <>      
       <ImageBackground 
         source={{ uri: replaceBaseUrl(category.url) }}
         style={styles.headerBackground}
@@ -66,7 +64,7 @@ const CategoryHeader: React.FC<CategoryHeaderProps> = ({
 
 const styles = StyleSheet.create({
   headerBackground: {
-    height: screenHeight * 0.3,
+    height: screenHeight * 0.22,
     justifyContent: 'flex-end',
   },
   overlay: {
