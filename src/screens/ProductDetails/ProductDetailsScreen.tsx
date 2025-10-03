@@ -18,8 +18,8 @@ import ProductInfoSection from "./components/ProductInfoSection";
 import { getProductById$ } from "../../apis/PublicAPI";
 import { ProductCard } from "../../models/ProductCard";
 import { ProductDetails } from "../../models/ProductDetails";
-import { useAppDispatch } from "../../hooks/useStateApp";
-import { addItem } from "../../features/cart/cartSlice";
+import { useAppDispatch } from "../../hooks/useRedux";
+import { addItemAsync } from "../../features/cart/cartSlice";
 
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ProductDetails'>;
@@ -97,8 +97,8 @@ const ProductDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
   const handleAddToCart = () => {
     if (!product) return;
     dispatch(
-      addItem(
-        {id : product.id, name : product.name, price: product.price, quantity: cartQuantity}
+      addItemAsync(
+        {id : product.id, productId: product.id, quantity: cartQuantity}
       )
     );
   };
@@ -206,7 +206,6 @@ const ProductDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.WHITE,
   },
   scrollView: {
     flex: 1,

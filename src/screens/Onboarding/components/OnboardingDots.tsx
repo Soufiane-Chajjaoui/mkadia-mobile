@@ -1,6 +1,7 @@
 // src/components/Onboarding/PaginationDots.tsx
 import React from "react";
 import { View, StyleSheet } from "react-native";
+import { Colors } from "../../../constants/DesignSystem";
 
 interface PaginationDotsProps {
   total: number;
@@ -30,12 +31,12 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#D0BFFF",
+    backgroundColor: Colors.GREEN_SHADOW,
     marginHorizontal: 5,
   },
   activeDot: {
-    backgroundColor: "#6C5CE7",
-    width: 16,
+    backgroundColor: Colors.GREEN_BG,
+    width: 13,
   },
 });
 

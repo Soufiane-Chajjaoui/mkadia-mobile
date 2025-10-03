@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: Spacing.LG,
     paddingVertical: Spacing.MD,
-    backgroundColor: Colors.WHITE,
+    backgroundColor: Colors.LIGHT_GRAY_BG,
     borderTopWidth: 1,
     borderTopColor: Colors.LIGHT_GRAY_BG,
     ...Elevation.MEDIUM,

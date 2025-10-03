@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Heart, Star, Check, ShoppingBasket } from "lucide-react-native";
-import { ProductCard as ProductCardModel} from "../models/ProductCard";
+import { ProductCard as ProductCardModel } from "../models/ProductCard";
 import { replaceBaseUrl } from "../utils/urlHelper";
-import { 
-  Colors, 
-  Spacing, 
-  BorderRadius, 
-  Typography, 
+import {
+  Colors,
+  Spacing,
+  BorderRadius,
+  Typography,
   IconSize,
-  Elevation 
+  Elevation
 } from "../constants/DesignSystem";
 
 interface ProductCardProps extends ProductCardModel {
@@ -23,11 +23,11 @@ export default function ProductCard(props: ProductCardProps) {
   const { cardWidth, onAddToCart, onToggleFavorite, onPress, ...product } = props;
   const [isFavorite, setIsFavorite] = useState(false);
   const [isAddedToCart, setIsAddedToCart] = useState(false);
-  
+
   const handleAddToCart = (event: any) => {
     // Empêcher la propagation vers onPress du produit
     event.stopPropagation();
-    
+
     setIsAddedToCart(true);
     onAddToCart?.();
   };
@@ -35,7 +35,7 @@ export default function ProductCard(props: ProductCardProps) {
   const toggleFavorite = (event: any) => {
     // Empêcher la propagation vers onPress du produit
     event.stopPropagation();
-    
+
     const newFavoriteState = !isFavorite;
     setIsFavorite(newFavoriteState);
     onToggleFavorite?.(newFavoriteState);
@@ -57,7 +57,7 @@ export default function ProductCard(props: ProductCardProps) {
   });
 
   return (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={dynamicStyles.card}
       onPress={handleProductPress}
       activeOpacity={0.8}
@@ -72,25 +72,29 @@ export default function ProductCard(props: ProductCardProps) {
       )}
 
       {/* Favorite Heart */}
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.heartBtn}
         onPress={toggleFavorite}
         activeOpacity={0.7}
         accessibilityLabel={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
         accessibilityRole="button"
       >
-        <Heart 
-          size={IconSize.MD} 
-          color={isFavorite ? Colors.RED_ICON : Colors.GRAY_ICON} 
+        <Heart
+          size={IconSize.MD}
+          color={isFavorite ? Colors.RED_ICON : Colors.GRAY_ICON}
           fill={isFavorite ? Colors.RED_ICON : "transparent"}
         />
       </TouchableOpacity>
 
       {/* Product Image */}
       <View style={styles.imageContainer}>
-        <Image 
-          source={{ uri: replaceBaseUrl("http://localhost:9000/mkadia-objects/885d07f7-19c2-45d7-9f07-0d983c131e59_carrot.jpg")}} 
-          onError={(e) => console.log("Image loading error:", e.nativeEvent.error)} 
+        <Image
+          source={{
+            uri: replaceBaseUrl(
+              product?.urls?.[0]?.url ??
+              "http://localhost:9000/mkadia-objects/885d07f7-19c2-45d7-9f07-0d983c131e59_carrot.jpg"
+            )
+          }} onError={(e) => console.log("Image loading error:", e.nativeEvent.error)}
           style={styles.image}
           accessibilityLabel={`Image de ${product.name}`}
         />
@@ -106,8 +110,8 @@ export default function ProductCard(props: ProductCardProps) {
         </View>
 
         {/* Product Name */}
-        <Text 
-          style={styles.productName} 
+        <Text
+          style={styles.productName}
           numberOfLines={2}
           accessibilityLabel={`Produit: ${product.name}`}
         >
@@ -122,12 +126,12 @@ export default function ProductCard(props: ProductCardProps) {
               <Text style={styles.unit}>/{product.unit}</Text>
             )}
           </View>
-          
-          <TouchableOpacity 
+
+          <TouchableOpacity
             style={[
               styles.addBtn,
               isAddedToCart && styles.addBtnSuccess
-            ]} 
+            ]}
             onPress={handleAddToCart}
             activeOpacity={0.8}
             disabled={isAddedToCart}
@@ -159,17 +163,17 @@ const styles = StyleSheet.create({
     zIndex: 3,
     ...Elevation.LOW,
   },
-  
-  discountText: { 
-    color: Colors.WHITE_TEXT, 
+
+  discountText: {
+    color: Colors.WHITE_TEXT,
     ...Typography.BADGE,
     letterSpacing: 0.5,
   },
 
-  heartBtn: { 
-    position: "absolute", 
-    top: Spacing.SM, 
-    right: Spacing.SM, 
+  heartBtn: {
+    position: "absolute",
+    top: Spacing.SM,
+    right: Spacing.SM,
     zIndex: 3,
     backgroundColor: Colors.TRANSPARENT_WHITE,
     padding: Spacing.SM,
@@ -185,9 +189,9 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
 
-  image: { 
-    width: "100%", 
-    height: 100, 
+  image: {
+    width: "100%",
+    height: 100,
     resizeMode: "cover",
   },
 
@@ -214,10 +218,10 @@ const styles = StyleSheet.create({
     marginLeft: Spacing.XXS,
   },
 
-  productName: { 
+  productName: {
     ...Typography.BODY,
-    fontWeight: "600", 
-    color: Colors.DARK_BLUE_TEXT, 
+    fontWeight: "600",
+    color: Colors.DARK_BLUE_TEXT,
     lineHeight: 18,
     marginBottom: Spacing.SM,
     minHeight: 36,
@@ -236,21 +240,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  price: { 
+  price: {
     ...Typography.SUBHEAD,
-    fontWeight: "700", 
+    fontWeight: "700",
     color: Colors.GREEN_TEXT,
   },
 
-  unit: { 
+  unit: {
     ...Typography.CAPTION,
     color: Colors.DARK_GRAY_TEXT,
     marginLeft: Spacing.XXS,
   },
 
-  addBtn: { 
-    backgroundColor: Colors.GREEN_BG, 
-    padding: Spacing.SM, 
+  addBtn: {
+    backgroundColor: Colors.GREEN_BG,
+    padding: Spacing.SM,
     borderRadius: BorderRadius.MD,
     minWidth: 32,
     alignItems: "center",

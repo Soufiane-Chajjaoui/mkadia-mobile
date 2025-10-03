@@ -6,17 +6,20 @@ import { Linking, useColorScheme} from 'react-native';
 import BootSplash from 'react-native-bootsplash';
 import React, { useEffect } from 'react';
 import RootNavigator, { linking } from './src/navigation/RootNavigation';
-import useFirstLaunch from './src/hooks/useFirstLaunch';
 import { NavigationContainer } from '@react-navigation/native';
 import { Provider } from 'react-redux';
-import { store } from './src/features/store';
 import { navigate, navigationRef } from './src/navigation/NavigationService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TokenType } from './src/enums/TokenType';
+import { useAppDispatch } from './src/hooks/useRedux';
+import { initializeAuth } from './src/features/auth/authSlice';
+import { initializeCart } from './src/features/cart/cartSlice';
+import { store } from './src/features/store';
 
-function App() {
+// Composant interne qui utilise les hooks Redux
+const AppContent: React.FC = () => {
   const isDarkMode = useColorScheme() === 'dark';
-  const { isFirstLaunch, loading } = useFirstLaunch();
+  const dispatch = useAppDispatch(); // Maintenant à l'intérieur du Provider
 
   useEffect(() => {
     // Vérifie si l'app est ouverte avec un lien au démarrage
@@ -105,25 +108,30 @@ function App() {
       }
     }, 100); // Petit délai pour s'assurer que la navigation est prête
   };
+
   useEffect(() => {
     const init = async () => {
-      // You can do some async operations here if needed
-      // For example: await loadUserData();
+      dispatch(initializeAuth());
+      dispatch(initializeCart());
 
-      // Hide the bootsplash when the app is ready
       await BootSplash.hide({ fade: true });
     };
-    
-    console.log("isFirstLaunch", isFirstLaunch);
 
     init();
-  }, []);
+  }, [dispatch]);
 
   return (
+    <NavigationContainer ref={navigationRef} linking={linking}>
+      <RootNavigator />
+    </NavigationContainer>
+  );
+};
+
+// Composant App principal
+function App() {
+  return (
     <Provider store={store}>
-      <NavigationContainer ref={navigationRef} linking={linking}>
-        <RootNavigator />
-      </NavigationContainer>
+      <AppContent />
     </Provider>
   );
 }

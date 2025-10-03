@@ -1,6 +1,7 @@
 // src/components/Onboarding/OnboardingSlide.tsx
 import React from "react";
 import { View, Text, Image, StyleSheet, Dimensions, ImageSourcePropType } from "react-native";
+import { Typography, Colors, Spacing } from "../../../constants/DesignSystem";
 
 const { width, height } = Dimensions.get("window");
 
@@ -41,18 +42,20 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   title: {
-    fontSize: 26,
-    fontFamily: "Raleway-Bold",
-    color: "#4E2A84",
-    textAlign: "center",
-    marginBottom: 10,
+    ...Typography.HEADLINE,
+    color: Colors.DARK_BLUE_TEXT,
+    marginBottom: Spacing.SM,
+    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: '800',
   },
   description: {
-    fontSize: 16,
-    fontFamily: "Poppins-Regular",
-    textAlign: "center",
-    color: "#5D3B8D",
-    paddingHorizontal: 20,
+    ...Typography.BODY,
+    color: Colors.GRAY_TEXT,
+    textAlign: 'center',
+    lineHeight: 22,
+    fontSize: 15,
+    paddingHorizontal: Spacing.SM,
   },
 });
 

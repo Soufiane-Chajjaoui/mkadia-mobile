@@ -1,5 +1,6 @@
 import { CategoryCard } from "../models/CategoryCard";
 import { ProductCard } from "../models/ProductCard";
+import { LoginRequiredScreenProps } from "../screens/auth/LoginRequired/LoginRequiredScreen";
 
 export type RootStackParamList = {
   Onboarding: undefined;
@@ -9,5 +10,7 @@ export type RootStackParamList = {
   Login: undefined
   SignUp: undefined
   ResetPassword: undefined,
-  ChangePassword: {token? : string, email? : string}
+  ChangePassword: {token? : string, email? : string},
+  Cart: undefined
+  LoginRequired: LoginRequiredScreenProps
 };
