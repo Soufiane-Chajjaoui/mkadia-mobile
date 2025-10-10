@@ -109,20 +109,21 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   const handleAddToCart = (product: ProductCardModel) => {
-    dispatch(addItemAsync({
-      id: product.id,
-      productId: product.id,
-      quantity: 1
-    }));
+
     addItemToCart$({
       productId: product.id,
       quantity: 1
     }).subscribe({
       next(value) {
-          console.log(value)
+        dispatch(addItemAsync({
+          id: product.id,
+          productId: product.id,
+          quantity: 1
+        }));
+        console.log(value)
       },
       error(err) {
-          console.log(err)
+        console.log(err)
       },
     })
   };

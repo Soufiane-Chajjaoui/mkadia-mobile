@@ -7,10 +7,11 @@ export type RootStackParamList = {
   Home: undefined;
   CategoryProducts: CategoryCard;
   ProductDetails: ProductCard;
-  Login: undefined
-  SignUp: undefined
-  ResetPassword: undefined,
-  ChangePassword: {token? : string, email? : string},
-  Cart: undefined
-  LoginRequired: LoginRequiredScreenProps
+  Login: undefined;
+  SignUp: undefined;
+  ResetPassword: undefined;
+  ChangePassword: {token? : string, email? : string};
+  Cart: undefined;
+  LoginRequired: LoginRequiredScreenProps;
+  Checkout: undefined;
 };

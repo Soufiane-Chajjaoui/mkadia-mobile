@@ -17,6 +17,7 @@ import ChangePasswordScreen from "../screens/auth/ChangePaasword/ChangePasswordS
 import CartScreen from "../screens/Cart/CartScreen";
 import LoginRequiredScreen from "../screens/auth/LoginRequired/LoginRequiredScreen";
 import { withRoleGate } from "./withRoleGate";
+import CheckoutScreen from "../screens/checkout/CheckoutScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -99,6 +100,10 @@ export default function RootNavigator() {
       <Stack.Screen
         name="ChangePassword"
         component={withSafeArea(ChangePasswordScreen)}
+      />
+      <Stack.Screen
+        name="Checkout"
+        component={withSafeArea(CheckoutScreen)}
       />
       <Stack.Screen
         name="CategoryProducts"
