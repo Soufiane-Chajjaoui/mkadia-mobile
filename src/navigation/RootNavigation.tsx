@@ -16,7 +16,7 @@ import { RootStackParamList } from "../types/navigation";
 import ChangePasswordScreen from "../screens/auth/ChangePaasword/ChangePasswordScreen";
 import CartScreen from "../screens/Cart/CartScreen";
 import LoginRequiredScreen from "../screens/auth/LoginRequired/LoginRequiredScreen";
-import { withRoleGate } from "./withRoleGate";
+import { withRoleGate } from "../gates/withRoleGate";
 import CheckoutScreen from "../screens/checkout/CheckoutScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -45,8 +45,7 @@ export const linking: LinkingOptions<RootStackParamList> = {
       },
       CategoryProducts: 'category/:id',
       ProductDetails: 'product/:id',
-      Cart: 'cart',
-      LoginRequired: 'login-required'
+      Cart: 'cart'
     },
   },
 };

@@ -16,12 +16,11 @@ import { useDispatch } from "react-redux";
 import { Colors, Spacing, BorderRadius, Typography, Elevation } from "../../../constants/DesignSystem";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react-native";
 import { login$ } from "../../../apis/AuthAPI";
-import { useToast } from "../../../hooks/useToast";
-import { Toast } from "../../../components/Toast";
 import { navigate } from "../../../navigation/NavigationService";
 import { Subscription } from "rxjs";
 import { loginAsync } from "../../../features/auth/authSlice";
 import { AppDispatch } from "../../../features/store";
+import { showGlobalError, showGlobalInfo, showGlobalSuccess, useToast } from "../../../context/ToastContext";
 const { height, width } = Dimensions.get('window');
 
 
@@ -35,7 +34,6 @@ export default function LoginScreen() {
     const [passwordError, setPasswordError] = useState("");
     const subscriptionRef = useRef<Subscription | null>(null);
 
-    const { toast, visible, showSuccess, showError, showInfo, hideToast } = useToast();
     const dispatch = useDispatch<AppDispatch>();
 
 
@@ -79,11 +77,11 @@ export default function LoginScreen() {
                 const { accessToken, refreshToken } = data.object;
                 await dispatch(loginAsync({ accessToken, refreshToken }));
                 console.log(data)
-                showSuccess("Connexion réussie ! Bienvenue");
+                showGlobalSuccess("Connexion réussie ! Bienvenue");
                 navigate("Home")
             },
             error: (err: Error) => {
-                showError(err.message || "Identifiants incorrects");
+                showGlobalError(err.message || "Identifiants incorrects");
                 setIsLoading(false);
             },
             complete: () => {
@@ -102,7 +100,7 @@ export default function LoginScreen() {
 
 
     const handleGoogleAuth = () => {
-        showInfo("Authentification Google en cours de développement");
+        showGlobalInfo("Authentification Google en cours de développement");
     };
 
     const handleForgotPassword = () => {
@@ -111,13 +109,6 @@ export default function LoginScreen() {
 
     return (
         <>
-            {/* ✅ Toast Component */}
-            <Toast
-                visible={visible}
-                toast={toast}
-                onHide={hideToast}
-            />
-
             <KeyboardAvoidingView
                 style={styles.container}
                 behavior={Platform.OS === "ios" ? "padding" : "height"}

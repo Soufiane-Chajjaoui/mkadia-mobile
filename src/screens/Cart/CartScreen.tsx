@@ -25,12 +25,12 @@ import PromoCodeComponent from '../checkout/components/PromoCode';
 import CartItemComponent from './components/CartItem';
 import DeliveryOptionsComponent from './components/DeliveryOptions';
 import OrderSummaryComponent from './components/OrderSummary';
-import { clearCart$, deleteItem$, getCart$, updateCartItemQuantity$, applyPromoCode$ } from '../../apis/CartAPI';
 import { isExpired } from '../../utils/productHelper';
 import { CartItem } from '../../models/CartItem';
 import { navigate } from '../../navigation/NavigationService';
 import { useAppDispatch } from '../../hooks/useRedux';
 import { deleteItemAsync, clearCartAsync } from '../../features/cart/cartSlice';
+import { clearCart$, deleteItem$, getCart$, updateCartItemQuantity$ } from '../../apis/CartAPI';
 
 interface CouponResponse {
   code: string;
@@ -91,10 +91,6 @@ const CartScreen: React.FC<CartScreenProps> = ({ navigation }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [appliedPromo, setAppliedPromo] = useState<CouponResponse | null>(null);
-  const [isApplyingPromo, setIsApplyingPromo] = useState(false);
-  const [promoError, setPromoError] = useState<string | null>(null);
-  const [animatedValue] = useState(new Animated.Value(1));
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -194,7 +190,6 @@ const CartScreen: React.FC<CartScreenProps> = ({ navigation }) => {
             clearCart$().subscribe({
               next(value) {
                 setCartItems([]);
-                setAppliedPromo(null);
                 dispatch(clearCartAsync());
                 Alert.alert("Succès", "Votre panier a été vidé");
               },
@@ -207,83 +202,6 @@ const CartScreen: React.FC<CartScreenProps> = ({ navigation }) => {
         }
       ]
     );
-  };
-
-  const handleRemovePromo = () => {
-    Alert.alert(
-      "Supprimer le code promo",
-      "Voulez-vous vraiment retirer ce code promo ?",
-      [
-        { text: "Annuler", style: "cancel" },
-        {
-          text: "Supprimer",
-          style: "destructive",
-          onPress: () => {
-            setAppliedPromo(null);
-            setPromoError(null);
-
-            Animated.sequence([
-              Animated.timing(animatedValue, { toValue: 1.05, duration: 100, useNativeDriver: true }),
-              Animated.timing(animatedValue, { toValue: 1, duration: 100, useNativeDriver: true })
-            ]).start();
-
-            Alert.alert("Code promo supprimé", "La réduction a été retirée de votre panier");
-          }
-        }
-      ]
-    );
-  };
-
-  const handleApplyPromo = (code: string) => {
-    setIsApplyingPromo(true);
-    setPromoError(null);
-
-    applyPromoCode$(code, subtotal).subscribe({
-      next: (response) => {
-        console.log("Code promo appliqué:", response);
-
-        setAppliedPromo(response);
-        setIsApplyingPromo(false);
-
-        Animated.sequence([
-          Animated.timing(animatedValue, {
-            toValue: 0.95,
-            duration: 100,
-            useNativeDriver: true
-          }),
-          Animated.spring(animatedValue, {
-            toValue: 1,
-            friction: 3,
-            tension: 40,
-            useNativeDriver: true
-          })
-        ]).start();
-
-        Alert.alert(
-          "Code promo appliqué",
-          response.message || `Vous économisez ${response.discountValue.toFixed(2)} €`,
-          [{ text: "Super !", style: "default" }]
-        );
-      },
-      error: (error) => {
-        console.error("Erreur code promo:", error);
-        setIsApplyingPromo(false);
-        setPromoError(error.message);
-
-        Animated.sequence([
-          Animated.timing(animatedValue, { toValue: 1.02, duration: 50, useNativeDriver: true }),
-          Animated.timing(animatedValue, { toValue: 0.98, duration: 50, useNativeDriver: true }),
-          Animated.timing(animatedValue, { toValue: 1.02, duration: 50, useNativeDriver: true }),
-          Animated.timing(animatedValue, { toValue: 1, duration: 50, useNativeDriver: true })
-        ]).start();
-
-        Alert.alert(
-          "Code invalide",
-          error.message || "Veuillez vérifier votre code promo",
-          [{ text: "OK", style: "cancel" }]
-        );
-      }
-    });
   };
 
   const calculateItemPrice = (item: CartItem) => {
@@ -323,7 +241,7 @@ const CartScreen: React.FC<CartScreenProps> = ({ navigation }) => {
       return;
     }
 
-    navigate('Checkout');
+    navigate('Checkout', { subtotal : subtotal, items : cartItems });
   };
 
   const handleSaveForLater = () => {
@@ -438,27 +356,6 @@ const CartScreen: React.FC<CartScreenProps> = ({ navigation }) => {
             formatPrice={formatPrice}
           />
         ))}
-
-        {/* <PromoCodeComponent
-          appliedPromo={appliedPromo}
-          onApplyPromo={handleApplyPromo}
-          onRemovePromo={handleRemovePromo}
-          animatedValue={animatedValue}
-          isLoading={isApplyingPromo}
-          error={promoError}
-        />
-
-        <OrderSummaryComponent
-          subtotal={subtotal}
-          shipping={shipping}
-          tax={0}
-          promoDiscount={promoDiscount}
-          total={total}
-          appliedPromo={appliedPromo}
-          formatPrice={formatPrice}
-        /> */}
-
-        {/* <DeliveryOptionsComponent /> */}
       </ScrollView>
 
       <View style={styles.checkoutContainer}>

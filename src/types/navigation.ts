@@ -1,3 +1,4 @@
+import { CartItem } from "../models/CartItem";
 import { CategoryCard } from "../models/CategoryCard";
 import { ProductCard } from "../models/ProductCard";
 import { LoginRequiredScreenProps } from "../screens/auth/LoginRequired/LoginRequiredScreen";
@@ -13,5 +14,5 @@ export type RootStackParamList = {
   ChangePassword: {token? : string, email? : string};
   Cart: undefined;
   LoginRequired: LoginRequiredScreenProps;
-  Checkout: undefined;
+  Checkout: { subtotal: number, items: CartItem[] };
 };

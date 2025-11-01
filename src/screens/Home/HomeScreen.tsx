@@ -16,6 +16,7 @@ import { addItemAsync } from "../../features/cart/cartSlice";
 import { useAppSelector, useAppDispatch } from "../../hooks/useRedux";
 import ProductCard from "../../components/ProductCard";
 import { addItemToCart$ } from "../../apis/CartAPI";
+import { showGlobalInfo } from "../../context/ToastContext";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -79,6 +80,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const handleRefresh = useCallback(() => {
     setRefreshing(true);
     loadProducts();
+    loadCategories();
   }, []);
 
   const loadMoreProducts = useCallback(() => {
@@ -120,6 +122,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
           productId: product.id,
           quantity: 1
         }));
+        showGlobalInfo("Produit ajouté au panier");
         console.log(value)
       },
       error(err) {

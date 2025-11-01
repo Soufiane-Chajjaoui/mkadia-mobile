@@ -2,7 +2,7 @@
  * MKADIA Mobile App - CORRIGÉ DEEP LINKING
  */
 
-import { Linking, useColorScheme} from 'react-native';
+import { Linking, useColorScheme } from 'react-native';
 import BootSplash from 'react-native-bootsplash';
 import React, { useEffect } from 'react';
 import RootNavigator, { linking } from './src/navigation/RootNavigation';
@@ -15,6 +15,8 @@ import { useAppDispatch } from './src/hooks/useRedux';
 import { initializeAuth } from './src/features/auth/authSlice';
 import { initializeCart } from './src/features/cart/cartSlice';
 import { store } from './src/features/store';
+import { ToastProvider, useToast } from './src/context/ToastContext';
+import { Toast } from './src/components/Toast';
 
 // Composant interne qui utilise les hooks Redux
 const AppContent: React.FC = () => {
@@ -38,10 +40,10 @@ const AppContent: React.FC = () => {
 
     return () => subscription.remove();
   }, []);
-  
+
   const handleDeepLink = (url: string) => {
     console.log("🔗 Deeplink reçu:", url);
-    
+
     // Attendre que la navigation soit prête
     setTimeout(async () => {
       try {
@@ -50,58 +52,58 @@ const AppContent: React.FC = () => {
           // Extraire le token de différentes façons
           let token = null;
           let email = null;
-          
+
           // Cas 1: mkadia://change-password/TOKEN123
           const pathMatch = url.match(/change-password\/([^?&]+)/);
           if (pathMatch) {
             token = pathMatch[1];
           }
-          
+
           // Cas 2: mkadia://change-password?token=TOKEN123
           const queryMatch = url.match(/[?&]token=([^&]+)/);
           if (queryMatch) {
             token = queryMatch[1];
           }
-          
+
           // Extraire l'email depuis les paramètres de requête
           const emailMatch = url.match(/[?&]email=([^&]+)/);
           if (emailMatch) {
             email = decodeURIComponent(emailMatch[1]);
           }
-          
+
           if (token) {
             console.log("✅ Token trouvé:", token);
             console.log("📧 Email trouvé:", email || "Non fourni");
-            
+
             try {
               // ✅ CORRECT: Store the token
               await AsyncStorage.setItem(TokenType.RESET_TOKEN, token);
               console.log("💾 Token stocké avec succès");
-              
+
               // ✅ CORRECT: Retrieve and verify the token was stored
               const storedToken = await AsyncStorage.getItem(TokenType.RESET_TOKEN);
               console.log(`📋 Token vérifié dans AsyncStorage: ${storedToken}`);
-              
+
               if (storedToken === token) {
                 console.log("✅ Vérification du token réussie");
               } else {
                 console.error("❌ Erreur: le token stocké ne correspond pas");
               }
-              
+
             } catch (storageError) {
               console.error("🚨 Erreur lors du stockage du token:", storageError);
               // Continue navigation even if storage fails
             }
-            
+
             // Navigate with token and email
             navigate("ChangePassword", {
-              token, 
-              email: email || null 
+              token,
+              email: email || null
             });
             return;
           }
         }
-        
+
         console.log("❌ Aucun pattern valide trouvé dans:", url);
       } catch (error) {
         console.error("❌ Erreur lors du traitement du deep link:", error);
@@ -120,10 +122,25 @@ const AppContent: React.FC = () => {
     init();
   }, [dispatch]);
 
+  const ToastContainer = () => {
+  const { toast, visible, hideToast } = useToast();
+  
   return (
-    <NavigationContainer ref={navigationRef} linking={linking}>
-      <RootNavigator />
-    </NavigationContainer>
+    <Toast
+      toast={toast}
+      visible={visible}
+      onHide={hideToast}
+    />
+  );
+};
+  return (
+    <ToastProvider>
+      <NavigationContainer ref={navigationRef} linking={linking}>
+        <RootNavigator />
+      </NavigationContainer>
+      <ToastContainer/>
+    </ToastProvider>
+
   );
 };
 

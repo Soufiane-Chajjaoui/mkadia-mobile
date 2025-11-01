@@ -5,7 +5,6 @@ import SafeAreaWrapper from "../components/SafeAreaWrapper";
 import LoginRequiredScreen, { LoginRequiredScreenProps } from "../screens/auth/LoginRequired/LoginRequiredScreen";
 import { User, Shield, ArrowRight, ShoppingCart, View } from "lucide-react-native";
 import { Colors } from "../constants/DesignSystem";
-import { ActivityIndicator } from "react-native";
 
 export function withRoleGate<P extends { navigation?: any }>(
   ScreenComponent: React.ComponentType<P>,

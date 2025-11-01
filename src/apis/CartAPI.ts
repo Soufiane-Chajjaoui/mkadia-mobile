@@ -8,20 +8,6 @@ export type CartItemRequest = {
   quantity: number;
 }
 
-export interface ApplyCouponRequest {
-  code: string;
-  cartAmount: number;
-}
-
-export interface CouponResponse {
-  code: string;
-  discountType: 'PERCENTAGE' | 'FIXED' | 'FREE_DELIVERY';
-  discountValue: number;
-  discountPercentage?: number;
-  message: string;
-}
-
-
 export const getCart$ = (): Observable<Cart> => {
   return from(
     axios.get(`${environment.apiBaseUrl}/cart`))
@@ -87,21 +73,3 @@ export const clearCart$ = (): Observable<any> => {
       })
   )
 }
-
-export const applyPromoCode$ = (
-  promoCode: string,
-  cartAmount: number
-): Observable<CouponResponse> => {
-  return from(
-    axios.post<CouponResponse>(`${environment.apiBaseUrl}/coupons/apply`, {
-      code: promoCode,
-      cartAmount: cartAmount
-    })
-  ).pipe(
-    map((resp) => resp.data),
-    catchError((err) => {
-      const message = err.response?.data?.message || "Code promo invalide";
-      throw new Error(message);
-    })
-  );
-};
