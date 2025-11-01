@@ -36,14 +36,14 @@ const CartItemComponent: React.FC<CartItemProps> = ({
   };
 
   // Stock & Expiration checks
-  const isInStock = item.product.stock > 0;
-  const isLowStock = item.product.stock <= 5 && item.product.stock > 0;
+  const isInStock = item.product.stock! > 0;
+  const isLowStock = item.product.stock! <= 5 && item.product.stock! > 0;
   const expired = isExpired(item.product.expirationDate);
 
   // Prix avec remise
   const getDiscountedPrice = () => {
     if (item.product.discount && item.product.discount > 0) {
-      return item.product.price * (1 - item.product.discount / 100);
+      return item.product.price! * (1 - item.product.discount / 100);
     }
     return item.product.price;
   };
@@ -55,7 +55,7 @@ const CartItemComponent: React.FC<CartItemProps> = ({
     <View style={styles.cartItemContainer}>
       {/* Image produit + badge */}
       <View style={styles.imageContainer}>
-        <Image source={{ uri: replaceBaseUrl(item.product.image) }} style={styles.productImage} />
+        <Image source={{ uri: replaceBaseUrl(item.product.image!) }} style={styles.productImage} />
         
         {/* Discount Badge */}
         {hasDiscount && !expired && (
@@ -152,12 +152,12 @@ const CartItemComponent: React.FC<CartItemProps> = ({
               onPress={() => onUpdateQuantity(item.id, item.quantity + 1)}
               style={[
                 styles.quantityOnHandButton,
-                ((!isInStock || item.quantity >= item.product.stock) || expired) && styles.quantityOnHandButtonDisabled,
+                ((!isInStock || item.quantity >= item.product.stock!) || expired) && styles.quantityOnHandButtonDisabled,
               ]}
-              disabled={!isInStock || item.quantity >= item.product.stock || expired}
+              disabled={!isInStock || item.quantity >= item.product.stock! || expired}
               activeOpacity={0.7}
             >
-              <Plus size={IconSize.SM} color={(isInStock && !expired && item.quantity < item.product.stock) ? Colors.DARK_GRAY_TEXT : Colors.GRAY_TEXT} />
+              <Plus size={IconSize.SM} color={(isInStock && !expired && item.quantity < item.product.stock!) ? Colors.DARK_GRAY_TEXT : Colors.GRAY_TEXT} />
             </TouchableOpacity>
           </View>
 
@@ -168,11 +168,11 @@ const CartItemComponent: React.FC<CartItemProps> = ({
             ) : (
               <>
                 <Text style={styles.currentPrice}>
-                  {formatPrice(currentPrice * item.quantity)}
+                  {formatPrice(currentPrice! * item.quantity)}
                 </Text>
                 {hasDiscount && (
                   <Text style={styles.originalPrice}>
-                    {formatPrice(item.product.price * item.quantity)}
+                    {formatPrice(item.product.price! * item.quantity)}
                   </Text>
                 )}
               </>

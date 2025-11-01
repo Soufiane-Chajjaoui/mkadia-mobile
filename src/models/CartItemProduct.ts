@@ -2,13 +2,13 @@ export interface CartItemProduct {
     id: number;
     name: string;
     description?: string;
-    price: number;
+    price?: number;
     discount?: number;
-    stock: number;
-    unit: string;
-    quantity: number; // unité de vente (ex: 1 pièce, 1kg)
+    stock?: number;
+    unit?: string;
+    quantity?: number; // unité de vente (ex: 1 pièce, 1kg)
     expirationDate?: string;
-    image: string;
+    image?: string;
     createdAt?: string;
     updatedAt?: string;
 }

@@ -1,14 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import {
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Animated,
-  Platform,
-  View,
-} from 'react-native';
-import { AlertCircle, CheckCircle, Info, AlertTriangle, X } from 'lucide-react-native';
-import { Spacing, BorderRadius, Elevation, Typography } from '../constants/DesignSystem';
+// components/Toast.tsx
+import React, { useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Animated } from 'react-native';
 import { ToastData } from '../types/ToastType';
 
 interface ToastProps {
@@ -17,34 +9,21 @@ interface ToastProps {
   onHide: () => void;
 }
 
-export const Toast: React.FC<ToastProps> = ({ 
-  toast,
-  visible, 
-  onHide 
-}) => {
-  const [slideAnim] = useState(new Animated.Value(-100));
-  
-  // ✅ Déstructuration avec valeurs par défaut
-  const { 
-    message = '', 
-    type = 'info', 
-    duration = 3000 
-  } = toast || {};
+export const Toast: React.FC<ToastProps> = ({ toast, visible, onHide }) => {
+  const translateY = useRef(new Animated.Value(100)).current;
 
   useEffect(() => {
-    if (visible && message) { // ✅ Vérification que message existe
-      // Slide down animation
+    if (visible) {
       Animated.sequence([
-        Animated.timing(slideAnim, {
+        Animated.spring(translateY, {
           toValue: 0,
-          duration: 300,
+          tension: 65,
+          friction: 10,
           useNativeDriver: true,
         }),
-        // Stay visible for duration
-        Animated.delay(duration),
-        // Slide up animation
-        Animated.timing(slideAnim, {
-          toValue: -100,
+        Animated.delay(toast.duration || 3000),
+        Animated.timing(translateY, {
+          toValue: 100,
           duration: 300,
           useNativeDriver: true,
         }),
@@ -52,80 +31,83 @@ export const Toast: React.FC<ToastProps> = ({
         onHide();
       });
     }
-  }, [visible, slideAnim, onHide, duration, message]);
+  }, [visible, toast.duration, translateY, onHide]);
 
-  const getToastConfig = () => {
-    switch (type) {
+  if (!visible) return null;
+
+  const getStyles = () => {
+    switch (toast.type) {
       case 'success':
-        return {
-          backgroundColor: '#10B981',
-          icon: <CheckCircle size={20} color="white" />,
-        };
+        return { borderColor: '#10B981', icon: '✔', iconBg: '#D1FAE5' };
       case 'error':
-        return {
-          backgroundColor: '#EF4444',
-          icon: <AlertCircle size={20} color="white" />,
-        };
+        return { borderColor: '#EF4444', icon: '✕', iconBg: '#FEE2E2' };
       case 'warning':
-        return {
-          backgroundColor: '#F59E0B',
-          icon: <AlertTriangle size={20} color="white" />,
-        };
+        return { borderColor: '#F59E0B', icon: '⚡', iconBg: '#FEF3C7' };
       case 'info':
       default:
-        return {
-          backgroundColor: '#3B82F6',
-          icon: <Info size={20} color="white" />,
-        };
+        return { borderColor: '#3B82F6', icon: 'ⓘ', iconBg: '#DBEAFE' };
     }
   };
 
-  // ✅ Ne pas afficher si pas visible ou pas de message
-  if (!visible || !message) return null;
-
-  const { backgroundColor, icon } = getToastConfig();
+  const { borderColor, icon, iconBg } = getStyles();
 
   return (
     <Animated.View
       style={[
-        styles.toastContainer,
-        { backgroundColor, transform: [{ translateY: slideAnim }] },
+        styles.container,
+        {
+          borderLeftColor: borderColor,
+          transform: [{ translateY }],
+        },
       ]}
     >
-      {icon}
-      <Text style={styles.toastText} numberOfLines={2}>
-        {message}
+      <View style={[styles.iconContainer, { backgroundColor: iconBg }]}>
+        <Text style={styles.icon}>{icon}</Text>
+      </View>
+      <Text style={styles.message} numberOfLines={3}>
+        {toast.message}
       </Text>
-      <TouchableOpacity onPress={onHide} style={styles.closeButton}>
-        <X size={18} color="white" />
-      </TouchableOpacity>
     </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
-  toastContainer: {
+  container: {
     position: 'absolute',
-    top: Platform.OS === 'ios' ? 60 : 40,
-    left: Spacing.MD,
-    right: Spacing.MD,
+    bottom: 120,
+    left: 16,
+    right: 16,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: Spacing.MD,
-    paddingVertical: Spacing.SM,
-    borderRadius: BorderRadius.MD,
+    backgroundColor: '#FFFFFF', // ✅ Fond blanc
+    paddingVertical: 10,
+    paddingHorizontal: 8,
+    borderRadius: 8,
+    borderLeftWidth: 4, // ✅ Bordure colorée à gauche
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
     zIndex: 9999,
-    ...Elevation.HIGH,
+    minHeight: 56,
   },
-  toastText: {
+  iconContainer: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  icon: {
+    fontSize: 16,
+  },
+  message: {
     flex: 1,
-    color: 'white',
-    fontSize: Typography.BODY.fontSize,
-    fontWeight: '500',
-    marginLeft: Spacing.SM,
-    marginRight: Spacing.SM,
-  },
-  closeButton: {
-    padding: Spacing.XS,
+    color: '#1F2937', // ✅ Texte foncé
+    fontSize: 14,
+    fontWeight: '600',
+    lineHeight: 20,
   },
 });
