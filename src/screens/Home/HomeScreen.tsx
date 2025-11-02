@@ -16,7 +16,9 @@ import { addItemAsync } from "../../features/cart/cartSlice";
 import { useAppSelector, useAppDispatch } from "../../hooks/useRedux";
 import ProductCard from "../../components/ProductCard";
 import { addItemToCart$ } from "../../apis/CartAPI";
-import { showGlobalInfo } from "../../context/ToastContext";
+import { showGlobalInfo, showGlobalSuccess } from "../../context/ToastContext";
+import { navigate, navigateToTab } from "../../navigation/NavigationService";
+import SafeAreaWrapper from "../../components/SafeAreaWrapper";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -122,7 +124,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
           productId: product.id,
           quantity: 1
         }));
-        showGlobalInfo("Produit ajouté au panier");
+        showGlobalSuccess("Produit ajouté au panier");
         console.log(value)
       },
       error(err) {
@@ -163,7 +165,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       <Header
         cartCount={items.length}
         hasNotification={hasNotification}
-        onCartPress={() => navigation.navigate("Cart")}
+        onCartPress={() => navigate("Cart")}
         location="Safi, Maroc"
       />
       <SearchBar
@@ -200,28 +202,30 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   );
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={products}
-        renderItem={renderProductItem}
-        keyExtractor={(item, index) => `product-${item.id}-${index}`}
-        numColumns={2}
-        ListHeaderComponent={renderHeader}
-        ListFooterComponent={() => loadingMore ? <ActivityIndicator /> : null}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={handleRefresh}
-            colors={[Colors.GREEN_BG]}
-            tintColor={Colors.GREEN_BG}
-          />
-        }
-        onEndReached={loadMoreProducts}
-        onEndReachedThreshold={0.3}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.listContent}
-      />
-    </View>
+    <SafeAreaWrapper>
+      <View style={styles.container}>
+        <FlatList
+          data={products}
+          renderItem={renderProductItem}
+          keyExtractor={(item, index) => `product-${item.id}-${index}`}
+          numColumns={2}
+          ListHeaderComponent={renderHeader}
+          ListFooterComponent={() => loadingMore ? <ActivityIndicator /> : null}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              colors={[Colors.GREEN_BG]}
+              tintColor={Colors.GREEN_BG}
+            />
+          }
+          onEndReached={loadMoreProducts}
+          onEndReachedThreshold={0.3}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listContent}
+        />
+      </View>
+    </SafeAreaWrapper>
   );
 };
 
