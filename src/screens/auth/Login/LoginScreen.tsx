@@ -78,7 +78,7 @@ export default function LoginScreen() {
                 await dispatch(loginAsync({ accessToken, refreshToken }));
                 console.log(data)
                 showGlobalSuccess("Connexion réussie ! Bienvenue");
-                navigate("Home")
+                navigate("MainTabs");
             },
             error: (err: Error) => {
                 showGlobalError(err.message || "Identifiants incorrects");

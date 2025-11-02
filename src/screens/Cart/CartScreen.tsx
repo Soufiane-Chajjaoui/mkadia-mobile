@@ -129,6 +129,11 @@ const CartScreen: React.FC<CartScreenProps> = ({ navigation }) => {
     return () => subGetCart.unsubscribe();
   };
 
+  const handleStartShopping = () => {
+    navigate('MainTabs', { screen: 'HomeTab' });
+  };
+
+
   const updateQuantity = (id: number, newQuantity: number) => {
     if (newQuantity < 1) {
       removeItem(id);
@@ -217,7 +222,7 @@ const CartScreen: React.FC<CartScreenProps> = ({ navigation }) => {
 
   // const shipping = subtotal > 35 ? 0 : 4.90;
   // const promoDiscount = appliedPromo ? appliedPromo.discountValue : 0;
-  const total = subtotal ;//+ shipping - promoDiscount;
+  const total = subtotal;//+ shipping - promoDiscount;
 
   const formatPrice = (price: number) =>
     `${price.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`;
@@ -241,7 +246,7 @@ const CartScreen: React.FC<CartScreenProps> = ({ navigation }) => {
       return;
     }
 
-    navigate('Checkout', { subtotal : subtotal, items : cartItems });
+    navigate('Checkout', { subtotal: subtotal, items: cartItems });
   };
 
   const handleSaveForLater = () => {
@@ -261,7 +266,7 @@ const CartScreen: React.FC<CartScreenProps> = ({ navigation }) => {
       <Text style={styles.emptySubtitle}>Ajoutez des articles pour commencer vos achats</Text>
       <TouchableOpacity
         style={styles.startShoppingButton}
-        onPress={() => navigate('Home')}
+        onPress={handleStartShopping}
         activeOpacity={0.8}
       >
         <Text style={styles.startShoppingText}>Commencer mes achats</Text>
@@ -444,7 +449,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: Spacing.LG,
+    padding: Spacing.MD,
     backgroundColor: Colors.WHITE,
     borderBottomWidth: 1,
     borderBottomColor: Colors.LIGHT_GRAY_BG,
@@ -591,5 +596,4 @@ const styles = StyleSheet.create({
     marginLeft: Spacing.SM
   } as TextStyle,
 });
-
 export default CartScreen;

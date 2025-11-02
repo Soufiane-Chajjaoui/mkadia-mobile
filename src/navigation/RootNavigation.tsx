@@ -3,7 +3,6 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { ActivityIndicator, View } from "react-native";
 import SafeAreaWrapper from "../components/SafeAreaWrapper";
-import HomeScreen from "../screens/Home/HomeScreen";
 import useFirstLaunch from "../hooks/useFirstLaunch";
 import OnboardingScreen from "../screens/Onboarding/OnboardingScreen";
 import CategoryProductsScreen from "../screens/CategoryProducts/CategoryProductsScreen";
@@ -16,8 +15,10 @@ import { RootStackParamList } from "../types/navigation";
 import ChangePasswordScreen from "../screens/auth/ChangePaasword/ChangePasswordScreen";
 import CartScreen from "../screens/Cart/CartScreen";
 import LoginRequiredScreen from "../screens/auth/LoginRequired/LoginRequiredScreen";
-import { withRoleGate } from "../gates/withRoleGate";
 import CheckoutScreen from "../screens/checkout/CheckoutScreen";
+import BottomTabNavigator from "./BottomTabNavigator";
+import { withRoleGate } from "../gates/withRoleGate";
+import HomeScreen from "../screens/Home/HomeScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -26,6 +27,17 @@ export const linking: LinkingOptions<RootStackParamList> = {
   config: {
     screens: {
       Onboarding: 'onboarding',
+      MainTabs: {
+        screens: {
+          HomeTab: 'home',
+          FavoritesTab: 'favorites',
+          SearchTab: 'search',
+          ProfileTab: 'profile',
+        },
+      },
+      Cart: 'cart',
+      Checkout: 'checkout',
+      LoginRequired: 'login-required',
       Home: 'home',
       Login: 'login',
       SignUp: 'signup',
@@ -45,7 +57,6 @@ export const linking: LinkingOptions<RootStackParamList> = {
       },
       CategoryProducts: 'category/:id',
       ProductDetails: 'product/:id',
-      Cart: 'cart'
     },
   },
 };
@@ -74,15 +85,22 @@ export default function RootNavigator() {
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName={isFirstLaunch ? "Onboarding" : "Home"}
+      initialRouteName={isFirstLaunch ? "Onboarding" : "MainTabs"}
     >
       <Stack.Screen
         name="Onboarding"
         component={withSafeArea(OnboardingScreen)}
       />
       <Stack.Screen
-        name="Home"
-        component={withSafeArea(HomeScreen)}
+        name="MainTabs"
+        component={BottomTabNavigator}
+      />
+      <Stack.Screen
+        name="Cart"
+        component={withRoleGate(
+          withSafeArea(CartScreen),
+          ["USER"],
+        )}
       />
       <Stack.Screen
         name="Login"
@@ -111,13 +129,6 @@ export default function RootNavigator() {
       <Stack.Screen
         name="ProductDetails"
         component={withSafeArea(ProductDetailsScreen)}
-      />
-      <Stack.Screen
-        name="Cart"
-        component={withRoleGate(
-          withSafeArea(CartScreen),
-          ["USER"],
-        )}
       />
       <Stack.Screen
         name="LoginRequired"

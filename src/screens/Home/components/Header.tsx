@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { MapPin, Bell, ShoppingBag } from 'lucide-react-native';
+import { MapPin, Bell, ShoppingBag, ShoppingCart } from 'lucide-react-native';
 import { 
   Colors, 
   Spacing, 
@@ -57,7 +57,7 @@ const Header: React.FC<HeaderProps> = ({
           accessibilityHint={`${cartCount} article${cartCount !== 1 ? 's' : ''} dans le panier`}
           accessibilityRole="button"
         >
-          <ShoppingBag 
+          <ShoppingCart 
             size={IconSize.LG} 
             color={Colors.DARK_BLUE_TEXT} 
             accessibilityLabel="Icône panier"

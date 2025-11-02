@@ -44,18 +44,18 @@ const OnboardingScreen = ({ navigation }: any) => {
     try {
       // Marquer l'onboarding comme terminé
       await AsyncStorage.setItem("alreadyLaunched", "true");
-      
+
       // Reset la stack de navigation et naviguer vers Home
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
-          routes: [{ name: 'Home' }],
+          routes: [{ name: 'MainTabs' }],
         })
       );
     } catch (error) {
       console.error("Erreur lors de la finalisation de l'onboarding:", error);
       // Fallback en cas d'erreur
-      navigation.replace('Home');
+      navigation.replace('MainTabs');
     }
   };
 
