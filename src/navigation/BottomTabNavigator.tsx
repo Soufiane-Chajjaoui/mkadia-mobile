@@ -5,27 +5,18 @@ import { Colors, IconSize } from '../constants/DesignSystem';
 import { BottomTabParamList } from '../types/navigation';
 import SafeAreaWrapper from '../components/SafeAreaWrapper';
 import HomeScreen from '../screens/Home/HomeScreen';
-import { useAppSelector } from '../hooks/useRedux';
 import { Text } from 'react-native';
+import FavoritesScreen from '../screens/Favorites/FavoritesScreen';
+import { withRoleGate } from '../gates/withRoleGate';
+import { getLoginRequiredConfig } from '../config/loginRequiredConfig';
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
-const withSafeArea = (ScreenComponent: React.ComponentType<any>) => {
-  return (props: any) => (
-    <SafeAreaWrapper>
-      <ScreenComponent {...props} />
-    </SafeAreaWrapper>
-  );
-};
-
 // Placeholder screens
 const SearchScreen = () => <SafeAreaWrapper><Text>Search</Text></SafeAreaWrapper>;
-const FavoritesScreen = () => <SafeAreaWrapper><Text>Favoris Screen</Text></SafeAreaWrapper>;
 const ProfileScreen = () => <SafeAreaWrapper><></></SafeAreaWrapper>;
 
 export default function BottomTabNavigator() {
-  const cartItems = useAppSelector(state => state.cart.items);
-  
   return (
     <Tab.Navigator
       screenOptions={{
@@ -65,7 +56,11 @@ export default function BottomTabNavigator() {
       />
       <Tab.Screen
         name="FavoritesTab"
-        component={FavoritesScreen}
+        component={withRoleGate(
+          FavoritesScreen,
+          ["USER"],
+          getLoginRequiredConfig('favorites')
+        )}
         options={{
           tabBarLabel: 'Favoris',
           tabBarIcon: ({ color }) => (
@@ -75,7 +70,11 @@ export default function BottomTabNavigator() {
       />
       <Tab.Screen
         name="ProfileTab"
-        component={ProfileScreen}
+        component={withRoleGate(
+          ProfileScreen,
+          ["USER"],
+          getLoginRequiredConfig('profile')
+        )}
         options={{
           tabBarLabel: 'Profil',
           tabBarIcon: ({ color }) => (
