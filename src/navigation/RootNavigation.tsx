@@ -14,11 +14,11 @@ import { LinkingOptions } from "@react-navigation/native";
 import { RootStackParamList } from "../types/navigation";
 import ChangePasswordScreen from "../screens/auth/ChangePaasword/ChangePasswordScreen";
 import CartScreen from "../screens/Cart/CartScreen";
-import LoginRequiredScreen from "../screens/auth/LoginRequired/LoginRequiredScreen";
 import CheckoutScreen from "../screens/checkout/CheckoutScreen";
 import BottomTabNavigator from "./BottomTabNavigator";
 import { withRoleGate } from "../gates/withRoleGate";
 import HomeScreen from "../screens/Home/HomeScreen";
+import { LoginRequiredScreenWithParams } from "./LoginRequiredNavigation";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -132,7 +132,11 @@ export default function RootNavigator() {
       />
       <Stack.Screen
         name="LoginRequired"
-        component={withSafeArea(LoginRequiredScreen)}
+        component={withSafeArea(LoginRequiredScreenWithParams)}
+        options={{
+          presentation: 'card',
+          animation: 'slide_from_bottom',
+        }}
       />
     </Stack.Navigator>
   );

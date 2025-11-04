@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Heart, Star, Check, ShoppingBasket } from "lucide-react-native";
 import { ProductCard as ProductCardModel } from "../models/ProductCard";
@@ -15,13 +15,24 @@ import {
 interface ProductCardProps extends ProductCardModel {
   cardWidth?: number;
   onAddToCart: () => void;
-  onToggleFavorite?: (isFavorite: boolean) => void;
-  onPress?: () => void; // Nouvelle prop pour la navigation
+  onToggleFavorite?: (productId: number, currentState: boolean) => boolean | void;
+  onPress?: () => void;
+  initialFavoriteState?: boolean;
+  isTogglingFavorite?: boolean; // État de chargement géré par le parent
 }
 
 export default function ProductCard(props: ProductCardProps) {
-  const { cardWidth, onAddToCart, onToggleFavorite, onPress, ...product } = props;
-  const [isFavorite, setIsFavorite] = useState(false);
+  const { 
+    cardWidth, 
+    onAddToCart, 
+    onToggleFavorite, 
+    onPress, 
+    initialFavoriteState = false,
+    isTogglingFavorite = false,
+    ...product 
+  } = props;
+  
+  const [isFavorite, setIsFavorite] = useState(initialFavoriteState);
   const [isAddedToCart, setIsAddedToCart] = useState(false);
 
   const handleAddToCart = (event: any) => {
@@ -33,12 +44,18 @@ export default function ProductCard(props: ProductCardProps) {
   };
 
   const toggleFavorite = (event: any) => {
-    // Empêcher la propagation vers onPress du produit
     event.stopPropagation();
 
-    const newFavoriteState = !isFavorite;
-    setIsFavorite(newFavoriteState);
-    onToggleFavorite?.(newFavoriteState);
+    if (isTogglingFavorite) return; // Éviter les clics multiples
+
+    // Appeler le handler du parent avec l'ID et l'état actuel
+    // Le parent retourne true si l'action a été effectuée, false sinon (ex: non authentifié)
+    const success = onToggleFavorite?.(product.id, isFavorite);
+
+    // Mise à jour optimiste de l'état local seulement si l'action a été autorisée
+    if (success !== false) {
+      setIsFavorite(!isFavorite);
+    }
   };
 
   const handleProductPress = () => {
@@ -55,6 +72,11 @@ export default function ProductCard(props: ProductCardProps) {
       ...Elevation.LOW,
     },
   });
+
+  // Effet pour synchroniser l'état local avec les props
+  useEffect(() => {
+    setIsFavorite(initialFavoriteState);
+  }, [initialFavoriteState]);
 
   return (
     <TouchableOpacity

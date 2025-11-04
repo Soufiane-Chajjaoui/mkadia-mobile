@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useState, useRef } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View, StyleSheet, FlatList, RefreshControl, ActivityIndicator, Text, TouchableOpacity } from "react-native";
 import Header from "./components/Header";
 import OffersSlider from "./components/OffersSection";
 import SearchBar from "./components/SearchBar";
 import CategoriesSection from "./components/CategoriesSection";
-import { getCategories$, getProducts$ } from "../../apis/PublicAPI";
+import { getCategories$ } from "../../apis/PublicAPI";
 import { CategoryCard } from "../../models/CategoryCard";
 import { ProductCard as ProductCardModel } from "../../models/ProductCard";
 import { getProductsPaginated$ } from "../../apis/PublicAPI";
@@ -12,13 +12,12 @@ import { PaginatedResponse } from "../../types/PaginatedResponse";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types/navigation";
 import { Colors, Spacing, Typography } from "../../constants/DesignSystem";
-import { addItemAsync } from "../../features/cart/cartSlice";
-import { useAppSelector, useAppDispatch } from "../../hooks/useRedux";
+import { useAppSelector } from "../../hooks/useRedux";
 import ProductCard from "../../components/ProductCard";
-import { addItemToCart$ } from "../../apis/CartAPI";
-import { showGlobalInfo, showGlobalSuccess } from "../../context/ToastContext";
-import { navigate, navigateToTab } from "../../navigation/NavigationService";
+import { navigate } from "../../navigation/NavigationService";
 import SafeAreaWrapper from "../../components/SafeAreaWrapper";
+import { useFavorites } from '../../hooks/useFavorites';
+import { useCart } from '../../hooks/useCart';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -37,7 +36,10 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const [currentPage, setCurrentPage] = useState(0);
 
   const items = useAppSelector((state) => state.cart.items);
-  const dispatch = useAppDispatch();
+
+  const { toggleFavorite, togglingFavorites } = useFavorites();
+  const { addToCart, addingToCart } = useCart();
+  const [favoriteStates, setFavoriteStates] = useState<{[key: number]: boolean}>({});
 
   // Chargement initial des données
   useEffect(() => {
@@ -113,24 +115,18 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   const handleAddToCart = (product: ProductCardModel) => {
+    addToCart(product.id, 1);
+  };
 
-    addItemToCart$({
-      productId: product.id,
-      quantity: 1
-    }).subscribe({
-      next(value) {
-        dispatch(addItemAsync({
-          id: product.id,
-          productId: product.id,
-          quantity: 1
-        }));
-        showGlobalSuccess("Produit ajouté au panier");
-        console.log(value)
-      },
-      error(err) {
-        console.log(err)
-      },
-    })
+  const handleToggleFavorite = (productId: number, currentState: boolean) => {
+    const success = toggleFavorite(productId, currentState);
+    if (success) {
+      // Mettre à jour l'état local seulement si l'action a été autorisée
+      setFavoriteStates(prev => ({ 
+        ...prev, 
+        [productId]: !currentState 
+      }));
+    }
   };
 
   // Navigation vers catégorie
@@ -197,6 +193,9 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
         {...item}
         onAddToCart={() => handleAddToCart(item)}
         onPress={() => handleProductPress(item)}
+        onToggleFavorite={handleToggleFavorite}
+        initialFavoriteState={favoriteStates[item.id] || false}
+        isTogglingFavorite={togglingFavorites[item.id] || false}
       />
     </View>
   );

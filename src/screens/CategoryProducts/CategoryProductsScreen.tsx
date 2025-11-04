@@ -9,8 +9,8 @@ import { CategoryCard } from "../../models/CategoryCard";
 import { Colors, Spacing } from "../../constants/DesignSystem";
 import CategoryHeader from "./components/CategoryHeader";
 import { useAppDispatch } from "../../hooks/useRedux";
-import { addItem } from "../../features/cart/cartSlice";
 import ProductCard from "../../components/ProductCard";
+import { addItemAsync } from "../../features/cart/cartSlice";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CategoryProducts'>;
 
@@ -50,7 +50,7 @@ const CategoryProductsScreen: React.FC<Props> = ({ route, navigation }) => {
   };
 
   const handleAddToCart = (product: ProductCardModel) => {
-    dispatch(addItem({ id: product.id, name: product.name, price: product.price, quantity: 1 }));
+    dispatch(addItemAsync({ id: new Date().getTime(), productId: product.id, quantity: 1 }));
   }
 
   const handleRefresh = useCallback(() => {

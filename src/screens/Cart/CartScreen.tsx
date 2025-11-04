@@ -534,7 +534,7 @@ const styles = StyleSheet.create({
     padding: Spacing.XL,
     borderTopWidth: 1,
     borderTopColor: Colors.LIGHT_GRAY_BG,
-    ...Elevation.HIGH
+    elevation: Elevation.LOW.elevation,
   } as ViewStyle,
   totalContainer: {
     flexDirection: 'row',
