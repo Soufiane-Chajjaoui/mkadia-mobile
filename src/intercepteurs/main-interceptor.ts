@@ -13,6 +13,9 @@ const RESET_URLS = ['change-reset-password'];
 const REFRESH_URLS = ['refresh-token'];
 const ENCODED_URLS = ['change-reset-password', 'forgot-password'];
 
+// URLs publiques avec méthode spécifique (GET uniquement)
+const PUBLIC_GET_URLS = ['/reviews'];
+
 interface ErrorResponse {
   message?: string;
   code?: string;
@@ -29,6 +32,8 @@ const toFormUrlEncoded = (body: any): string =>
 
 // 🌐 Déterminer le type d'URL
 const isPublicUrl = (url: string) => PUBLIC_URLS.some(u => url.includes(u));
+const isPublicGetUrl = (url: string, method?: string) =>
+  method?.toUpperCase() === 'GET' && PUBLIC_GET_URLS.some(u => url.includes(u));
 const isResetUrl = (url: string) => RESET_URLS.some(u => url.includes(u));
 const isRefreshUrl = (url: string) => REFRESH_URLS.some(u => url.includes(u));
 const isEncodedUrl = (url: string) => ENCODED_URLS.some(u => url.includes(u));
@@ -38,9 +43,14 @@ axios.interceptors.request.use(async (config: InternalAxiosRequestConfig & { __s
   if (config.__skipInterceptor) return config;
 
   const url = config.url || '';
+  const method = config.method || '';
   config.headers.set('Accept', 'application/json');
 
+  // Vérifier si c'est une URL publique standard
   if (isPublicUrl(url)) return config;
+
+  // Vérifier si c'est une URL publique GET (comme /api/v1/reviews en GET)
+  if (isPublicGetUrl(url, method)) return config;
 
   // Reset token
   if (isResetUrl(url)) {
@@ -86,9 +96,19 @@ axios.interceptors.response.use(
     const status = error.response?.status;
     const message = error.response?.data?.message || '';
     const url = originalRequest?.url || '';
+    const method = originalRequest?.method || '';
 
     // ✅ Si c'est une URL publique (login, register, etc.)
     if (isPublicUrl(url)) {
+      if (status) {
+        const errorMessage = getErrorMessage(url, status, message);
+        showGlobalError(errorMessage);
+      }
+      return Promise.reject(error);
+    }
+
+    // ✅ Si c'est une URL publique GET (comme /api/v1/reviews en GET)
+    if (isPublicGetUrl(url, method)) {
       if (status) {
         const errorMessage = getErrorMessage(url, status, message);
         showGlobalError(errorMessage);

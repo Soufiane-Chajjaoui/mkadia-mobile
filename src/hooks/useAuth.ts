@@ -1,27 +1,29 @@
 // src/hooks/useAuth.ts
-import { jwtDecode } from "jwt-decode";
 import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { TokenType } from "../enums/TokenType";
-
-type JwtPayload = {
-  sub: string;
-  roles: string[];  // dépend de ton backend Spring Security
-  exp: number;
-};
+import { JwtService } from "../services/JwtService";
 
 export default function useAuth() {
   const [roles, setRoles] = useState<string[]>([]);
   const [token, setToken] = useState<string | null>(null);
+  const [userId, setUserId] = useState<number | null>(null);
 
   useEffect(() => {
     const loadToken = async () => {
       const storedToken = await AsyncStorage.getItem(TokenType.ACCESS_TOKEN);
       if (storedToken) {
         setToken(storedToken);
-        const decoded = jwtDecode<JwtPayload>(storedToken);
-        setRoles(decoded.roles || []);
-        console.log("rôles:", decoded.roles);
+
+        // Utiliser JwtService pour extraire les informations
+        const extractedRoles = JwtService.getRoles(storedToken);
+        const extractedUserId = JwtService.getUserId(storedToken);
+
+        setRoles(extractedRoles);
+        setUserId(extractedUserId);
+
+        console.log("rôles:", extractedRoles);
+        console.log("userId:", extractedUserId);
       }
     };
     loadToken();
@@ -29,5 +31,5 @@ export default function useAuth() {
 
   const isAuthenticated = !!token;
 
-  return { token, roles, isAuthenticated };
+  return { token, roles, userId, isAuthenticated };
 }

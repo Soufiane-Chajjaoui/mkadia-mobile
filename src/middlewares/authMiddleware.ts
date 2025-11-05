@@ -1,28 +1,12 @@
 import { Middleware } from "@reduxjs/toolkit";
 import { refreshTokenAsync, logoutAsync } from "../features/auth/authSlice";
 import { addItemAsync } from "../features/cart/cartSlice";
-import { jwtDecode } from "jwt-decode";
 import { navigate, resetToLogin } from "../navigation/NavigationService";
 import { RootState, AppDispatch } from "../features/store";
-
-interface JwtPayload {
-  exp: number;
-  iat?: number;
-  sub?: string;
-}
+import { JwtService } from "../services/JwtService";
 
 const isTokenExpired = (token: string | null): boolean => {
-  if (!token) return true;
-  try {
-    const decoded = jwtDecode<JwtPayload>(token);
-    const expirationTime = decoded.exp * 1000;
-    const currentTime = Date.now();
-    const marginTime = 5 * 60 * 1000; // 5 minutes en ms
-    
-    return currentTime >= (expirationTime - marginTime);
-  } catch {
-    return true;
-  }
+  return JwtService.isExpiringSoon(token);
 };
 
 const PROTECTED_ACTION_PREFIXES = [

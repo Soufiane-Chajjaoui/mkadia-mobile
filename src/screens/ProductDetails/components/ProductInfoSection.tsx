@@ -13,6 +13,8 @@ interface ProductInfoSectionProps {
   discount?: number;
   unit?: string;
   description?: string;
+  averageRating?: number;
+  totalReviews?: number;
 }
 
 const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({
@@ -20,7 +22,9 @@ const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({
   price,
   discount,
   unit,
-  description
+  description,
+  averageRating = 0,
+  totalReviews = 0,
 }) => {
   const calculateDiscountedPrice = () => {
     if (discount) {
@@ -48,19 +52,23 @@ const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({
       </View>
 
       {/* Rating */}
-      <View style={styles.ratingContainer}>
-        <View style={styles.starsContainer}>
-          {[1, 2, 3, 4, 5].map((star) => (
-            <Star 
-              key={star} 
-              size={16} 
-              color={Colors.ORANGE_ICON} 
-              fill={star <= 4 ? Colors.ORANGE_ICON : "transparent"} 
-            />
-          ))}
+      {totalReviews > 0 && (
+        <View style={styles.ratingContainer}>
+          <View style={styles.starsContainer}>
+            {[1, 2, 3, 4, 5].map((star) => (
+              <Star
+                key={star}
+                size={16}
+                color={Colors.ORANGE_ICON}
+                fill={star <= Math.round(averageRating) ? Colors.ORANGE_ICON : "transparent"}
+              />
+            ))}
+          </View>
+          <Text style={styles.ratingText}>
+            {averageRating.toFixed(1)} ({totalReviews} {totalReviews === 1 ? 'avis' : 'avis'})
+          </Text>
         </View>
-        <Text style={styles.ratingText}>4.0 (28 avis)</Text>
-      </View>
+      )}
 
       {/* Description */}
       {description && (
