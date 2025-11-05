@@ -12,12 +12,38 @@ export type LoginRequiredContext =
   | 'favorites' 
   | 'profile' 
   | 'cart' 
+  | 'review'
   | 'default';
 
 export const getLoginRequiredConfig = (
   context: LoginRequiredContext
 ): Partial<LoginRequiredScreenProps> => {
   switch (context) {
+    case 'review':
+      return {
+        title: "Partagez votre expérience",
+        subtitle: "Connectez-vous pour donner votre avis et aider la communauté",
+        showGuestOption: true,
+        showBackButton: true,
+        icons: {
+          primary: <Star size={60} color={Colors.ORANGE_ICON} />,
+          secondary: <Heart size={40} color={Colors.RED_ICON} />,
+          benefits: [
+            {
+              icon: <Star size={24} color={Colors.GREEN_TEXT} />,
+              text: "Donnez votre avis sur les produits"
+            },
+            {
+              icon: <Heart size={24} color={Colors.GREEN_TEXT} />,
+              text: "Partagez votre expérience avec la communauté"
+            },
+            {
+              icon: <ShoppingCart size={24} color={Colors.GREEN_TEXT} />,
+              text: "Aidez les autres clients à faire le bon choix"
+            },
+          ]
+        },
+      };
     case 'favorites':
       return {
         title: "Connexion requise",

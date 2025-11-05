@@ -15,18 +15,23 @@ import ProductDetailedInfo from "./components/ProductDetailedInfo";
 import ProductDetailHeader from "./components/ProductDetailHeader";
 import ProductImageGallery from "./components/ProductImageGallery";
 import ProductInfoSection from "./components/ProductInfoSection";
+import ProductReviewsSection from "./components/ProductReviewsSection";
 import { getProductById$ } from "../../apis/PublicAPI";
+import { getReviews$, addReview$, deleteReview$ } from "../../apis/ReviewAPI";
 import { ProductCard } from "../../models/ProductCard";
 import { ProductDetails } from "../../models/ProductDetails";
-import { useAppDispatch } from "../../hooks/useRedux";
+import { Review } from "../../models/Review";
+import { JwtService } from "../../services/JwtService";
+import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import { addItemAsync } from "../../features/cart/cartSlice";
+import { showGlobalSuccess, showGlobalError } from "../../context/ToastContext";
 
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ProductDetails'>;
 
 const ProductDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
   const routeProduct: ProductCard = route.params;
-  
+
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [cartQuantity, setCartQuantity] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -35,12 +40,22 @@ const ProductDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
   const [error, setError] = useState<string | null>(null);
   const scrollViewRef = useRef<ScrollView>(null);
   const dispatch = useAppDispatch();
+  const accessToken = useAppSelector((state) => state.auth.accessToken);
+
+  // États pour les avis
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
+  const [reviewsLoadingMore, setReviewsLoadingMore] = useState(false);
+  const [reviewsSubmitting, setReviewsSubmitting] = useState(false);
+  const [currentReviewPage, setCurrentReviewPage] = useState(0);
+  const [hasMoreReviews, setHasMoreReviews] = useState(false);
+  const [totalReviews, setTotalReviews] = useState(0);
   
 
   useEffect(() => {
     setLoading(true);
     setError(null);
-    
+
     const subGetProductsById = getProductById$(routeProduct).subscribe({
       next: (data: ProductDetails) => {
         setProduct(data);
@@ -57,6 +72,123 @@ const ProductDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
 
     return () => subGetProductsById.unsubscribe();
   }, [routeProduct.id]);
+
+  // Charger les avis initiaux
+  useEffect(() => {
+    if (!product) return;
+
+    loadReviews(0);
+  }, [product?.id]);
+
+  // Fonction pour charger les avis
+  const loadReviews = (page: number) => {
+    if (!product) return;
+
+    const isInitialLoad = page === 0;
+
+    if (isInitialLoad) {
+      setReviewsLoading(true);
+    } else {
+      setReviewsLoadingMore(true);
+    }
+
+    getReviews$(product.id, page, 5).subscribe({
+      next: (response) => {
+        if (isInitialLoad) {
+          setReviews(response.elements);
+        } else {
+          setReviews((prev) => [...prev, ...response.elements]);
+        }
+        setHasMoreReviews(response.hasMore ?? false);
+        setTotalReviews(response.totalRecords ?? 0);
+        setCurrentReviewPage(page);
+        setReviewsLoading(false);
+        setReviewsLoadingMore(false);
+      },
+      error: (err) => {
+        console.error('Erreur chargement avis:', err);
+        showGlobalError('Erreur lors du chargement des avis');
+        setReviewsLoading(false);
+        setReviewsLoadingMore(false);
+      },
+    });
+  };
+
+  // Fonction pour charger plus d'avis
+  const handleLoadMoreReviews = () => {
+    if (!reviewsLoadingMore && hasMoreReviews) {
+      loadReviews(currentReviewPage + 1);
+    }
+  };
+
+  // Fonction pour calculer la moyenne des avis
+  const calculateAverageRating = (): number => {
+    if (reviews.length === 0) return 0;
+    const sum = reviews.reduce((acc, review) => acc + review.rating, 0);
+    return sum / reviews.length;
+  };
+
+  // Fonction pour ajouter un avis
+  const handleAddReview = (rating: number, comment: string) => {
+    if (!product) return;
+
+    setReviewsSubmitting(true);
+
+    addReview$({
+      productId: product.id,
+      rating,
+      comment,
+    }).subscribe({
+      next: (newReview) => {
+        // Enrichir le nouvel avis avec les informations du JWT si elles manquent
+        const enrichedReview: Review = {
+          ...newReview,
+          user: newReview.user || {
+            id: JwtService.getUserId(accessToken) || 0, // ID du JWT ou 0 par défaut
+            firstName: JwtService.getFirstName(accessToken) || '',
+            lastName: JwtService.getLastName(accessToken) || '',
+            email: JwtService.getUserEmail(accessToken) || undefined,
+          }
+        };
+
+        // Si l'API a retourné un user mais sans certaines informations, les enrichir
+        if (newReview.user) {
+          enrichedReview.user = {
+            ...newReview.user,
+            id: newReview.user.id || JwtService.getUserId(accessToken) || 0,
+            firstName: newReview.user.firstName || JwtService.getFirstName(accessToken) || '',
+            lastName: newReview.user.lastName || JwtService.getLastName(accessToken) || '',
+          };
+        }
+
+        showGlobalSuccess('Votre avis a été publié avec succès');
+        setReviews((prev) => [enrichedReview, ...prev]);
+        setTotalReviews((prev) => prev + 1);
+        setReviewsSubmitting(false);
+      },
+      error: (err) => {
+        console.error('Erreur ajout avis:', err);
+        showGlobalError("Erreur lors de l'ajout de votre avis");
+        setReviewsSubmitting(false);
+      },
+    });
+  };
+
+  // Fonction pour supprimer un avis
+  const handleDeleteReview = (reviewId: number) => {
+    deleteReview$(reviewId).subscribe({
+      next: () => {
+        showGlobalSuccess('Votre avis a été supprimé');
+        // Retirer l'avis de la liste
+        setReviews((prev) => prev.filter((r) => r.id !== reviewId));
+        setTotalReviews((prev) => prev - 1);
+      },
+      error: (err) => {
+        console.error('Erreur suppression avis:', err);
+        showGlobalError("Erreur lors de la suppression de l'avis");
+      },
+    });
+  };
 
   // Handlers
   const handleBackPress = () => {
@@ -178,6 +310,8 @@ const ProductDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
           discount={product.discountPercentage || product.discount} // Prendre en compte les deux champs
           unit={product.unit}
           description={product.description}
+          averageRating={calculateAverageRating()}
+          totalReviews={totalReviews}
         />
 
         <ProductDetailedInfo
@@ -188,6 +322,19 @@ const ProductDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
           expirationDate={product.expirationDate}
           stock={product.stock}
           sku={product.sku}
+        />
+
+        {/* Section des avis clients */}
+        <ProductReviewsSection
+          reviews={reviews}
+          totalReviews={totalReviews}
+          loading={reviewsLoading}
+          loadingMore={reviewsLoadingMore}
+          hasMore={hasMoreReviews}
+          isSubmitting={reviewsSubmitting}
+          onLoadMore={handleLoadMoreReviews}
+          onAddReview={handleAddReview}
+          onDeleteReview={handleDeleteReview}
         />
       </ScrollView>
 
