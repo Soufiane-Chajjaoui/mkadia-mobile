@@ -87,7 +87,6 @@ const FavoritesScreen: React.FC = () => {
 
   const renderEmptyFavorites = () => (
     <View style={styles.emptyContainer}>
-      <Heart size={64} color={Colors.GRAY_ICON} />
       <Text style={styles.emptyTitle}>Aucun favori</Text>
       <Text style={styles.emptySubtitle}>
         Découvrez nos produits et ajoutez vos préférés
@@ -125,7 +124,6 @@ const FavoritesScreen: React.FC = () => {
     <SafeAreaWrapper>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Heart size={24} color={Colors.RED} />
           <Text style={styles.headerTitle}>Mes Favoris ({favorites.length})</Text>
         </View>
 

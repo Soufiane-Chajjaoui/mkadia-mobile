@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.LG,
     borderBottomLeftRadius: 24,
     borderBottomRightRadius: 24,
-    ...Elevation.MEDIUM,
+    ...Elevation.LOW,
   },
   profileSection: {
     alignItems: 'center',

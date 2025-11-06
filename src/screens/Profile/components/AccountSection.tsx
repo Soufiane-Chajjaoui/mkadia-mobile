@@ -62,9 +62,9 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.WHITE,
     marginBottom: Spacing.MD,
-    borderRadius: 16,
+    // borderRadius: 16,
     overflow: 'hidden',
-    ...Elevation.LOW,
+    // ...Elevation.LOW,
   },
   sectionHeader: {
     backgroundColor: Colors.LIGHT_GRAY_BG,

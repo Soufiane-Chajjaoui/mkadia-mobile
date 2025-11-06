@@ -21,7 +21,7 @@ import {
 } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { Colors, IconSize, Spacing, BorderRadius, Elevation, Typography } from '../../constants/DesignSystem';
-import PromoCodeComponent from '../checkout/components/PromoCode';
+import PromoCodeComponent from '../Checkout/components/PromoCode';
 import CartItemComponent from './components/CartItem';
 import DeliveryOptionsComponent from './components/DeliveryOptions';
 import OrderSummaryComponent from './components/OrderSummary';

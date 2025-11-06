@@ -14,7 +14,7 @@ import { LinkingOptions } from "@react-navigation/native";
 import { RootStackParamList } from "../types/navigation";
 import ChangePasswordScreen from "../screens/auth/ChangePaasword/ChangePasswordScreen";
 import CartScreen from "../screens/Cart/CartScreen";
-import CheckoutScreen from "../screens/checkout/CheckoutScreen";
+import CheckoutScreen from "../screens/Checkout/CheckoutScreen";
 import BottomTabNavigator from "./BottomTabNavigator";
 import { withRoleGate } from "../gates/withRoleGate";
 import { LoginRequiredScreenWithParams } from "./LoginRequiredNavigation";

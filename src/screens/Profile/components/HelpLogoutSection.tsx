@@ -41,9 +41,7 @@ const styles = StyleSheet.create({
   },
   section: {
     backgroundColor: Colors.WHITE,
-    borderRadius: 16,
     overflow: 'hidden',
-    ...Elevation.LOW,
     marginBottom: Spacing.SM,
   },
   logoutSection: {
