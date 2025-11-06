@@ -23,4 +23,5 @@ export type RootStackParamList = {
   ChangePassword: {token? : string, email? : string};
   LoginRequired: LoginRequiredScreenProps;
   Checkout: { subtotal: number, items: CartItem[] };
+  AccountInfo: undefined;
 };

@@ -7,6 +7,7 @@ import SafeAreaWrapper from '../components/SafeAreaWrapper';
 import HomeScreen from '../screens/Home/HomeScreen';
 import { Text } from 'react-native';
 import FavoritesScreen from '../screens/Favorites/FavoritesScreen';
+import ProfileScreen from '../screens/Profile/ProfileScreen';
 import { withRoleGate } from '../gates/withRoleGate';
 import { getLoginRequiredConfig } from '../config/loginRequiredConfig';
 
@@ -14,7 +15,6 @@ const Tab = createBottomTabNavigator<BottomTabParamList>();
 
 // Placeholder screens
 const SearchScreen = () => <SafeAreaWrapper><Text>Search</Text></SafeAreaWrapper>;
-const ProfileScreen = () => <SafeAreaWrapper><></></SafeAreaWrapper>;
 
 export default function BottomTabNavigator() {
   return (
