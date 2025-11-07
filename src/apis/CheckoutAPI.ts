@@ -1,7 +1,7 @@
 import axios from "axios";
 import { from, map, catchError, Observable } from "rxjs";
 import { environment } from "../config/environment";
-import { DeliveryAddress, OrderRequest } from "../types/CheckoutTypes";
+import { CheckoutRequest, DeliveryAddress } from "../types/CheckoutTypes";
 
 export interface ApplyCouponRequest {
   code: string | "";
@@ -17,7 +17,7 @@ export interface CouponResponse {
 }
 
 
-export const checkout$ = (payload: OrderRequest) : Observable<any> => {
+export const checkout$ = (payload: CheckoutRequest) : Observable<any> => {
     return from(
       axios.post(`${environment.apiBaseUrl}/checkout/confirm`, payload)
     ).pipe(

@@ -311,7 +311,7 @@ import {
   deleteAddress$ 
 } from '../../apis/CheckoutAPI';
 import { deliveryMethods, paymentMethods } from '../../constants/CheckoutData';
-import { DeliveryAddress, PaymentCard, FormErrors, OrderRequest } from '../../types/CheckoutTypes';
+import { DeliveryAddress, PaymentCard, FormErrors, CheckoutRequest } from '../../types/CheckoutTypes';
 import { validateCheckoutForm } from '../../utils/validators/checkoutValidators';
 import ConfirmButton from './components/ConfirmButton';
 import DeliveryAddressSection from './components/DeliveryAddressSection';
@@ -556,7 +556,7 @@ const CheckoutScreen: React.FC<CheckoutScreenProps> = ({ route, navigation }) =>
     setIsProcessing(true);
 
     try {
-      const orderData: OrderRequest = {
+      const orderData: CheckoutRequest = {
         address: deliveryAddress,
         delivery: { mode: selectedDelivery },
         payment: { method: selectedPayment },

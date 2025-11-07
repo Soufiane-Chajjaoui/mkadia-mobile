@@ -10,7 +10,7 @@ import { User, UpdateUserRequest } from '../models/User';
  */
 export const getCurrentUser$ = (): Observable<User> => {
   return from(
-    axios.get(`${environment.apiBaseUrl}/users/profile`)
+    axios.get(`${environment.apiBaseUrl}/user/profile`)
   ).pipe(
     map((response) => response.data.object),
     catchError((error) => {
@@ -21,11 +21,11 @@ export const getCurrentUser$ = (): Observable<User> => {
 
 /**
  * Mettre à jour les informations de l'utilisateur connecté
- * PUT /user/update
+ * PATCH /user/update
  */
 export const updateUser$ = (payload: UpdateUserRequest): Observable<User> => {
   return from(
-    axios.patch(`${environment.apiBaseUrl}/users/update-profile`, payload)
+    axios.patch(`${environment.apiBaseUrl}/user/update-profile`, payload)
   ).pipe(
     map((response) => response.data.object),
     catchError((error) => {

@@ -36,7 +36,7 @@ export interface PaymentCard {
   cardCvv: string;
 }
 
-export interface OrderRequest {
+export interface CheckoutRequest {
   address: DeliveryAddress;
   delivery: {
     mode: string;

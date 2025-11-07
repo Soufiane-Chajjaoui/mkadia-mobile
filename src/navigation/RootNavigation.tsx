@@ -18,7 +18,7 @@ import CheckoutScreen from "../screens/Checkout/CheckoutScreen";
 import BottomTabNavigator from "./BottomTabNavigator";
 import { withRoleGate } from "../gates/withRoleGate";
 import { LoginRequiredScreenWithParams } from "./LoginRequiredNavigation";
-import AccountInfoScreen from "../screens/Profile/AccountInfoScreen";
+import AccountInfoScreen from "../screens/Profile/AccountInfo/AccountInfoScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
