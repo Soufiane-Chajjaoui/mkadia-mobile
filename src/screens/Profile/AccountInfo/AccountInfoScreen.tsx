@@ -4,18 +4,15 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  TouchableOpacity,
-  TextInput,
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import { ChevronLeft, Save, User as UserIcon, Mail, Phone, Edit2 } from 'lucide-react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Subscription } from 'rxjs';
 import { getCurrentUser$, updateUser$ } from '../../../apis/UserAPI';
-import { Colors, IconSize, Typography, Spacing, Elevation } from '../../../constants/DesignSystem';
+import { Colors, Typography, Spacing, Elevation } from '../../../constants/DesignSystem';
 import { showGlobalError, showGlobalSuccess } from '../../../context/ToastContext';
-import { User, UpdateUserRequest } from '../../../models/User';
+import { UpdateUserRequest } from '../../../models/User';
 import { RootStackParamList } from '../../../types/navigation';
 import ProfileHeader from '../components/ProfileHeader';
 import { UpdateForm } from './components/UpdateForm';
@@ -25,7 +22,6 @@ type Props = NativeStackScreenProps<RootStackParamList, 'AccountInfo'>;
 const AccountInfoScreen: React.FC<Props> = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
 
   // Form state
   const [firstName, setFirstName] = useState('');
@@ -47,7 +43,6 @@ const AccountInfoScreen: React.FC<Props> = ({ navigation }) => {
     subscriptionRef.current = getCurrentUser$().subscribe({
       next: (userData) => {
         console.log('✅ User data loaded:', userData);
-        setUser(userData);
         setFirstName(userData.firstName || '');
         setLastName(userData.lastName || '');
         setPhone(userData.phone || '');
@@ -83,9 +78,13 @@ const AccountInfoScreen: React.FC<Props> = ({ navigation }) => {
     subscriptionRef.current = updateUser$(payload).subscribe({
       next: (updatedUser) => {
         console.log('✅ User updated:', updatedUser);
-        setUser(updatedUser);
         showGlobalSuccess('Informations mises à jour avec succès');
         setSaving(false);
+
+        // Retourner à l'écran précédent après 500ms
+        setTimeout(() => {
+          navigation.goBack();
+        }, 500);
       },
       error: (error) => {
         console.error('❌ Error updating user:', error);

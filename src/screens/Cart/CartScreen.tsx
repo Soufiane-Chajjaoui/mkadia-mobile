@@ -31,6 +31,7 @@ import { navigate } from '../../navigation/NavigationService';
 import { useAppDispatch } from '../../hooks/useRedux';
 import { deleteItemAsync, clearCartAsync } from '../../features/cart/cartSlice';
 import { clearCart$, deleteItem$, getCart$, updateCartItemQuantity$ } from '../../apis/CartAPI';
+import PriceText from '../../components/PriceText';
 
 interface CouponResponse {
   code: string;
@@ -366,7 +367,7 @@ const CartScreen: React.FC<CartScreenProps> = ({ navigation }) => {
       <View style={styles.checkoutContainer}>
         <View style={styles.totalContainer}>
           <Text style={styles.totalLabel}>Total à payer</Text>
-          <Text style={styles.totalAmount}>{formatPrice(total)}</Text>
+          <PriceText amount={total} style={styles.totalAmount} iconSize={22} iconColor={Colors.GREEN_TEXT} />
         </View>
 
         <TouchableOpacity

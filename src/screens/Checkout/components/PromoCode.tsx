@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import { Tag, X, CheckCircle, Percent, AlertCircle } from 'lucide-react-native';
 import { CouponResponse } from '../../../apis/CheckoutAPI';
+import PriceText from '../../../components/PriceText';
+import { Colors } from '../../../constants/DesignSystem';
 
 // ============================================
 // TYPES

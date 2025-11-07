@@ -19,6 +19,7 @@ import BottomTabNavigator from "./BottomTabNavigator";
 import { withRoleGate } from "../gates/withRoleGate";
 import { LoginRequiredScreenWithParams } from "./LoginRequiredNavigation";
 import AccountInfoScreen from "../screens/Profile/AccountInfo/AccountInfoScreen";
+import OrdersScreen from "../screens/Profile/Orders/OrdersScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -142,6 +143,13 @@ export default function RootNavigator() {
         name="AccountInfo"
         component={withRoleGate(
           withSafeArea(AccountInfoScreen),
+          ["USER"]
+        )}
+      />
+      <Stack.Screen
+        name="Orders"
+        component={withRoleGate(
+          withSafeArea(OrdersScreen),
           ["USER"]
         )}
       />

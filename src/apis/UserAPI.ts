@@ -34,3 +34,21 @@ export const updateUser$ = (payload: UpdateUserRequest): Observable<User> => {
   );
 };
 
+/**
+ * Récupérer les commandes de l'utilisateur avec pagination
+ * @param page - Numéro de page (0-indexed pour Spring Data JPA)
+ * @param size - Nombre d'éléments par page
+ */
+export const getOrders$ = (page: number = 0, size: number = 10): Observable<any> => {
+  return from(
+    axios.get(`${environment.apiBaseUrl}/user/orders`, {
+      params: { page, size }
+    })
+  ).pipe(
+    map((response) => response.data),
+    catchError((error) => {
+      throw new Error(error.response?.data?.message || "Erreur lors du chargement des commandes");
+    })
+  );
+};
+

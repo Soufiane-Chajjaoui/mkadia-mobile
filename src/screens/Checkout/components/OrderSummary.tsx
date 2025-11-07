@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import PriceText from '../../../components/PriceText';
+import { Colors } from '../../../constants/DesignSystem';
 
 interface OrderSummaryProps {
   subtotal: number;
@@ -21,20 +23,25 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
 
     <View style={styles.summaryRow}>
       <Text style={styles.summaryLabel}>Sous-total</Text>
-      <Text style={styles.summaryValue}>{subtotal.toFixed(2)} {currency}</Text>
+      <PriceText amount={subtotal} style={styles.summaryValue} iconSize={14} />
     </View>
 
     <View style={styles.summaryRow}>
       <Text style={styles.summaryLabel}>Frais de livraison</Text>
-      <Text style={[styles.summaryValue, deliveryFee === 0 && styles.summaryValueFree]}>
-        {deliveryFee === 0 ? 'Gratuit' : `${deliveryFee.toFixed(2)} ${currency}`}
-      </Text>
+      {deliveryFee === 0 ? (
+        <Text style={styles.summaryValueFree}>Gratuit</Text>
+      ) : (
+        <PriceText amount={deliveryFee} style={styles.summaryValue} iconSize={14} />
+      )}
     </View>
 
     {discount > 0 && (
       <View style={styles.summaryRow}>
         <Text style={styles.summaryLabel}>Réduction</Text>
-        <Text style={styles.summaryValueDiscount}>-{discount.toFixed(2)} {currency}</Text>
+        <View style={styles.discountContainer}>
+          <Text style={styles.summaryValueDiscount}>-</Text>
+          <PriceText amount={discount} style={styles.summaryValueDiscount} iconSize={14} iconColor="#DC2626" />
+        </View>
       </View>
     )}
 
@@ -42,7 +49,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
 
     <View style={styles.summaryRow}>
       <Text style={styles.summaryTotalLabel}>Total à payer</Text>
-      <Text style={styles.summaryTotalValue}>{total.toFixed(2)} {currency}</Text>
+      <PriceText amount={total} style={styles.summaryTotalValue} iconSize={18} iconColor="#2563EB" />
     </View>
   </View>
 );
@@ -83,6 +90,10 @@ const styles = StyleSheet.create({
   summaryValueDiscount: {
     color: '#DC2626',
     fontWeight: '600',
+  },
+  discountContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   summaryDivider: {
     height: 1,

@@ -197,10 +197,10 @@ const ProductDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
 
   const handleShare = async () => {
     if (!product) return;
-    
+
     try {
       await Share.share({
-        message: `Découvrez ${product.name} - ${product.price} DH`,
+        message: `Découvrez ${product.name} - ${product.price}€`,
         title: product.name,
       });
     } catch (error) {

@@ -52,11 +52,13 @@ const ProfileUserInfo: React.FC<ProfileUserInfoProps> = ({
         {/* Informations utilisateur */}
         <View style={styles.userInfoContainer}>
           <Text style={styles.userName}>{fullName}</Text>
-          
-          <View style={styles.emailContainer}>
-            <Mail size={16} color={Colors.GRAY_TEXT} />
-            <Text style={styles.userEmail}>{email}</Text>
-          </View>
+
+          {email && (
+            <View style={styles.emailContainer}>
+              <Mail size={16} color={Colors.GRAY_TEXT} />
+              <Text style={styles.userEmail}>{email}</Text>
+            </View>
+          )}
         </View>
       </View>
     </View>
