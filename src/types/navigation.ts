@@ -24,4 +24,6 @@ export type RootStackParamList = {
   LoginRequired: LoginRequiredScreenProps;
   Checkout: { subtotal: number, items: CartItem[] };
   AccountInfo: undefined;
+  Orders: undefined;
+  OrderDetails: { orderId: number };
 };

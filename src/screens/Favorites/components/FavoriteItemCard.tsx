@@ -17,6 +17,7 @@ import {
   Elevation
 } from "../../../constants/DesignSystem";
 import { Favorite } from "../../../models/Favorite";
+import PriceText from "../../../components/PriceText";
 
 interface FavoriteItemCardProps {
   favorite: Favorite;
@@ -126,18 +127,29 @@ export default function FavoriteItemCard({
             {/* Si réduction et pas expiré */}
             {product.discount && !isExpired ? (
               <View style={styles.priceContainerColumn}>
-                <Text style={styles.discountedPrice}>{discountedPrice} DH</Text>
-                <Text style={styles.underlinedOldPrice}>{product.price} DH</Text>
+                <PriceText
+                  amount={Number(discountedPrice)}
+                  style={styles.discountedPrice}
+                  iconSize={14}
+                  iconColor={Colors.GREEN_TEXT}
+                />
+                <PriceText
+                  amount={product.price}
+                  style={styles.underlinedOldPrice}
+                  iconSize={12}
+                  iconColor={Colors.GRAY_TEXT}
+                />
               </View>
             ) : (
-              <Text
+              <PriceText
+                amount={product.price}
                 style={[
                   styles.price,
                   isExpired && { color: Colors.RED, fontWeight: "600" },
                 ]}
-              >
-                {product.price} DH
-              </Text>
+                iconSize={14}
+                iconColor={isExpired ? Colors.RED : Colors.GREEN_TEXT}
+              />
             )}
           </View>
 

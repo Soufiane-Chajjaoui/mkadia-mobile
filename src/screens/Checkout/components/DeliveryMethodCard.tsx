@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Home, Package, Truck, Clock } from 'lucide-react-native';
+import PriceText from '../../../components/PriceText';
+import { Colors } from '../../../constants/DesignSystem';
 import { DeliveryMethod } from '../../../types/CheckoutTypes';
 
 interface DeliveryMethodCardProps {
@@ -38,9 +40,11 @@ const DeliveryMethodCard: React.FC<DeliveryMethodCardProps> = ({
       </View>
 
       <View style={styles.methodPriceContainer}>
-        <Text style={[styles.methodPrice, method.price === 0 && styles.methodPriceFree]}>
-          {method.price === 0 ? 'Gratuit' : `${method.price} ${currency}`}
-        </Text>
+        {method.price === 0 ? (
+          <Text style={styles.methodPriceFree}>Gratuit</Text>
+        ) : (
+          <PriceText amount={method.price} style={styles.methodPrice} iconSize={14} />
+        )}
       </View>
 
       <View style={[styles.radio, isSelected && styles.radioSelected]}>

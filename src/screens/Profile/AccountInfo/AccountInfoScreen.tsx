@@ -4,28 +4,25 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  TouchableOpacity,
-  TextInput,
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import { ChevronLeft, Save, User as UserIcon, Mail, Phone, Edit2 } from 'lucide-react-native';
-import { Colors, Spacing, Typography, IconSize, Elevation } from '../../constants/DesignSystem';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../types/navigation';
-import { getCurrentUser$, updateUser$ } from '../../apis/UserAPI';
-import { User, UpdateUserRequest } from '../../models/User';
 import { Subscription } from 'rxjs';
-import { showGlobalError, showGlobalSuccess } from '../../context/ToastContext';
-import ProfileHeader from './components/ProfileHeader';
+import { getCurrentUser$, updateUser$ } from '../../../apis/UserAPI';
+import { Colors, Typography, Spacing, Elevation } from '../../../constants/DesignSystem';
+import { showGlobalError, showGlobalSuccess } from '../../../context/ToastContext';
+import { UpdateUserRequest } from '../../../models/User';
+import { RootStackParamList } from '../../../types/navigation';
+import AppHeader from '../../../components/AppHeader';
+import { UpdateForm } from './components/UpdateForm';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AccountInfo'>;
 
 const AccountInfoScreen: React.FC<Props> = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
-  
+
   // Form state
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -46,7 +43,6 @@ const AccountInfoScreen: React.FC<Props> = ({ navigation }) => {
     subscriptionRef.current = getCurrentUser$().subscribe({
       next: (userData) => {
         console.log('✅ User data loaded:', userData);
-        setUser(userData);
         setFirstName(userData.firstName || '');
         setLastName(userData.lastName || '');
         setPhone(userData.phone || '');
@@ -82,9 +78,13 @@ const AccountInfoScreen: React.FC<Props> = ({ navigation }) => {
     subscriptionRef.current = updateUser$(payload).subscribe({
       next: (updatedUser) => {
         console.log('✅ User updated:', updatedUser);
-        setUser(updatedUser);
         showGlobalSuccess('Informations mises à jour avec succès');
         setSaving(false);
+
+        // Retourner à l'écran précédent après 500ms
+        setTimeout(() => {
+          navigation.goBack();
+        }, 500);
       },
       error: (error) => {
         console.error('❌ Error updating user:', error);
@@ -98,7 +98,7 @@ const AccountInfoScreen: React.FC<Props> = ({ navigation }) => {
   if (loading) {
     return (
       <View style={styles.container}>
-        <ProfileHeader title="Mon Compte" showSettings={false} onBackPress={() => navigation.goBack()} />
+        <AppHeader title="Mon Compte" showSettings={false} onBackPress={() => navigation.goBack()} />
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={Colors.GREEN_BG} />
           <Text style={styles.loadingText}>Chargement...</Text>
@@ -110,87 +110,22 @@ const AccountInfoScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {/* Header */}
-      <ProfileHeader title="Mon Compte" showSettings={false} onBackPress={() => navigation.goBack()} />
-
+      <AppHeader title="Mon Compte" showSettings={false} onBackPress={() => navigation.goBack()} />
+      <UpdateForm
+        firstName={firstName}
+        lastName={lastName}
+        phone={phone}
+        saving={saving}
+        handleSave={handleSave}
+        onChangeFirstName={setFirstName}
+        onChangeLastName={setLastName}
+        onChangePhone={setPhone}
+      />
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {/* Form Section - Enhanced with icons */}
-        <View style={styles.formSection}>
-          <Text style={styles.sectionTitle}>Informations Personnelles</Text>
-          
-          {/* First Name */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Prénom</Text>
-            <View style={styles.inputWrapper}>
-              <UserIcon size={20} color={Colors.GRAY_TEXT} style={styles.inputIcon} />
-              <TextInput
-                style={styles.input}
-                value={firstName}
-                onChangeText={setFirstName}
-                placeholder="Entrez votre prénom"
-                placeholderTextColor={Colors.GRAY_TEXT}
-                editable={!saving}
-              />
-            </View>
-          </View>
-
-          {/* Last Name */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Nom</Text>
-            <View style={styles.inputWrapper}>
-              <UserIcon size={20} color={Colors.GRAY_TEXT} style={styles.inputIcon} />
-              <TextInput
-                style={styles.input}
-                value={lastName}
-                onChangeText={setLastName}
-                placeholder="Entrez votre nom"
-                placeholderTextColor={Colors.GRAY_TEXT}
-                editable={!saving}
-              />
-            </View>
-          </View>
-          {/* Phone */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Téléphone</Text>
-            <View style={styles.inputWrapper}>
-              <Phone size={20} color={Colors.GRAY_TEXT} style={styles.inputIcon} />
-              <TextInput
-                style={styles.input}
-                value={phone}
-                onChangeText={setPhone}
-                placeholder="Entrez votre numéro (+212)"
-                placeholderTextColor={Colors.GRAY_TEXT}
-                keyboardType="number-pad"
-                editable={!saving}
-              />
-            </View>
-          </View>
-        </View>
-
-        {/* Save Button - Enhanced */}
-        <TouchableOpacity
-          style={[styles.saveButton, saving && styles.saveButtonDisabled]}
-          onPress={handleSave}
-          disabled={saving}
-          activeOpacity={0.8}
-        >
-          {saving ? (
-            <>
-              <ActivityIndicator size="small" color={Colors.WHITE_ICON} />
-              <Text style={styles.saveButtonText}>Enregistrement...</Text>
-            </>
-          ) : (
-            <>
-              <Save size={IconSize.MD} color={Colors.WHITE_ICON} />
-              <Text style={styles.saveButtonText}>Enregistrer</Text>
-            </>
-          )}
-        </TouchableOpacity>
-
-        {/* Info Card - Enhanced */}
         <View style={styles.infoCard}>
           <View style={styles.infoIconContainer}>
             <Text style={styles.infoIcon}>💡</Text>
@@ -208,8 +143,7 @@ const AccountInfoScreen: React.FC<Props> = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: Colors.LIGHT_GRAY_BG,
+    flex: 1
   },
   loadingContainer: {
     flex: 1,
@@ -288,7 +222,7 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.LG,
     marginHorizontal: Spacing.MD,
     borderRadius: 16,
-    marginTop:10,
+    marginTop: 10,
     marginBottom: Spacing.LG,
     ...Elevation.LOW,
   },

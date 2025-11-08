@@ -75,18 +75,18 @@ const PromoCodeComponent: React.FC<PromoCodeProps> = ({
     if (promo.discountType === 'PERCENTAGE') {
       return `${promo.discountPercentage || promo.discountValue}% de réduction`;
     } else if (promo.discountType === 'FIXED') {
-      return `${promo.discountValue.toFixed(2)} DH de réduction`;
+      return `${promo.discountValue!.toFixed(2)} € de réduction`;
     } else if (promo.discountType === 'FREE_DELIVERY') {
       return 'Livraison gratuite';
     }
-    return `${promo.discountValue.toFixed(2)} DH de réduction`;
+    return `${promo.discountValue!.toFixed(2)} € de réduction`;
   };
 
   const formatSavedAmount = (promo: CouponResponse) => {
     if (promo.discountType === 'FREE_DELIVERY') {
       return 'Économie de frais de livraison';
     }
-    return `Vous économisez ${promo.discountValue.toFixed(2)} DH`;
+    return `Vous économisez ${promo.discountValue!.toFixed(2)} €`;
   };
 
   const displayError = localError || error;

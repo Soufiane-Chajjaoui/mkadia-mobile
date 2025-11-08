@@ -1,16 +1,16 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { ChevronLeft, Settings } from 'lucide-react-native';
-import { Colors, Spacing, Typography, IconSize, Elevation } from '../../../constants/DesignSystem';
+import { Colors, Spacing, Typography, IconSize, Elevation } from '../constants/DesignSystem';
 
-interface ProfileHeaderProps {
+interface AppHeaderProps {
   onBackPress: () => void;
   onSettingsPress?: () => void;
   showSettings?: boolean;
   title: string;
 }
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({ 
+const AppHeader: React.FC<AppHeaderProps> = ({ 
   onBackPress, 
   onSettingsPress,
   title,
@@ -25,7 +25,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           activeOpacity={0.7}
         >
           <View style={styles.iconCircle}>
-            <ChevronLeft size={IconSize.LG} color={Colors.DARK_BLUE_TEXT} />
+            <ChevronLeft size={IconSize.XL} color={Colors.DARK_BLUE_TEXT} />
           </View>
         </TouchableOpacity>
         
@@ -67,8 +67,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.WHITE,
   },
   backButton: {
-    width: 44,
-    height: 44,
+    width: 15,
+    height: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -79,13 +79,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   iconCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: Colors.LIGHT_GRAY_BG,
     justifyContent: 'center',
     alignItems: 'center',
-    ...Elevation.LOW,
   },
   titleContainer: {
     alignItems: 'center',
@@ -107,4 +102,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfileHeader;
+export default AppHeader;
+

@@ -19,14 +19,14 @@ export interface PaymentMethod {
 }
 
 export interface DeliveryAddress {
-  id?: string; // ✅ Ajouté pour identifier les adresses sauvegardées
+  id?: string | number; // ✅ Peut être string ou number selon l'API
   addressLine1: string;
   addressLine2?: string;
   city: string;
-  codePostal: string;
+  codePostal: string | number; // ✅ L'API retourne un number, le formulaire utilise string
   phone: string;
   isDefault?: boolean; // ✅ Marquer l'adresse par défaut
-  label?: string; // ✅ Ex: "Maison", "Bureau", "Autre"
+  label?: string | null; // ✅ Ex: "Maison", "Bureau", "Autre" - peut être null
 }
 
 export interface PaymentCard {
@@ -36,7 +36,7 @@ export interface PaymentCard {
   cardCvv: string;
 }
 
-export interface OrderRequest {
+export interface CheckoutRequest {
   address: DeliveryAddress;
   delivery: {
     mode: string;

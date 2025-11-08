@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import { Plus, Minus, ShoppingBasket } from "lucide-react-native";
 import { IconSize, Colors, Spacing, Elevation, BorderRadius, Typography } from "../../../constants/DesignSystem";
+import PriceText from "../../../components/PriceText";
 
 
 interface ProductBottomActionsProps {
@@ -56,14 +57,20 @@ const ProductBottomActions: React.FC<ProductBottomActionsProps> = ({
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.addToCartButton}
         onPress={onAddToCart}
       >
         <ShoppingBasket size={IconSize.MD} color={Colors.WHITE_ICON} />
-        <Text style={styles.addToCartText}>
-          Ajouter • {totalPrice.toFixed(2)} DH
-        </Text>
+        <View style={styles.addToCartTextContainer}>
+          <Text style={styles.addToCartText}>Ajouter • </Text>
+          <PriceText
+            amount={totalPrice}
+            style={styles.addToCartText}
+            iconSize={16}
+            iconColor={Colors.WHITE}
+          />
+        </View>
       </TouchableOpacity>
     </View>
   );
@@ -113,6 +120,10 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.MD,
     gap: Spacing.SM,
     ...Elevation.LOW,
+  },
+  addToCartTextContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   addToCartText: {
     ...Typography.SUBHEAD,

@@ -11,6 +11,7 @@ import {
   IconSize,
   Elevation
 } from "../constants/DesignSystem";
+import PriceText from "./PriceText";
 
 interface ProductCardProps extends ProductCardModel {
   cardWidth?: number;
@@ -143,7 +144,12 @@ export default function ProductCard(props: ProductCardProps) {
         {/* Price and Add Button */}
         <View style={styles.bottomRow}>
           <View style={styles.priceContainer}>
-            <Text style={styles.price}>{product.price} DH</Text>
+            <PriceText
+              amount={product.price}
+              style={styles.price}
+              iconSize={14}
+              iconColor={Colors.GREEN_TEXT}
+            />
             {product.unit && (
               <Text style={styles.unit}>/{product.unit}</Text>
             )}

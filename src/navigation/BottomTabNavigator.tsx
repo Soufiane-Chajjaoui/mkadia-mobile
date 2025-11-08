@@ -1,6 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Home, User, Heart, Search } from 'lucide-react-native';
+import { Home, User, Heart, Search, View } from 'lucide-react-native';
 import { Colors, IconSize } from '../constants/DesignSystem';
 import { BottomTabParamList } from '../types/navigation';
 import SafeAreaWrapper from '../components/SafeAreaWrapper';

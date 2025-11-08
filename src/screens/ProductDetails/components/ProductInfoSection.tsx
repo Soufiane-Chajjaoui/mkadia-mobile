@@ -6,6 +6,7 @@ import {
 } from "react-native";
 import { Star } from "lucide-react-native";
 import { Colors, Spacing, Typography } from "../../../constants/DesignSystem";
+import PriceText from "../../../components/PriceText";
 
 interface ProductInfoSectionProps {
   name: string;
@@ -40,13 +41,19 @@ const ProductInfoSection: React.FC<ProductInfoSectionProps> = ({
       
       {/* Prix */}
       <View style={styles.priceContainer}>
-        <Text style={styles.currentPrice}>
-          {calculateDiscountedPrice().toFixed(2)} DH
-        </Text>
+        <PriceText
+          amount={calculateDiscountedPrice()}
+          style={styles.currentPrice}
+          iconSize={20}
+          iconColor={Colors.GREEN_TEXT}
+        />
         {discount && (
-          <Text style={styles.originalPrice}>
-            {price.toFixed(2)} DH
-          </Text>
+          <PriceText
+            amount={price}
+            style={styles.originalPrice}
+            iconSize={14}
+            iconColor={Colors.GRAY_TEXT}
+          />
         )}
         {unit && <Text style={styles.priceUnit}>/{unit}</Text>}
       </View>

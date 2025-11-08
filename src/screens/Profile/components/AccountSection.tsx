@@ -29,7 +29,7 @@ const AccountSection: React.FC<AccountSectionProps> = ({ onMenuPress }) => {
           icon={<Package size={IconSize.LG} color={Colors.WHITE_ICON} />}
           title="Mes commandes"
           subtitle="Suivez vos commandes et historique"
-          onPress={() => onMenuPress('Mes commandes')}
+          onPress={() => onMenuPress('Orders')}
         />
 
         <MenuItem
@@ -62,12 +62,9 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.WHITE,
     marginBottom: Spacing.MD,
-    // borderRadius: 16,
-    overflow: 'hidden',
-    // ...Elevation.LOW,
+    overflow: 'hidden'
   },
   sectionHeader: {
-    backgroundColor: Colors.LIGHT_GRAY_BG,
     paddingHorizontal: Spacing.LG,
     paddingVertical: Spacing.MD,
     borderBottomWidth: 1,
