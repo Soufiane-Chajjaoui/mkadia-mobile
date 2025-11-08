@@ -320,7 +320,7 @@ import OrderSummary from './components/OrderSummary';
 import PaymentCardForm from './components/PaymentCardForm';
 import PaymentMethodSection from './components/PaymentMethodSection';
 import PromoCodeComponent from './components/PromoCode';
-import CheckoutHeader from './components/CheckoutHeader';
+import AppHeader from '../../components/AppHeader';
 import AddressSelector from './components/AddressSelector';
 import { useToast } from '../../context/ToastContext';
 
@@ -363,7 +363,7 @@ const CheckoutScreen: React.FC<CheckoutScreenProps> = ({ route, navigation }) =>
   const [animatedValue] = useState(new Animated.Value(1));
 
   const [selectedDelivery, setSelectedDelivery] = useState('STANDARD');
-  const [selectedPayment, setSelectedPayment] = useState('CARD');
+  const [selectedPayment, setSelectedPayment] = useState('CASH_ON_DELIVERY');
 
   const [paymentCard, setPaymentCard] = useState<PaymentCard>({
     cardNumber: '',
@@ -540,56 +540,67 @@ const CheckoutScreen: React.FC<CheckoutScreenProps> = ({ route, navigation }) =>
   };
 
   const handleConfirmOrder = async () => {
-    console.log('Confirming order...');
+    console.log('🚀 Confirming order...');
+    console.log('📍 Delivery Address:', deliveryAddress);
+    console.log('🚚 Selected Delivery:', selectedDelivery);
+    console.log('💳 Selected Payment:', selectedPayment);
+    console.log('🛒 Items:', items);
+    console.log('🎟️ Applied Promo:', appliedPromo);
+
+    // Validation du formulaire
     const validationErrors = validateCheckoutForm(
       deliveryAddress,
-      paymentCard,
       selectedPayment
     );
+
+    console.log('✅ Validation Errors:', validationErrors);
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       showError('Veuillez remplir tous les champs requis');
+      console.log('❌ Validation failed');
       return;
     }
 
+    console.log('✅ Validation passed, preparing order data...');
     setIsProcessing(true);
 
-    try {
-      const orderData: CheckoutRequest = {
-        address: deliveryAddress,
-        delivery: { mode: selectedDelivery },
-        payment: { method: selectedPayment },
-        items: items,
-        coupon: appliedPromo ? {
-          code: appliedPromo.code,
-        } : {
-          code: "",
-        }
-      };
-      
-      console.log('Order Data:', orderData);
-      
-      checkout$(orderData).subscribe({
-        next: (response) => {
-          console.log('Order Response:', response);
-          showSuccess('Commande confirmée avec succès !');
-        },
-        error: (error) => {
-          console.error('Order Error:', error);
-          showError('Erreur lors de la commande');
-        }
-      });
-    } catch (error) {
-      showError('Une erreur est survenue. Réessayez.');
-    } finally {
-      setIsProcessing(false);
-    }
+    const orderData: CheckoutRequest = {
+      address: deliveryAddress,
+      delivery: { mode: selectedDelivery },
+      payment: { method: selectedPayment },
+      items: items,
+      coupon: appliedPromo || {
+        code: "",
+      }
+    };
+
+    console.log('📦 Order Data to send:', JSON.stringify(orderData, null, 2));
+
+    checkout$(orderData).subscribe({
+      next: (response) => {
+        console.log('✅ Order Response:', response);
+        setIsProcessing(false);
+        showSuccess('Commande confirmée avec succès !');
+
+        // Navigation vers l'écran de confirmation ou retour à l'accueil
+        setTimeout(() => {
+          navigation.navigate('MainTabs' as never);
+        }, 1500);
+      },
+      error: (error) => {
+        console.error('❌ Order Error:', error);
+        console.error('❌ Error details:', error.message);
+        console.error('❌ Full error:', JSON.stringify(error, null, 2));
+        setIsProcessing(false);
+        showError(error.message || 'Erreur lors de la commande');
+      }
+    });
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <CheckoutHeader onBack={() => navigation.goBack()} />
+      <AppHeader title="Paiement" showSettings={false} onBackPress={() => navigation.goBack()} />
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -631,7 +642,7 @@ const CheckoutScreen: React.FC<CheckoutScreenProps> = ({ route, navigation }) =>
             onSelect={setSelectedPayment}
           />
 
-          {selectedPayment === 'card' && (
+          {selectedPayment === 'ONLINE_CARD' && (
             <PaymentCardForm
               data={paymentCard}
               onChange={setPaymentCard}
@@ -673,7 +684,9 @@ const CheckoutScreen: React.FC<CheckoutScreenProps> = ({ route, navigation }) =>
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F9FAFB' },
+  container: { 
+    flex: 1
+  },
   flex: { flex: 1 },
   scrollView: { flex: 1 },
   scrollContent: { padding: 16 },

@@ -395,8 +395,7 @@ const CartScreen: React.FC<CartScreenProps> = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: Colors.LIGHT_GRAY_BG
+    flex: 1
   } as ViewStyle,
 
   skeletonContainer: {

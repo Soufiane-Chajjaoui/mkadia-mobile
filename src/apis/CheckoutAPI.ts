@@ -1,6 +1,6 @@
-import axios from "axios";
 import { from, map, catchError, Observable } from "rxjs";
 import { environment } from "../config/environment";
+import { configuredAxios as axios } from '../intercepteurs/main-interceptor';
 import { CheckoutRequest, DeliveryAddress } from "../types/CheckoutTypes";
 
 export interface ApplyCouponRequest {
@@ -18,14 +18,23 @@ export interface CouponResponse {
 
 
 export const checkout$ = (payload: CheckoutRequest) : Observable<any> => {
+    console.log('🌐 API: Sending checkout request to:', `${environment.apiBaseUrl}/checkout/confirm`);
+    console.log('📤 API: Payload:', JSON.stringify(payload, null, 2));
+
     return from(
       axios.post(`${environment.apiBaseUrl}/checkout/confirm`, payload)
     ).pipe(
       map((response) => {
+        console.log('📥 API: Response received:', response.data);
         return response.data;
       }),
       catchError((error) => {
-        throw new Error(error.response?.data?.message || "Erreur de connexion");
+        console.error('🔴 API: Error occurred:', error);
+        console.error('🔴 API: Error response:', error.response?.data);
+        console.error('🔴 API: Error status:', error.response?.status);
+        const errorMessage = error.response?.data?.message || "Erreur de connexion";
+        console.error('🔴 API: Error message:', errorMessage);
+        throw new Error(errorMessage);
       })
     );
 }

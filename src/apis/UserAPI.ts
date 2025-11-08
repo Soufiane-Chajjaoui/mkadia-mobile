@@ -3,6 +3,7 @@ import { map, catchError } from 'rxjs/operators';
 import { environment } from '../config/environment';
 import { configuredAxios as axios } from '../intercepteurs/main-interceptor';
 import { User, UpdateUserRequest } from '../models/User';
+import { OrderDetails } from '../models/Order';
 
 /**
  * Récupérer les informations de l'utilisateur connecté
@@ -48,6 +49,18 @@ export const getOrders$ = (page: number = 0, size: number = 10): Observable<any>
     map((response) => response.data),
     catchError((error) => {
       throw new Error(error.response?.data?.message || "Erreur lors du chargement des commandes");
+    })
+  );
+};
+
+export const getOrderDetails$ = (orderId: number): Observable<OrderDetails> => {
+  return from(
+    axios.get<OrderDetails>(`${environment.apiBaseUrl}/user/order/${orderId}`)
+  ).pipe(
+    map((response) => response.data),
+    catchError((error) => {
+      console.error(`❌ Error fetching order ${orderId}:`, error);
+      throw error;
     })
   );
 };

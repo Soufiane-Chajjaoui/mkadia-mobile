@@ -6,7 +6,7 @@ import { JwtService } from '../../services/JwtService';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Subscription } from 'rxjs';
 import { getCurrentUser$ } from '../../apis/UserAPI';
-import ProfileHeader from './components/ProfileHeader';
+import AppHeader from '../../components/AppHeader';
 import ProfileUserInfo from './components/ProfileUserInfo';
 import AccountSection from './components/AccountSection';
 import HelpLogoutSection from './components/HelpLogoutSection';
@@ -90,7 +90,7 @@ const ProfileScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       {/* Header */}
-      <ProfileHeader title="Mon Profil" showSettings={false} onBackPress={() => navigation.goBack()} />
+      <AppHeader title="Mon Profil" showSettings={false} onBackPress={() => navigation.goBack()} />
 
       <ScrollView
         style={styles.scrollView}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
+import { Elevation } from '../../../constants/DesignSystem';
 
 interface ConfirmButtonProps {
   total: number;
@@ -50,11 +51,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#E5E7EB',
     padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 5,
+    ...Elevation.LOW
   },
   confirmButton: {
     backgroundColor: '#059669',

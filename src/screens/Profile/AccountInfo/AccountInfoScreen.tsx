@@ -14,7 +14,7 @@ import { Colors, Typography, Spacing, Elevation } from '../../../constants/Desig
 import { showGlobalError, showGlobalSuccess } from '../../../context/ToastContext';
 import { UpdateUserRequest } from '../../../models/User';
 import { RootStackParamList } from '../../../types/navigation';
-import ProfileHeader from '../components/ProfileHeader';
+import AppHeader from '../../../components/AppHeader';
 import { UpdateForm } from './components/UpdateForm';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AccountInfo'>;
@@ -98,7 +98,7 @@ const AccountInfoScreen: React.FC<Props> = ({ navigation }) => {
   if (loading) {
     return (
       <View style={styles.container}>
-        <ProfileHeader title="Mon Compte" showSettings={false} onBackPress={() => navigation.goBack()} />
+        <AppHeader title="Mon Compte" showSettings={false} onBackPress={() => navigation.goBack()} />
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={Colors.GREEN_BG} />
           <Text style={styles.loadingText}>Chargement...</Text>
@@ -110,7 +110,7 @@ const AccountInfoScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {/* Header */}
-      <ProfileHeader title="Mon Compte" showSettings={false} onBackPress={() => navigation.goBack()} />
+      <AppHeader title="Mon Compte" showSettings={false} onBackPress={() => navigation.goBack()} />
       <UpdateForm
         firstName={firstName}
         lastName={lastName}
@@ -143,8 +143,7 @@ const AccountInfoScreen: React.FC<Props> = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: Colors.LIGHT_GRAY_BG,
+    flex: 1
   },
   loadingContainer: {
     flex: 1,

@@ -9,15 +9,15 @@ import {
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Subscription } from 'rxjs';
-import { getOrders$ } from '../../../apis/UserAPI';
 import { Order, OrdersResponse } from '../../../models/Order';
 import { Colors, Spacing, Typography } from '../../../constants/DesignSystem';
 import { RootStackParamList } from '../../../types/navigation';
-import ProfileHeader from '../components/ProfileHeader';
+import AppHeader from '../../../components/AppHeader';
 import OrderCard from './components/OrderCard';
 import TimelineHeader from './components/TimelineHeader';
 import EmptyOrders from './components/EmptyOrders';
 import { showGlobalError } from '../../../context/ToastContext';
+import { getOrders$ } from '../../../apis/UserAPI';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Orders'>;
 
@@ -101,8 +101,7 @@ const OrdersScreen: React.FC<Props> = ({ navigation }) => {
   }, [loadingMore, hasMore, currentPage, loading]);
 
   const handleOrderPress = (order: Order) => {
-    // TODO: Navigate to order details
-    console.log('Order pressed:', order.id);
+    navigation.navigate('OrderDetails', { orderId: order.id });
   };
 
   // Group orders by month and year
@@ -187,7 +186,7 @@ const OrdersScreen: React.FC<Props> = ({ navigation }) => {
   if (loading) {
     return (
       <View style={styles.container}>
-        <ProfileHeader
+        <AppHeader
           title="Mes Commandes"
           showSettings={false}
           onBackPress={() => navigation.goBack()}
@@ -203,7 +202,7 @@ const OrdersScreen: React.FC<Props> = ({ navigation }) => {
   if (orders.length === 0) {
     return (
       <View style={styles.container}>
-        <ProfileHeader
+        <AppHeader
           title="Mes Commandes"
           showSettings={false}
           onBackPress={() => navigation.goBack()}
@@ -215,7 +214,7 @@ const OrdersScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <ProfileHeader
+      <AppHeader
         title="Mes Commandes"
         showSettings={false}
         onBackPress={() => navigation.goBack()}
