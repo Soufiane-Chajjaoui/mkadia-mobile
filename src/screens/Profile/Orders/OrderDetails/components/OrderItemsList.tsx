@@ -4,6 +4,7 @@ import { Package } from 'lucide-react-native';
 import { Colors, Spacing, Typography, Elevation, BorderRadius } from '../../../../../constants/DesignSystem';
 import { OrderItem } from '../../../../../models/Order';
 import PriceText from '../../../../../components/PriceText';
+import { replaceBaseUrl } from '../../../../../utils/urlHelper';
 
 interface OrderItemsListProps {
   items: OrderItem[];
@@ -31,10 +32,10 @@ const OrderItemsList: React.FC<OrderItemsListProps> = ({ items }) => {
             {/* Image du produit */}
             <View style={styles.imageContainer}>
               {item.product.urls && item.product.urls.length > 0 ? (
-                <Image source={{ uri: item.product.urls[0] }} style={styles.productImage} />
+                <Image source={{ uri: replaceBaseUrl(item.product.urls[0].url) }} style={styles.productImage} />
               ) : (
                 <View style={styles.placeholderImage}>
-                  <Package size={24} color={Colors.GRAY_ICON} />
+                  <Package size={24} color={Colors.ORANGE_ICON} />
                 </View>
               )}
             </View>
@@ -125,9 +126,9 @@ const styles = StyleSheet.create({
     gap: Spacing.MD,
   },
   imageContainer: {
-    width: 70,
-    height: 70,
-    borderRadius: BorderRadius.MD,
+    width: 90,
+    height: 80,
+    borderRadius: BorderRadius.LG,
     overflow: 'hidden',
   },
   productImage: {

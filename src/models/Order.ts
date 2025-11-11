@@ -1,3 +1,5 @@
+import { Media } from "../types/Media";
+
 export interface OrderAddress {
   city: string;
   addressLine1: string;
@@ -30,7 +32,7 @@ export interface OrderProduct {
   unit: string;
   expirationDate: string;
   quantity: number;
-  urls: string[];
+  urls: Media[];
 }
 
 export interface OrderItem {

@@ -121,8 +121,7 @@ const OrderDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: Colors.LIGHT_GRAY_BG,
+    flex: 1
   },
   loadingContainer: {
     flex: 1,

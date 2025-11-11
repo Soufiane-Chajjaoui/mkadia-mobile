@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { MapPin, User, Mail, Phone } from 'lucide-react-native';
+import { MapPin, User, Mail, Phone, Truck } from 'lucide-react-native';
 import { Colors, Spacing, Typography, Elevation, BorderRadius } from '../../../../../constants/DesignSystem';
 import { OrderDelivery, OrderAddress } from '../../../../../models/Order';
 
@@ -17,7 +17,7 @@ const DeliveryInfo: React.FC<DeliveryInfoProps> = ({ delivery, address }) => {
         <>
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <User size={20} color={Colors.DARK_BLUE_TEXT} strokeWidth={2.5} />
+              <Truck size={20} color={Colors.DARK_BLUE_TEXT} strokeWidth={2.5} />
               <Text style={styles.sectionTitle}>Informations de livraison</Text>
             </View>
 
