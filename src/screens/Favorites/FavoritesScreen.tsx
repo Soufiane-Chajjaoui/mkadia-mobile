@@ -182,7 +182,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: Spacing.MD,
-    backgroundColor: Colors.WHITE,
     padding: Spacing.XXL,
   },
   emptyTitle: {

@@ -49,7 +49,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
   const loadProducts = () => {
     setProductsLoading(true);
-    const sub = getProductsPaginated$(0, 10, 10).subscribe({
+    const sub = getProductsPaginated$(0, 6, 10).subscribe({
       next: (data: PaginatedResponse<ProductCardModel>) => {
         setProductsLoading(false);
         setRefreshing(false);
@@ -93,7 +93,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     setLoadingMore(true);
     const nextPage = currentPage + 1;
 
-    const sub = getProductsPaginated$(nextPage, 10, 10).subscribe({
+    const sub = getProductsPaginated$(nextPage, 6, 10).subscribe({
       next: (data: PaginatedResponse<ProductCardModel>) => {
         setLoadingMore(false);
         setProducts((prev) => [...prev, ...data.elements]);
