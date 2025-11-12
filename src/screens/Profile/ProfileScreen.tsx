@@ -10,6 +10,9 @@ import AppHeader from '../../components/AppHeader';
 import ProfileUserInfo from './components/ProfileUserInfo';
 import AccountSection from './components/AccountSection';
 import HelpLogoutSection from './components/HelpLogoutSection';
+import { logoutAsync } from '../../features/auth/authSlice';
+import { logout$ } from '../../apis/AuthAPI';
+import { resetToLogin } from '../../navigation/NavigationService';
 
 const ProfileScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -56,7 +59,7 @@ const ProfileScreen: React.FC = () => {
           setEmail(userData.email);
         } else {
           const jwtEmail = JwtService.getUserEmail(accessToken) || '';
-          console.log('📧 Email from JWT (fallback):', jwtEmail);
+          console.log('Email from JWT (fallback):', jwtEmail);
           setEmail(jwtEmail);
         }
       },
@@ -77,6 +80,29 @@ const ProfileScreen: React.FC = () => {
         break;
       case 'Orders':
         navigation.navigate('Orders' as never);
+        break;
+      case 'logout':
+        Alert.alert('Déconnexion', 'Voulez-vous vraiment vous déconnecter ?', [
+          {
+            text: 'Annuler',
+            style: 'cancel',
+          },
+          {
+            text: 'Déconnexion',
+            style: 'destructive',
+            onPress: () => {
+              logout$().subscribe({
+                next: () => {
+                  dispatch(logoutAsync());
+                  resetToLogin();
+                },
+                error: (err) => {
+                  console.error('Error logging out:', err);
+                },
+              });
+            },
+          },
+        ]);
         break;
       case "Centre d'aide":
         Alert.alert('En développement', 'La fonctionnalité "Centre d\'aide" sera bientôt disponible.');

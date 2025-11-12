@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+// ProductCard.tsx
+import React, { useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Heart, Star, Check, ShoppingBasket } from "lucide-react-native";
 import { ProductCard as ProductCardModel } from "../models/ProductCard";
@@ -12,51 +13,37 @@ import {
   Elevation
 } from "../constants/DesignSystem";
 import PriceText from "./PriceText";
+import { useFavorites } from "../hooks/useFavorites";
 
 interface ProductCardProps extends ProductCardModel {
   cardWidth?: number;
   onAddToCart: () => void;
-  onToggleFavorite?: (productId: number, currentState: boolean) => boolean | void;
   onPress?: () => void;
-  initialFavoriteState?: boolean;
-  isTogglingFavorite?: boolean; // État de chargement géré par le parent
 }
 
 export default function ProductCard(props: ProductCardProps) {
   const { 
     cardWidth, 
     onAddToCart, 
-    onToggleFavorite, 
     onPress, 
-    initialFavoriteState = false,
-    isTogglingFavorite = false,
     ...product 
   } = props;
   
-  const [isFavorite, setIsFavorite] = useState(initialFavoriteState);
   const [isAddedToCart, setIsAddedToCart] = useState(false);
-
+  const { isFavorite, toggleFavorite, isTogglingFavorite } = useFavorites();
+  
+  const isFav = isFavorite(product.id);
+  const isToggling = isTogglingFavorite(product.id);
+  
   const handleAddToCart = (event: any) => {
-    // Empêcher la propagation vers onPress du produit
     event.stopPropagation();
-
     setIsAddedToCart(true);
     onAddToCart?.();
   };
 
-  const toggleFavorite = (event: any) => {
+  const handleToggleFavorite = (event: any) => {
     event.stopPropagation();
-
-    if (isTogglingFavorite) return; // Éviter les clics multiples
-
-    // Appeler le handler du parent avec l'ID et l'état actuel
-    // Le parent retourne true si l'action a été effectuée, false sinon (ex: non authentifié)
-    const success = onToggleFavorite?.(product.id, isFavorite);
-
-    // Mise à jour optimiste de l'état local seulement si l'action a été autorisée
-    if (success !== false) {
-      setIsFavorite(!isFavorite);
-    }
+    toggleFavorite(product.id);
   };
 
   const handleProductPress = () => {
@@ -73,11 +60,6 @@ export default function ProductCard(props: ProductCardProps) {
       ...Elevation.LOW,
     },
   });
-
-  // Effet pour synchroniser l'état local avec les props
-  useEffect(() => {
-    setIsFavorite(initialFavoriteState);
-  }, [initialFavoriteState]);
 
   return (
     <TouchableOpacity
@@ -97,15 +79,17 @@ export default function ProductCard(props: ProductCardProps) {
       {/* Favorite Heart */}
       <TouchableOpacity
         style={styles.heartBtn}
-        onPress={toggleFavorite}
+        onPress={handleToggleFavorite}
         activeOpacity={0.7}
-        accessibilityLabel={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+        disabled={isToggling}
+        accessibilityLabel={isFav ? "Retirer des favoris" : "Ajouter aux favoris"}
         accessibilityRole="button"
       >
         <Heart
           size={IconSize.MD}
-          color={isFavorite ? Colors.RED_ICON : Colors.GRAY_ICON}
-          fill={isFavorite ? Colors.RED_ICON : "transparent"}
+          color={isFav ? Colors.RED_ICON : Colors.GRAY_ICON}
+          fill={isFav ? Colors.RED_ICON : "transparent"}
+          opacity={isToggling ? 0.5 : 1}
         />
       </TouchableOpacity>
 
@@ -117,7 +101,8 @@ export default function ProductCard(props: ProductCardProps) {
               product?.urls?.[0]?.url ??
               "http://localhost:9000/mkadia-objects/885d07f7-19c2-45d7-9f07-0d983c131e59_carrot.jpg"
             )
-          }} onError={(e) => console.log("Image loading error:", e.nativeEvent.error)}
+          }}
+          onError={(e) => console.log("Image loading error:", e.nativeEvent.error)}
           style={styles.image}
           accessibilityLabel={`Image de ${product.name}`}
         />
@@ -178,6 +163,7 @@ export default function ProductCard(props: ProductCardProps) {
     </TouchableOpacity>
   );
 }
+
 
 const styles = StyleSheet.create({
   discountBadge: {

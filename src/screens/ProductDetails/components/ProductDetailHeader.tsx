@@ -43,16 +43,6 @@ const ProductDetailHeader: React.FC<ProductDetailHeaderProps> = ({
             <Share2 size={IconSize.MD} color={Colors.GREEN_BG} />
           </TouchableOpacity>
           
-          <TouchableOpacity 
-            style={styles.headerButton}
-            onPress={onToggleFavorite}
-          >
-            <Heart 
-              size={IconSize.MD} 
-              color={isFavorite ? Colors.RED_ICON : Colors.GREEN_BG}
-              fill={isFavorite ? Colors.RED_ICON : "transparent"}
-            />
-          </TouchableOpacity>
         </View>
       </SafeAreaView>
     </>

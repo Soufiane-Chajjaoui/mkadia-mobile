@@ -57,13 +57,24 @@ export const changePassword$ = (payload: ResetPasswordRequest) => {
     )
   ).pipe(
     map((res) => {
-      console.log("✅ Change password success:", res.data);
+      console.log("Change password success:", res.data);
       return res.data;
     }),
     catchError((error) => {
-      console.error("❌ Change password error:", error.response?.data || error);
+      console.error("Change password error:", error.response?.data || error);
       throw new Error(error.response?.data?.message || "Connection error");
     })
   );
 };
 
+
+export const logout$ = () => {
+  return from(
+    axios.post(`${environment.apiBaseUrl}/auth/logout`)
+  ).pipe(
+    map((res) => res.data),
+    catchError((error) => {
+      throw new Error(error.response?.data?.message || "Erreur de déconnexion");
+    })
+  );
+};

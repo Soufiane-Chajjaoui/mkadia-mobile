@@ -348,7 +348,6 @@ export default function ChangePasswordScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.WHITE
     },
     header: {
         paddingHorizontal: Spacing.XL,
@@ -373,7 +372,6 @@ const styles = StyleSheet.create({
         width: 120,
         height: 120,
         borderRadius: 60,
-        backgroundColor: Colors.LIGHT_GRAY_BG || '#F0F9FF',
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: Spacing.XL,

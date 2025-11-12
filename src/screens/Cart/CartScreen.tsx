@@ -340,19 +340,6 @@ const CartScreen: React.FC<CartScreenProps> = ({ navigation }) => {
           />
         }
       >
-
-        {/* Alert livraison gratuite */}
-        {subtotal < 35 && subtotal > 0 && (
-          <View style={styles.shippingAlert}>
-            <View style={styles.alertIconContainer}>
-              <ArrowRight size={20} color="#17A2B8" />
-            </View>
-            <Text style={styles.alertText}>
-              Plus que {formatPrice(35 - subtotal)} pour la livraison gratuite !
-            </Text>
-          </View>
-        )}
-
         {cartItems.map(item => (
           <CartItemComponent
             key={item.id}
@@ -414,7 +401,6 @@ const styles = StyleSheet.create({
   emptyIconContainer: {
     width: 160,
     height: 160,
-    backgroundColor: Colors.LIGHT_GRAY_BG,
     borderRadius: BorderRadius.CIRCULAR,
     justifyContent: "center",
     alignItems: "center",

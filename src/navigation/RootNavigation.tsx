@@ -31,7 +31,7 @@ export const linking: LinkingOptions<RootStackParamList> = {
       Onboarding: 'onboarding',
       MainTabs: {
         screens: {
-          HomeTab: 'home',
+          HomeTab: 'MainTabs',
           FavoritesTab: 'favorites',
           SearchTab: 'search',
           ProfileTab: 'profile',

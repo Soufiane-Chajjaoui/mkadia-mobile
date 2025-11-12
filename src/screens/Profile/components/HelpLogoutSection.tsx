@@ -27,7 +27,7 @@ const HelpLogoutSection: React.FC<HelpLogoutSectionProps> = ({
           icon={<LogOut size={IconSize.LG} color={Colors.WHITE_ICON} />}
           title="Déconnexion"
           subtitle="Déconnectez-vous de votre compte"
-          onPress={() => onMenuPress('Déconnexion')}
+          onPress={() => onMenuPress('logout')}
           showDivider={false}
         />
       </View>
