@@ -24,9 +24,9 @@ export const addToFavorites$ = (productId: number): Observable<any> => {
   );
 };
 
-export const removeFromFavorites$ = (productId: number): Observable<any> => {
+export const removeFromFavorites$ = (favoriteId: number): Observable<any> => {
   return from(
-    axios.delete(`${environment.apiBaseUrl}/favorites/${productId}`)
+    axios.delete(`${environment.apiBaseUrl}/favorites/${favoriteId}`)
   ).pipe(
     map((response) => response.data),
     catchError((error) => {

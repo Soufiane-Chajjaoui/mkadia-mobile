@@ -37,9 +37,8 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
   const items = useAppSelector((state) => state.cart.items);
 
-  const { toggleFavorite, togglingFavorites } = useFavorites();
+  const { toggleFavorite } = useFavorites();
   const { addToCart, addingToCart } = useCart();
-  const [favoriteStates, setFavoriteStates] = useState<{[key: number]: boolean}>({});
 
   // Chargement initial des données
   useEffect(() => {
@@ -118,17 +117,6 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     addToCart(product.id, 1);
   };
 
-  const handleToggleFavorite = (productId: number, currentState: boolean) => {
-    const success = toggleFavorite(productId, currentState);
-    if (success) {
-      // Mettre à jour l'état local seulement si l'action a été autorisée
-      setFavoriteStates(prev => ({ 
-        ...prev, 
-        [productId]: !currentState 
-      }));
-    }
-  };
-
   // Navigation vers catégorie
   const handleCategoryPress = (category: CategoryCard) => {
     navigation.navigate("CategoryProducts", category);
@@ -193,9 +181,6 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
         {...item}
         onAddToCart={() => handleAddToCart(item)}
         onPress={() => handleProductPress(item)}
-        onToggleFavorite={handleToggleFavorite}
-        initialFavoriteState={favoriteStates[item.id] || false}
-        isTogglingFavorite={togglingFavorites[item.id] || false}
       />
     </View>
   );

@@ -14,7 +14,39 @@ import { getLoginRequiredConfig } from '../config/loginRequiredConfig';
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
 // Placeholder screens
-const SearchScreen = () => <SafeAreaWrapper><Text>Search</Text></SafeAreaWrapper>;
+const SearchScreen = () => (
+  <SafeAreaWrapper>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: 16,
+      }}
+    >
+      <Text
+        style={{
+          fontSize: 18,
+          color: '#555',
+          fontWeight: '600',
+        }}
+      >
+        🔍 Page pas encore disponible
+      </Text>
+      <Text
+        style={{
+          fontSize: 14,
+          color: '#999',
+          marginTop: 8,
+        }}
+      >
+        Cette fonctionnalité sera bientôt ajoutée.
+      </Text>
+    </View>
+  </SafeAreaWrapper>
+);
+
 
 export default function BottomTabNavigator() {
   return (
@@ -27,7 +59,7 @@ export default function BottomTabNavigator() {
           backgroundColor: Colors.WHITE,
           borderTopColor: Colors.LIGHT_GRAY_BG,
           height: 60,
-          elevation:0,
+          elevation: 0,
           marginBottom: 15,
           paddingBottom: 8,
           paddingTop: 8,

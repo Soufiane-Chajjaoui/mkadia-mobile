@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react';
+// FavoritesScreen.tsx
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,76 +9,71 @@ import {
   RefreshControl,
   Animated,
 } from 'react-native';
-import { Heart, ArrowRight } from 'lucide-react-native';
+import { ArrowRight } from 'lucide-react-native';
 import SafeAreaWrapper from '../../components/SafeAreaWrapper';
 import { Colors, Spacing, Typography, IconSize, BorderRadius, Elevation } from '../../constants/DesignSystem';
-import { getFavorites$ } from '../../apis/FavoriteAPI';
-import { showGlobalError } from '../../context/ToastContext';
 import { navigate } from '../../navigation/NavigationService';
 import FavoriteItemCard from './components/FavoriteItemCard';
 import { useFavorites } from '../../hooks/useFavorites';
 import { useCart } from '../../hooks/useCart';
-import { Favorite } from '../../models/Favorite';
+import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
+import { initializeFavorites } from '../../features/favorites/favoritesSlice';
+import { getFavorites$ } from '../../apis/FavoriteAPI';
 
 const FavoritesScreen: React.FC = () => {
-  const { toggleFavorite, togglingFavorites } = useFavorites();
+  const dispatch = useAppDispatch();
+  const { toggleFavorite, isTogglingFavorite } = useFavorites();
   const { addToCart } = useCart();
-  const [favorites, setFavorites] = useState<Favorite[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-  const fadeAnim = useState(new Animated.Value(0))[0];
+  
+  // Utiliser Redux pour les favoris
+  const favorites = useAppSelector((state) => state.favorites.items);
+  const isLoading = useAppSelector((state) => state.favorites.isLoading);
+  const [refreshing, setRefreshing] = React.useState(false);
+  const [favoritesData, setFavoritesData] = React.useState<any[]>([]);
 
   useEffect(() => {
-    loadFavoritesData();
+    dispatch(initializeFavorites());
+    loadFavoritesDetails();
   }, []);
 
+  // Recharger les détails quand la liste change
   useEffect(() => {
-    if (!loading) {
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
+    if (favorites.length > 0) {
+      loadFavoritesDetails();
+    } else {
+      setFavoritesData([]);
     }
-  }, [loading]);
+  }, [favorites.length]);
 
-  const loadFavoritesData = useCallback(() => {
-    setLoading(true);
+  const loadFavoritesDetails = () => {
+    setRefreshing(true);
     const subscription = getFavorites$().subscribe({
-      next: (favoriteItems: Favorite[]) => {
-        console.log("Favoris reçus:", favoriteItems);
-        setFavorites(favoriteItems);
-        setLoading(false);
+      next: (favoriteItems: any[]) => {
+        setFavoritesData(favoriteItems);
         setRefreshing(false);
       },
       error: (err) => {
         console.error('Erreur favoris:', err);
-        showGlobalError("Erreur lors du chargement des favoris");
-        setLoading(false);
         setRefreshing(false);
       }
     });
     return () => subscription.unsubscribe();
-  }, []);
+  };
 
-  const handleRefresh = useCallback(() => {
-    setRefreshing(true);
-    loadFavoritesData();
-  }, [loadFavoritesData]);
+  const handleRefresh = () => {
+    dispatch(initializeFavorites());
+    loadFavoritesDetails();
+  };
 
-  const handleAddToCart = (favorite: Favorite) => {
+  const handleAddToCart = (favorite: any) => {
     addToCart(favorite.product.id, 1);
   };
 
-  const handleToggleFavorite = (productId: number, currentState: boolean) => {
-    toggleFavorite(productId, currentState);
-    if (currentState) {
-      // Retirer le favori de la liste après suppression
-      setFavorites(prev => prev.filter(item => item.product.id !== productId));
-    }
+  const handleToggleFavorite = (productId: number) => {
+    toggleFavorite(productId);
   };
 
-  const handleProductPress = (favorite: Favorite) => {
+  const handleProductPress = (favorite: any) => {
     navigate('ProductDetails', favorite.product);
   };
 
@@ -102,7 +98,7 @@ const FavoritesScreen: React.FC = () => {
     </View>
   );
 
-  if (loading) {
+  if (isLoading && favoritesData.length === 0) {
     return (
       <SafeAreaWrapper>
         <View style={styles.loadingContainer}>
@@ -112,7 +108,7 @@ const FavoritesScreen: React.FC = () => {
     );
   }
 
-  if (favorites.length === 0) {
+  if (favoritesData.length === 0) {
     return (
       <SafeAreaWrapper>
         {renderEmptyFavorites()}
@@ -124,21 +120,19 @@ const FavoritesScreen: React.FC = () => {
     <SafeAreaWrapper>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Mes Favoris ({favorites.length})</Text>
+          <Text style={styles.headerTitle}>Mes Favoris ({favoritesData.length})</Text>
         </View>
 
         <FlatList
-          data={favorites}
+          data={favoritesData}
           renderItem={({ item }) => (
-            <Animated.View style={{ opacity: fadeAnim }}>
-              <FavoriteItemCard
-                favorite={item}
-                onAddToCart={() => handleAddToCart(item)}
-                onPress={() => handleProductPress(item)}
-                onRemoveFromFavorites={() => handleToggleFavorite(item.product.id, true)}
-                isTogglingFavorite={togglingFavorites[item.product.id] || false}
-              />
-            </Animated.View>
+            <FavoriteItemCard
+              favorite={item}
+              onAddToCart={() => handleAddToCart(item)}
+              onPress={() => handleProductPress(item)}
+              onRemoveFromFavorites={() => handleToggleFavorite(item.product.id)}
+              isTogglingFavorite={isTogglingFavorite(item.product.id)}
+            />
           )}
           keyExtractor={(item) => `favorite-${item.id}`}
           refreshControl={
@@ -154,6 +148,8 @@ const FavoritesScreen: React.FC = () => {
     </SafeAreaWrapper>
   );
 };
+
+// ... styles identiques
 
 const styles = StyleSheet.create({
   container: {

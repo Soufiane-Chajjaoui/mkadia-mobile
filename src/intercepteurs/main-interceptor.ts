@@ -11,7 +11,6 @@ import { getErrorMessage } from '../utils/errorMessages';
 const PUBLIC_URLS = ['login', 'register', 'forgot-password', 'verify-email', 'public', 'resend-verification'];
 const RESET_URLS = ['change-reset-password'];
 const REFRESH_URLS = ['refresh-token'];
-const ENCODED_URLS = ['change-reset-password', 'forgot-password'];
 
 // URLs publiques avec méthode spécifique (GET uniquement)
 const PUBLIC_GET_URLS = ['/reviews'];
@@ -25,10 +24,10 @@ interface ErrorResponse {
 const getToken = (type: TokenType) => AsyncStorage.getItem(type);
 
 // 📝 Encoder un objet en x-www-form-urlencoded
-const toFormUrlEncoded = (body: any): string =>
-  Object.keys(body)
+const toFormUrlEncoded = (body: any): string =>{ return Object.keys(body)
     .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(body[key])}`)
     .join('&');
+}
 
 // 🌐 Déterminer le type d'URL
 const isPublicUrl = (url: string) => PUBLIC_URLS.some(u => url.includes(u));
@@ -36,7 +35,6 @@ const isPublicGetUrl = (url: string, method?: string) =>
   method?.toUpperCase() === 'GET' && PUBLIC_GET_URLS.some(u => url.includes(u));
 const isResetUrl = (url: string) => RESET_URLS.some(u => url.includes(u));
 const isRefreshUrl = (url: string) => REFRESH_URLS.some(u => url.includes(u));
-const isEncodedUrl = (url: string) => ENCODED_URLS.some(u => url.includes(u));
 
 // 📌 Intercepteur des requêtes
 axios.interceptors.request.use(async (config: InternalAxiosRequestConfig & { __skipInterceptor?: boolean }) => {
@@ -72,18 +70,13 @@ axios.interceptors.request.use(async (config: InternalAxiosRequestConfig & { __s
     return config;
   }
 
-  // Encoded body
-  if (isEncodedUrl(url)) {
-    config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-    config.data = toFormUrlEncoded(config.data);
-  } else {
-    config.headers.set('Content-Type', 'application/json');
-  }
-
   // Access token
   const accessToken = await getToken(TokenType.ACCESS_TOKEN);
   if (accessToken) {
+    config.headers.set('Token-Type', 'ACCESS');
     config.headers.Authorization = `Bearer ${accessToken}`;
+    console.log('Token added to request:', config.headers.Authorization);
+    console.log(config.url)
   }
 
   return config;

@@ -25,11 +25,19 @@ const Header: React.FC<HeaderProps> = ({
   onCartPress,
   onNotificationPress
 }) => {
+
+   const getGreeting = (): string => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Bonjour';
+    if (hour < 18) return 'Bon après-midi';
+    return 'Bonsoir';
+  };
+
   return (
     <View style={styles.header}>
       {/* Section gauche - Texte de bienvenue et localisation */}
       <View style={styles.leftSection}>
-        <Text style={styles.welcomeText}>Bonjour 👋</Text>
+        <Text style={styles.welcomeText}>{getGreeting()}</Text>
         <View style={styles.locationContainer}>
           <MapPin 
             size={IconSize.SM} 

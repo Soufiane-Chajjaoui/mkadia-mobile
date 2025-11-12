@@ -13,13 +13,14 @@ import {
     Dimensions,
 } from "react-native";
 import { Colors, Spacing, BorderRadius, Typography, Elevation } from "../../../constants/DesignSystem";
-import { Mail, ArrowLeft, CheckCircle, Clock } from "lucide-react-native";
+import { Mail, CheckCircle, Clock } from "lucide-react-native";
 import { useToast } from "../../../hooks/useToast";
 import { Toast } from "../../../components/Toast";
 import { validateEmail } from "../../../utils/validators/emailValidator";
 import { forgotPassword$ } from "../../../apis/AuthAPI";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { RootStackParamList } from "../../../types/navigation";
+import { showGlobalSuccess } from "../../../context/ToastContext";
 
 const { height } = Dimensions.get('window');
 
@@ -79,7 +80,7 @@ export default function ResetPasswordScreen() {
                 next: (response) => {
                     setCurrentStep('sent');
                     startCountdown();
-                    showSuccess("Email de récupération envoyé avec succès !");
+                    showGlobalSuccess("Email de récupération envoyé avec succès !");
                 },
                 error: (err: Error) => {
                     console.error("Erreur forgot password:", err.message);
@@ -291,8 +292,7 @@ export default function ResetPasswordScreen() {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: Colors.WHITE
+        flex: 1
     },
     scrollContainer: {
         flexGrow: 1,
@@ -323,7 +323,6 @@ const styles = StyleSheet.create({
         width: 120,
         height: 120,
         borderRadius: 60,
-        backgroundColor: Colors.LIGHT_GRAY_BG || '#F0F9FF',
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: Spacing.XL,

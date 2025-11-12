@@ -17,6 +17,7 @@ import { initializeCart } from './src/features/cart/cartSlice';
 import { store } from './src/features/store';
 import { ToastProvider, useToast } from './src/context/ToastContext';
 import { Toast } from './src/components/Toast';
+import { initializeFavorites } from './src/features/favorites/favoritesSlice';
 
 // Composant interne qui utilise les hooks Redux
 const AppContent: React.FC = () => {
@@ -115,6 +116,7 @@ const AppContent: React.FC = () => {
     const init = async () => {
       dispatch(initializeAuth());
       dispatch(initializeCart());
+      dispatch(initializeFavorites());
 
       await BootSplash.hide({ fade: true });
     };
