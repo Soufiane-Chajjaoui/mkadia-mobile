@@ -1,0 +1,93 @@
+{
+  "buildFiles": [
+    "/media/soufian-ch/P2/projects/mkadia-app/mkadia-mobile/node_modules/@react-native-async-storage/async-storage/android/build/generated/source/codegen/jni/CMakeLists.txt",
+    "/media/soufian-ch/P2/projects/mkadia-app/mkadia-mobile/node_modules/react-native-bootsplash/android/build/generated/source/codegen/jni/CMakeLists.txt",
+    "/media/soufian-ch/P2/projects/mkadia-app/mkadia-mobile/node_modules/react-native-safe-area-context/android/src/main/jni/CMakeLists.txt",
+    "/media/soufian-ch/P2/projects/mkadia-app/mkadia-mobile/node_modules/react-native-screens/android/src/main/jni/CMakeLists.txt",
+    "/media/soufian-ch/P2/projects/mkadia-app/mkadia-mobile/node_modules/react-native-svg/android/src/main/jni/CMakeLists.txt",
+    "/media/soufian-ch/P2/projects/mkadia-app/mkadia-mobile/node_modules/react-native/ReactAndroid/cmake-utils/default-app-setup/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/home/soufian-ch/Android/Sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/media/soufian-ch/P2/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/68p6d18u/arm64-v8a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/home/soufian-ch/Android/Sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/media/soufian-ch/P2/projects/mkadia-app/mkadia-mobile/android/app/.cxx/Debug/68p6d18u/arm64-v8a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "appmodules::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "appmodules",
+      "output": "/media/soufian-ch/P2/projects/mkadia-app/mkadia-mobile/android/app/build/intermediates/cxx/Debug/68p6d18u/obj/arm64-v8a/libappmodules.so",
+      "runtimeFiles": [
+        "/media/soufian-ch/P2/projects/mkadia-app/mkadia-mobile/android/app/build/intermediates/cxx/Debug/68p6d18u/obj/arm64-v8a/libreact_codegen_safeareacontext.so",
+        "/media/soufian-ch/P2/projects/mkadia-app/mkadia-mobile/android/app/build/intermediates/cxx/Debug/68p6d18u/obj/arm64-v8a/libreact_codegen_rnscreens.so",
+        "/media/soufian-ch/P2/projects/mkadia-app/mkadia-mobile/android/app/build/intermediates/cxx/Debug/68p6d18u/obj/arm64-v8a/libreact_codegen_rnsvg.so",
+        "/home/soufian-ch/.gradle/caches/8.14.3/transforms/a18451f415b73841e30da63b3d9805af/transformed/fbjni-0.7.0/prefab/modules/fbjni/libs/android.arm64-v8a/libfbjni.so",
+        "/home/soufian-ch/.gradle/caches/8.14.3/transforms/eb6d09c91acf843499bdca80e0a66fd6/transformed/react-android-0.81.0-debug/prefab/modules/jsi/libs/android.arm64-v8a/libjsi.so",
+        "/home/soufian-ch/.gradle/caches/8.14.3/transforms/eb6d09c91acf843499bdca80e0a66fd6/transformed/react-android-0.81.0-debug/prefab/modules/reactnative/libs/android.arm64-v8a/libreactnative.so"
+      ]
+    },
+    "react_codegen_RNBootSplashSpec::@05d5bd8b08339ce1ebaa": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "react_codegen_RNBootSplashSpec"
+    },
+    "react_codegen_rnasyncstorage::@1596841e19ec5b9eeffe": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "react_codegen_rnasyncstorage"
+    },
+    "react_codegen_rnscreens::@25bcbd507e98d3a854ad": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "react_codegen_rnscreens",
+      "output": "/media/soufian-ch/P2/projects/mkadia-app/mkadia-mobile/android/app/build/intermediates/cxx/Debug/68p6d18u/obj/arm64-v8a/libreact_codegen_rnscreens.so",
+      "runtimeFiles": [
+        "/home/soufian-ch/.gradle/caches/8.14.3/transforms/eb6d09c91acf843499bdca80e0a66fd6/transformed/react-android-0.81.0-debug/prefab/modules/reactnative/libs/android.arm64-v8a/libreactnative.so",
+        "/home/soufian-ch/.gradle/caches/8.14.3/transforms/eb6d09c91acf843499bdca80e0a66fd6/transformed/react-android-0.81.0-debug/prefab/modules/jsi/libs/android.arm64-v8a/libjsi.so",
+        "/home/soufian-ch/.gradle/caches/8.14.3/transforms/a18451f415b73841e30da63b3d9805af/transformed/fbjni-0.7.0/prefab/modules/fbjni/libs/android.arm64-v8a/libfbjni.so"
+      ]
+    },
+    "react_codegen_rnsvg::@4f40eb209d0c0b4a3b65": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "react_codegen_rnsvg",
+      "output": "/media/soufian-ch/P2/projects/mkadia-app/mkadia-mobile/android/app/build/intermediates/cxx/Debug/68p6d18u/obj/arm64-v8a/libreact_codegen_rnsvg.so",
+      "runtimeFiles": [
+        "/home/soufian-ch/.gradle/caches/8.14.3/transforms/eb6d09c91acf843499bdca80e0a66fd6/transformed/react-android-0.81.0-debug/prefab/modules/reactnative/libs/android.arm64-v8a/libreactnative.so",
+        "/home/soufian-ch/.gradle/caches/8.14.3/transforms/eb6d09c91acf843499bdca80e0a66fd6/transformed/react-android-0.81.0-debug/prefab/modules/jsi/libs/android.arm64-v8a/libjsi.so",
+        "/home/soufian-ch/.gradle/caches/8.14.3/transforms/a18451f415b73841e30da63b3d9805af/transformed/fbjni-0.7.0/prefab/modules/fbjni/libs/android.arm64-v8a/libfbjni.so"
+      ]
+    },
+    "react_codegen_safeareacontext::@7984cd80db47aa7b952a": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "react_codegen_safeareacontext",
+      "output": "/media/soufian-ch/P2/projects/mkadia-app/mkadia-mobile/android/app/build/intermediates/cxx/Debug/68p6d18u/obj/arm64-v8a/libreact_codegen_safeareacontext.so",
+      "runtimeFiles": [
+        "/home/soufian-ch/.gradle/caches/8.14.3/transforms/a18451f415b73841e30da63b3d9805af/transformed/fbjni-0.7.0/prefab/modules/fbjni/libs/android.arm64-v8a/libfbjni.so",
+        "/home/soufian-ch/.gradle/caches/8.14.3/transforms/eb6d09c91acf843499bdca80e0a66fd6/transformed/react-android-0.81.0-debug/prefab/modules/jsi/libs/android.arm64-v8a/libjsi.so",
+        "/home/soufian-ch/.gradle/caches/8.14.3/transforms/eb6d09c91acf843499bdca80e0a66fd6/transformed/react-android-0.81.0-debug/prefab/modules/reactnative/libs/android.arm64-v8a/libreactnative.so"
+      ]
+    }
+  },
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "/home/soufian-ch/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang.lld",
+      "cppCompilerExecutable": "/home/soufian-ch/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++.lld"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}
